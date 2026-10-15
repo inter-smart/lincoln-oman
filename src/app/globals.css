@@ -1,0 +1,171 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* The site has no dark theme: shadcn's dark: classes apply only under a .dark class, never from the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Card hover and keyboard focus share one state */
+@custom-variant group-hocus (&:is(:where(.group):hover *, :where(.group):focus-visible *));
+
+/* Project breakpoints (global standard) — replaces Tailwind's defaults */
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1600px;
+  --breakpoint-4xl: 1920px;
+}
+
+/* Design tokens from the Lincoln Figma file */
+@theme inline {
+  --color-ink: #1b1b1b;
+  --color-coal: #141211;
+  --color-night: #231f20;
+  --color-slate: #314148;
+  --color-steel: #485b65;
+  --color-ash: #767676; /* Figma #929191 is 3.14:1 on white — darkened to pass WCAG AA (4.54:1) */
+  --color-silver: #c3c3c3;
+  --color-ember: #e8634b;
+
+  --font-sans: var(--font-lincoln-sans);
+  --font-display: var(--font-lincoln-display);
+
+  /* shadcn/ui tokens, mapped to the palette above */
+  --color-background: #fff;
+  --color-foreground: var(--color-ink);
+  --color-popover: var(--color-night);
+  --color-popover-foreground: #fff;
+  --color-accent: var(--color-slate);
+  --color-accent-foreground: #fff;
+  --color-secondary: var(--color-slate);
+  --color-muted-foreground: var(--color-ash);
+  --color-border: var(--color-silver);
+  --color-input: var(--color-silver);
+  --color-ring: var(--color-slate);
+}
+
+/* --rr: one Figma px at the 1920 frame, scaled with the viewport so laptops keep the design's proportions.
+   Floored at 0.75 (the 1440 ratio) so type never shrinks below the laptop design. Used from xl up. */
+:root {
+  --rr: clamp(0.75px, calc(100vw / 1920), 1px);
+}
+
+/* Fluid type from xl: `xl:text-fluid-40` is 40px at 1920, 30px at 1440; body sizes never drop below 14px. */
+@utility text-fluid-* {
+  font-size: max(calc(--value(integer) * var(--rr)), min(calc(--value(integer) * 1px), 14px));
+}
+
+/* Vertical rhythm: --section-space between white sections, --band-space inside full-bleed colour bands */
+:root {
+  --section-space: 50px;
+  --band-space: 60px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-space: 70px;
+    --band-space: 90px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --section-space: calc(95 * var(--rr));
+    --band-space: calc(142 * var(--rr));
+  }
+}
+
+/* Standard container (global standard). Defined as a Tailwind utility so variants can override it. */
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 16px;
+
+  @media (min-width: 576px) {
+    max-width: 540px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1140px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 1320px;
+  }
+
+  @media (min-width: 1600px) {
+    max-width: 1480px;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 1680px;
+  }
+}
+
+/* 40px section title from the 1920 frame */
+@utility title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.2;
+
+  @media (min-width: 768px) {
+    font-size: 30px;
+  }
+
+  @media (min-width: 1200px) {
+    font-size: calc(40 * var(--rr));
+  }
+}
+
+body {
+  background: #fff;
+  color: var(--color-ink);
+}
+
+/* Legacy emblem → full wordmark reveal (Figma "image 3" Default → Variant2) */
+.legacy-logo {
+  width: calc(var(--logo-h) * 2.884);
+  transition: width 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+}
+
+/* Respect reduced motion for every animation and transition (tw-animate entrances, hovers, menus) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Scroll reveal: only hides content when JS can reveal it again and motion is welcome */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+
+  [data-reveal]:not([data-visible]) {
+    opacity: 0;
+    translate: 0 40px;
+  }
+
+  .legacy-logo:not([data-visible]) {
+    width: calc(var(--logo-h) * 0.366);
+  }
+}
