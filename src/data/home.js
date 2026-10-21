@@ -1,12 +1,31 @@
 // Home page content, shaped like a future CMS response.
 // ponytail: every video slot uses the one supplied Navigator clip for now — swap per model when real footage arrives.
-const video = { mobile: "/videos/navigator-720.mp4", desktop: "/videos/navigator-1080.mp4" };
+const video = {
+  mobile: "/videos/navigator-720.mp4",
+  desktop: "/videos/navigator-1080.mp4",
+};
 const videoCard = "/videos/navigator-720.mp4";
 // Figma gives every model card the same three specs (Navigator's) — kept as designed, flagged for real data.
 const specs = [
-  { id: "engine", label: "3.5L GTDI\nEngine", icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 } },
-  { id: "assist", label: "Driver Assist\nTechnology", icon: { src: "/icons/spec-driver-assist.svg", width: 24.5644, height: 24.2307 } },
-  { id: "wheel", label: "Polished 22”\nAluminum Wheel", icon: { src: "/icons/spec-wheel.svg", width: 22.4353, height: 22.4269 } },
+  {
+    id: "engine",
+    label: "3.5L GTDI\nEngine",
+    icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 },
+  },
+  {
+    id: "assist",
+    label: "Driver Assist\nTechnology",
+    icon: {
+      src: "/icons/spec-driver-assist.svg",
+      width: 24.5644,
+      height: 24.2307,
+    },
+  },
+  {
+    id: "wheel",
+    label: "Polished 22”\nAluminum Wheel",
+    icon: { src: "/icons/spec-wheel.svg", width: 22.4353, height: 22.4269 },
+  },
 ];
 
 export const home = {
@@ -20,10 +39,42 @@ export const home = {
   models: {
     title: "Explore Lincoln Line",
     items: [
-      { id: "navigator", name: "Navigator", href: "#", video: videoCard, image: "/images/home/model-navigator.png", position: "50% 50%", specs },
-      { id: "aviator", name: "Aviator", href: "#", video: videoCard, image: "/images/home/model-aviator.png", position: "50% 50%", specs },
-      { id: "corsair", name: "Corsair", href: "#", video: videoCard, image: "/images/home/model-corsair.png", position: "52% 50%", specs },
-      { id: "nautilus", name: "Nautilus", href: "#", video: videoCard, image: "/images/home/model-nautilus.png", position: "75% 50%", specs },
+      {
+        id: "navigator",
+        name: "Navigator",
+        href: "#",
+        video: videoCard,
+        image: "/images/home/model-navigator.png",
+        position: "50% 50%",
+        specs,
+      },
+      {
+        id: "aviator",
+        name: "Aviator",
+        href: "#",
+        video: videoCard,
+        image: "/images/home/model-aviator.png",
+        position: "50% 50%",
+        specs,
+      },
+      {
+        id: "corsair",
+        name: "Corsair",
+        href: "#",
+        video: videoCard,
+        image: "/images/home/model-corsair.png",
+        position: "52% 50%",
+        specs,
+      },
+      {
+        id: "nautilus",
+        name: "Nautilus",
+        href: "#",
+        video: videoCard,
+        image: "/images/home/model-nautilus.png",
+        position: "75% 50%",
+        specs,
+      },
     ],
   },
 
@@ -42,7 +93,11 @@ export const home = {
     background: "/images/home/continental-bg.png",
     video,
     media: [
-      { id: "c1", image: "/images/home/continental-card.png", alt: "Lincoln Continental parked at dusk" },
+      {
+        id: "c1",
+        image: "/images/home/continental-card.png",
+        alt: "Lincoln Continental parked at dusk",
+      },
       { id: "c2", video: videoCard, poster: "/images/home/video-poster.jpg" },
     ],
   },
@@ -56,7 +111,11 @@ export const home = {
     video,
     media: [
       { id: "n1", video: videoCard, poster: "/images/home/video-poster.jpg" },
-      { id: "n2", image: "/images/home/navigator-card.png", alt: "Lincoln Navigator in motion" },
+      {
+        id: "n2",
+        image: "/images/home/navigator-card.png",
+        alt: "Lincoln Navigator in motion",
+      },
     ],
   },
 
@@ -80,7 +139,10 @@ export const home = {
       { id: "rsa", label: "Lincoln Road Assist (RSA)" },
     ],
     cta: { label: "Learn More", href: "#" },
-    image: { src: "/images/home/ownership.png", alt: "Lincoln SUV parked in a lit courtyard at night" },
+    image: {
+      src: "/images/home/ownership.png",
+      alt: "Lincoln SUV parked in a lit courtyard at night",
+    },
   },
 
   news: {
@@ -88,10 +150,43 @@ export const home = {
     more: { label: "View More", href: "#" },
     readMore: "Read More",
     items: [
-      { id: "n1", date: "09.03.2020", datetime: "2020-03-09", title: "Lincoln Nautilus nominated for Middle East Car of the Year 2020", href: "#", image: "/images/home/news-1.png", position: "34% 50%" },
-      { id: "n2", date: "09.03.2020", datetime: "2020-03-09", title: "Lincoln Oman Unveils Exclusive Ramadan Offers", href: "#", image: "/images/home/news-2.png", position: "50% 50%" },
-      { id: "n3", date: "09.03.2020", datetime: "2020-03-09", title: "Experience Exceptional Lincoln Luxury with Exclusive Offers", href: "#", image: "/images/home/news-3.png", position: "50% 50%" },
-      { id: "n4", date: "09.03.2020", datetime: "2020-03-09", title: "Extraordinary Lincoln Now With Exclusive Delights", href: "#", image: "/images/home/news-4.png", position: "50% 50%" },
+      {
+        id: "n1",
+        date: "09.03.2020",
+        datetime: "2020-03-09",
+        title:
+          "Lincoln Nautilus nominated for Middle East Car of the Year 2020",
+        href: "#",
+        image: "/images/home/news-1.png",
+        position: "34% 50%",
+      },
+      {
+        id: "n2",
+        date: "09.03.2020",
+        datetime: "2020-03-09",
+        title: "Lincoln Oman Unveils Exclusive Ramadan Offers",
+        href: "#",
+        image: "/images/home/news-2.png",
+        position: "50% 50%",
+      },
+      {
+        id: "n3",
+        date: "09.03.2020",
+        datetime: "2020-03-09",
+        title: "Experience Exceptional Lincoln Luxury with Exclusive Offers",
+        href: "#",
+        image: "/images/home/news-3.png",
+        position: "50% 50%",
+      },
+      {
+        id: "n4",
+        date: "09.03.2020",
+        datetime: "2020-03-09",
+        title: "Extraordinary Lincoln Now With Exclusive Delights",
+        href: "#",
+        image: "/images/home/news-4.png",
+        position: "50% 50%",
+      },
     ],
   },
 };

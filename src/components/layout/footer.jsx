@@ -38,7 +38,9 @@ export default function Footer({ data }) {
         <div className="grid grid-cols-2 gap-x-[24px] gap-y-[40px] md:grid-cols-3 xl:grid-cols-[repeat(4,1fr)_auto_auto] xl:gap-x-[32px] 4xl:grid-cols-[15.6%_15.06%_16.9%_17.8%_auto_1fr] 4xl:gap-x-0">
           {data?.columns?.map((column) => (
             <nav key={column.id} aria-label={column.title}>
-              <h2 className="text-sm sm:text-base tracking-[0.8px] uppercase">{column.title}</h2>
+              <h2 className="text-sm tracking-[0.8px] uppercase sm:text-base">
+                {column.title}
+              </h2>
               <ul className="mt-[17px] flex flex-col gap-2.5 sm:gap-[19px]">
                 {column.links?.map((link) => (
                   <li key={link.id}>
@@ -52,7 +54,7 @@ export default function Footer({ data }) {
           ))}
 
           <div>
-            <h2 className="text-sm sm:text-base tracking-[0.8px] uppercase">
+            <h2 className="text-sm tracking-[0.8px] uppercase sm:text-base">
               {data?.address?.title}
             </h2>
             <address className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base">

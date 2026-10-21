@@ -1,11 +1,14 @@
 import CardCarousel from "@/components/layout/common/CardCarousel";
 import ModelCard from "@/components/layout/common/ModelCard";
 
-export default function ExploreModels({ data }) {
+export default function ExploreModels({ data, variant = "default" }) {
   return (
     <section className="py-(--section-space)">
       <div className="container">
-        <h2 data-reveal className="text-center title text-ink">
+        <h2
+          data-reveal
+          className={`title text-ink ${variant === "about" ? "text-left" : "text-center"}`}
+        >
           {data?.title}
         </h2>
         <CardCarousel

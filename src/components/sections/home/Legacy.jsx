@@ -1,11 +1,12 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
-export default function Legacy({ data }) {
+export default function Legacy({ data, variant = "default" }) {
   return (
-    <section className="bg-night py-(--band-space) text-center text-white">
+    <section
+      className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
+    >
       <div className="container flex flex-col items-center">
-        {/* Emblem widens to the full wordmark as it scrolls in (Figma "image 3" Default → Variant2) */}
         <div
           data-observe
           className="legacy-logo relative h-(--logo-h) overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]"
@@ -15,10 +16,13 @@ export default function Legacy({ data }) {
             alt="Lincoln"
             width={600}
             height={208}
-            className="absolute top-0 left-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none"
+            className={`absolute top-0 left-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
           />
         </div>
-        <h2 data-reveal className="mt-[60px] title xl:mt-[calc(115*var(--rr))]">
+        <h2
+          data-reveal
+          className="mt-7.5 title lg:mt-10 xl:mt-[calc(115*var(--rr))] 2xl:mt-12.5 3xl:mt-17.5"
+        >
           {data?.title}
         </h2>
         <p
@@ -28,7 +32,10 @@ export default function Legacy({ data }) {
           {data?.text}
         </p>
         <div data-reveal className="mt-[32px]">
-          <ButtonLink data={data?.cta} />
+          <ButtonLink
+            data={data?.cta}
+            variant={variant === "about" ? "dark" : "light"}
+          />
         </div>
       </div>
     </section>
