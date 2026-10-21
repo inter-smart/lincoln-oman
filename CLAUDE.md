@@ -53,6 +53,11 @@ src/components/ui/*             shadcn primitives (button cva, sheet, navigation
 - **Colours (`@theme inline`):**
   - ink `#1b1b1b`, coal `#141211`, night `#231f20`, slate `#314148`, steel `#485b65`, silver `#c3c3c3`, ember `#e8634b`.
   - **ash is `#767676`, not Figma's `#929191`** (contrast fix — keep it).
+- **Reviewer's responsive ladder (commit `6ae8ceb`): follow it on every new section.** Full tables and review in `POST-BUILD-CHANGES.md`.
+  - **Type:** title 24 → sm 28 → md 30 → xl fluid-40. Body `text-sm` → sm 15 → xl fluid-16. Footer/meta 14 → sm 16. Pin the final Figma px at `2xl`/`3xl` only when it differs from the fluid value.
+  - **Gaps:** mobile ≈ half of desktop, with steps at sm/lg/xl/2xl (e.g. `pt-10 sm:pt-[50px] lg:pt-[70px] xl:pt-[calc(113*var(--rr))] 2xl:pt-[90px]`). List gaps `gap-2.5 sm:gap-[19px]`.
+  - **Radius:** `rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]`.
+  - **Code:** run Prettier (`prettier-plugin-tailwindcss`) before committing. Prefer Tailwind scale classes (`mt-10`, `left-5`) for on-scale values. Size icon boxes with `aspect-W/H w-* h-auto` + `size-full object-contain`. Never commit commented-out JSX.
 - **Fonts:** Libre Caslon Text (display) + Figtree (sans) are **stand-ins** for the licensed LincolnMillerB / Lincoln Proxima Nova / Xenon Nue. Swap them in `src/app/fonts.js` via `next/font/local` when the files arrive.
 
 ## 5. Media and performance rules (client requirement: video must not affect page speed)
