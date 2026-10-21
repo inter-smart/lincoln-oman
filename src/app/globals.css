@@ -55,7 +55,10 @@
 
 /* Fluid type from xl: `xl:text-fluid-40` is 40px at 1920, 30px at 1440; body sizes never drop below 14px. */
 @utility text-fluid-* {
-  font-size: max(calc(--value(integer) * var(--rr)), min(calc(--value(integer) * 1px), 14px));
+  font-size: max(
+    calc(--value(integer) * var(--rr)),
+    min(calc(--value(integer) * 1px), 14px)
+  );
 }
 
 /* Vertical rhythm: --section-space between white sections, --band-space inside full-bleed colour bands */
@@ -116,9 +119,12 @@
 /* 40px section title from the 1920 frame */
 @utility title {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.2;
 
+  @media (min-width: 576px) {
+    font-size: 28px;
+  }
   @media (min-width: 768px) {
     font-size: 30px;
   }

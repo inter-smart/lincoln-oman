@@ -27,8 +27,8 @@ export default function NewsCard({ item, readMore }) {
         </span>
       </span>
       <time dateTime={item?.datetime} className="mt-[14px] block text-[14px] text-ash">{item?.date}</time>
-      <span className="mt-[9px] block text-[18px] leading-[normal] text-ink xl:text-fluid-23">{item?.title}</span>
-      <span className="mt-[18px] block text-[14px] tracking-[0.7px] text-ink transition-opacity duration-300 group-hocus:opacity-0">{readMore}</span>
+      <span className="mt-[9px] block text-sm sm:text-[15px] 3xl:text-[18px] leading-[normal] text-ink xl:text-fluid-23">{item?.title}</span>
+      <span className="mt-2.5 sm:mt-[18px] block text-[13px] sm:text-[14px] tracking-[0.7px] text-ink transition-opacity duration-300 group-hocus:opacity-0">{readMore}</span>
     </Link>
   );
 }

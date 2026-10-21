@@ -8,7 +8,7 @@ export default function ModelCard({ item }) {
   return (
     <Link
       href={item?.href ?? "#"}
-      className="group relative block aspect-[394/638] overflow-hidden rounded-[20px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
+      className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
     >
       <Image
         src={item?.image}
@@ -22,23 +22,35 @@ export default function ModelCard({ item }) {
       {item?.video && <HoverVideo src={item.video} />}
       <span className="absolute inset-x-0 top-[52.2%] bottom-0 bg-linear-to-b from-transparent to-black opacity-0 transition-opacity duration-500 group-hocus:opacity-100" />
 
-      <ul className="absolute inset-x-0 top-[77%] flex translate-y-4 justify-between px-[clamp(14px,6.35%,25px)] opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-y-0 group-hocus:opacity-100 group-hocus:delay-100">
+      <ul className="absolute inset-x-0 top-[73%] flex translate-y-4 justify-between px-[clamp(14px,6.35%,25px)] opacity-0 transition-[opacity,translate] duration-500 2xl:top-[77%] group-hocus:translate-y-0 group-hocus:opacity-100 group-hocus:delay-100">
         {item?.specs?.map((spec) => (
-          <li key={spec.id} className="flex flex-col items-center gap-[10px] text-center text-[13px] leading-[normal] whitespace-pre-line 3xl:text-[14px]">
-            <Image src={spec.icon.src} alt="" width={Math.ceil(spec.icon.width)} height={Math.ceil(spec.icon.height)} className="h-[24px] w-auto" />
+          <li
+            key={spec.id}
+            className="flex flex-col items-center gap-[10px] text-center text-[10px] leading-[normal] whitespace-pre-line 2xl:text-[13px] 3xl:text-[14px]"
+          >
+            <Image
+              src={spec.icon.src}
+              alt=""
+              width={Math.ceil(spec.icon.width)}
+              height={Math.ceil(spec.icon.height)}
+              className="h-[24px] w-auto"
+            />
             {spec.label}
           </li>
         ))}
       </ul>
-
-      <span className="absolute bottom-[20px] left-[25px] text-[19px] leading-[normal] xl:text-fluid-25">{item?.name}</span>
-      <Image
-        src="/icons/card-plus-hover.svg"
-        alt=""
-        width={33}
-        height={14}
-        className="absolute right-[27px] bottom-[29px] -translate-x-3 opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-x-0 group-hocus:opacity-100"
-      />
+      <span className="absolute bottom-[20px] left-5 2xl:left-[25px] text-lg leading-[normal] xl:text-fluid-25 2xl:text-[19px]">
+        {item?.name}
+      </span>
+      <div className="absolute right-5 2xl:right-6.25 bottom-6.25 flex aspect-35/15 h-auto w-7.5 2xl:w-8.75 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-x-0 group-hocus:opacity-100">
+        <Image
+          src="/icons/card-plus-hover.svg"
+          alt=""
+          width={33}
+          height={14}
+          className="size-full object-contain"
+        />
+      </div>
     </Link>
   );
 }
