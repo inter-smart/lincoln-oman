@@ -3,7 +3,7 @@ import Link from "next/link";
 import Composite, { creditLogo } from "@/components/layout/common/Composite";
 
 const linkHover =
-  "text-[14px] sm:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
+  "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
 export default function Footer({ data }) {
   return (
@@ -38,7 +38,7 @@ export default function Footer({ data }) {
         <div className="grid grid-cols-2 gap-x-[24px] gap-y-[40px] md:grid-cols-3 xl:grid-cols-[repeat(4,1fr)_auto_auto] xl:gap-x-[32px] 4xl:grid-cols-[15.6%_15.06%_16.9%_17.8%_auto_1fr] 4xl:gap-x-0">
           {data?.columns?.map((column) => (
             <nav key={column.id} aria-label={column.title}>
-              <h2 className="text-sm tracking-[0.8px] uppercase sm:text-base">
+              <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
                 {column.title}
               </h2>
               <ul className="mt-[17px] flex flex-col gap-2.5 sm:gap-[19px]">
@@ -54,7 +54,7 @@ export default function Footer({ data }) {
           ))}
 
           <div>
-            <h2 className="text-sm tracking-[0.8px] uppercase sm:text-base">
+            <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
               {data?.address?.title}
             </h2>
             <address className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base">
@@ -83,7 +83,7 @@ export default function Footer({ data }) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] sm:text-base xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px]">
+        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] 2xl:text-base xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px]">
           <p>
             {data?.legal?.map((link, index) => (
               <span key={link.id}>

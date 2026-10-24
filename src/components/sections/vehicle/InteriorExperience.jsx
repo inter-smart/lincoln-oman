@@ -1,0 +1,58 @@
+import Image from "next/image";
+import CardCarousel from "@/components/layout/common/CardCarousel";
+
+export default function InteriorExperience({ data }) {
+  const items = data?.items ?? [];
+  return (
+    <section
+      id="interior"
+      className="scroll-mt-(--spy-offset,96px) bg-night py-(--band-space) text-white"
+    >
+      <div className="container">
+        <h2 data-reveal className="text-center title">
+          {data?.title}
+        </h2>
+        <CardCarousel
+          label={data?.title}
+          arrows
+          className="mt-[30px] [--arrow-inset:calc(-80*var(--rr))] [--slide-gap:16px] xl:mt-[calc(45*var(--rr))] xl:[--slide-gap:calc(22*var(--rr))]"
+          slideClassName="basis-[85%] sm:basis-[45%] lg:basis-1/4"
+          activeSlideClassName="basis-[85%] sm:basis-[75%] lg:basis-1/2"
+          arrowClassName="top-1/2 hidden -translate-y-1/2 2xl:flex"
+        >
+          {items.map((item, index) => (
+            <div
+              key={item.id}
+              data-reveal
+              style={{ "--reveal-delay": `${index * 0.1}s` }}
+              className="relative h-90 overflow-hidden rounded-[10px] sm:h-105 sm:rounded-[15px] 2xl:h-[calc(571*var(--rr))] 2xl:rounded-[20px]"
+            >
+              <Image
+                src={item.image.src}
+                alt={item.image.alt}
+                fill
+                sizes="(min-width: 992px) 50vw, 85vw"
+                className="object-cover"
+                style={{ objectPosition: item.image.position }}
+              />
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-500 group-data-active/slide:opacity-100"
+              />
+              <div className="absolute inset-x-5 bottom-5 translate-y-3 opacity-0 transition-[opacity,translate] duration-500 group-data-active/slide:translate-y-0 group-data-active/slide:opacity-100 group-data-active/slide:delay-200 xl:inset-x-[calc(36*var(--rr))] xl:bottom-[calc(35*var(--rr))]">
+                <div className="font-display text-xl leading-[1.2] sm:text-2xl xl:text-fluid-30">
+                  {item.title}
+                </div>
+                {item.text && (
+                  <div className="mt-1 text-sm tracking-[0.05em] sm:text-base xl:text-fluid-18">
+                    {item.text}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </CardCarousel>
+      </div>
+    </section>
+  );
+}

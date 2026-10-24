@@ -9,7 +9,7 @@ export const site = {
       // Mega menu (Figma "Component 9" → Variant3). Only Navigator has a cut-out image in Figma.
       menu: {
         items: [
-          { id: "navigator", label: "Navigator", href: "#", image: { src: "/images/menu-navigator.png", width: 690, height: 254 } },
+          { id: "navigator", label: "Navigator", href: "/vehicles/navigator", image: { src: "/images/menu-navigator.png", width: 690, height: 254 } },
           { id: "aviator", label: "Aviator", href: "#" },
           { id: "corsair", label: "Corsair", href: "#" },
           { id: "nautilus", label: "Nautilus", href: "#" },
@@ -18,7 +18,7 @@ export const site = {
         testDrive: { label: "Book a Test Drive", href: "#" },
       },
     },
-    { id: "owners", label: "Owners", href: "#" },
+    { id: "owners", label: "Owners", href: "/owners" },
     { id: "contact", label: "Contact", href: "#" },
   ],
   testDrive: { label: "Book a Test Drive", href: "#" },
@@ -42,14 +42,14 @@ export const site = {
           { id: "home", label: "Home", href: "/" },
           { id: "about", label: "About Us", href: "#" },
           { id: "contact", label: "Contact Us", href: "#" },
-          { id: "owners", label: "Owners", href: "#" },
+          { id: "owners", label: "Owners", href: "/owners" },
         ],
       },
       {
         id: "vehicles",
         title: "Vehicles",
         links: [
-          { id: "navigator", label: "Navigator", href: "#" },
+          { id: "navigator", label: "Navigator", href: "/vehicles/navigator" },
           { id: "aviator", label: "Aviator", href: "#" },
           { id: "corsair", label: "Corsair", href: "#" },
           { id: "nautilus", label: "Nautilus", href: "#" },
@@ -59,8 +59,8 @@ export const site = {
         id: "resource",
         title: "Resource",
         links: [
-          { id: "offers", label: "Special offers", href: "#" },
-          { id: "certified", label: "Lincoln certified", href: "#" },
+          { id: "offers", label: "Special offers", href: "/special-offers" },
+          { id: "certified", label: "Lincoln certified", href: "/lincoln-certified" },
           { id: "parts", label: "Parts", href: "#" },
           { id: "news", label: "News & Events", href: "#" },
         ],
