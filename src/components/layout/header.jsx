@@ -1,3 +1,4 @@
+import { XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import ButtonLink from "@/components/layout/common/ButtonLink";
@@ -21,9 +22,6 @@ import {
 
 const navLink = "relative transition-opacity hover:opacity-70";
 
-// Sticky header. The row is pointer-transparent because the mega-menu panel sits behind it.
-// Desktop: nav with the Vehicles mega menu (shadcn NavigationMenu, opens on hover).
-// Below lg the nav moves into the Menu sheet. The full-screen Menu overlay has no Figma design, so the sheet is a link list.
 export default function Header({ data }) {
   return (
     <HeaderShell>
@@ -86,40 +84,102 @@ export default function Header({ data }) {
               <Image src="/icons/menu.svg" alt="" width={31} height={7} />
             </SheetTrigger>
             <SheetContent
+              side="top-lg-right"
+              data-lenis-prevent
+              showCloseButton={false}
+              overlayClassName="bg-transparent lg:bg-black/50"
               aria-describedby={undefined}
-              className="overflow-y-auto border-none bg-night px-[32px] pt-[80px] pb-[32px] text-white [&>button]:text-white [&>button]:focus-visible:outline-2 [&>button]:focus-visible:outline-white [&>button]:focus-visible:outline-solid"
+              className="max-h-dvh gap-0 overflow-y-auto border-none bg-night/80 pb-9 text-white backdrop-blur-md"
             >
               <SheetTitle className="sr-only">Menu</SheetTitle>
-              <nav aria-label="Menu">
-                <ul className="flex flex-col gap-[24px] text-[22px]">
-                  {data?.nav?.map((item) => (
-                    <li key={item.id}>
-                      <SheetClose asChild>
-                        <Link href={item.href} className={navLink}>
-                          {item.label}
-                        </Link>
-                      </SheetClose>
-                      {item.menu && (
-                        <ul className="mt-[14px] flex flex-col gap-[12px] ps-[16px] text-[16px]">
-                          {item.menu.items?.map((model) => (
-                            <li key={model.id}>
-                              <SheetClose asChild>
-                                <Link href={model.href} className={navLink}>
-                                  {model.label}
-                                </Link>
-                              </SheetClose>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              <ButtonLink
-                data={data?.testDrive}
-                className="mt-[16px] self-start"
-              />
+              <div className="mx-auto w-full max-w-[720px] px-9">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-start pt-[20px]">
+                  <Link
+                    href="/"
+                    aria-label="Lincoln home"
+                    className="col-start-2 origin-top scale-[0.7]"
+                  >
+                    <Logo />
+                  </Link>
+                  <div className="col-start-3 mt-[8px] flex items-center justify-end gap-[20px]">
+                    <Link
+                      href={data?.language?.href ?? "#"}
+                      aria-label={data?.language?.label}
+                      className="flex h-[24px] items-center gap-[5px] transition-opacity hover:opacity-70"
+                    >
+                      <Image
+                        src="/icons/globe.svg"
+                        alt=""
+                        width={15}
+                        height={15}
+                      />
+                      <Image
+                        src="/icons/caret-down.svg"
+                        alt=""
+                        width={8}
+                        height={5}
+                      />
+                    </Link>
+                    <SheetClose className="grid size-[24px] place-items-center transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-solid">
+                      <XIcon
+                        className="size-[22px]"
+                        strokeWidth={1.25}
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Close menu</span>
+                    </SheetClose>
+                  </div>
+                </div>
+                <nav aria-label="Menu" className="-mt-4">
+                  <ul className="text-[18px] tracking-[0.9px]">
+                    {data?.nav?.map((item) => (
+                      <li
+                        key={item.id}
+                        className="relative after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-linear-to-r after:from-transparent after:via-[#3F3F3F] after:to-transparent last:after:hidden"
+                      >
+                        {item.menu ? (
+                          <details className="group/vehicles">
+                            <summary className="flex h-[52px] cursor-pointer list-none items-center justify-between focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-solid [&::-webkit-details-marker]:hidden">
+                              {item.label}
+                              <Image
+                                src="/icons/chevron-accent.svg"
+                                alt=""
+                                width={7}
+                                height={4}
+                                className="transition-transform duration-300 group-open/vehicles:rotate-180"
+                              />
+                            </summary>
+                            <ul className="flex flex-col gap-[4px] ps-[16px] pb-[14px] text-[16px]">
+                              {item.menu.items?.map((model) => (
+                                <li key={model.id}>
+                                  <SheetClose asChild>
+                                    <Link
+                                      href={model.href}
+                                      className={`${navLink} block py-[6px]`}
+                                    >
+                                      {model.label}
+                                    </Link>
+                                  </SheetClose>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        ) : (
+                          <SheetClose asChild>
+                            <Link
+                              href={item.href}
+                              className={`${navLink} flex h-[52px] items-center`}
+                            >
+                              {item.label}
+                            </Link>
+                          </SheetClose>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+                <ButtonLink data={data?.testDrive} className="mt-[32px]" />
+              </div>
             </SheetContent>
           </Sheet>
         </div>

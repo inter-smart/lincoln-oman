@@ -1,10 +1,10 @@
+import { cn } from "@/lib/utils";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import CardCarousel from "@/components/layout/common/CardCarousel";
-import { cn } from "@/lib/utils";
 
 export default function ContactLocations({ data }) {
   return (
-    <section className="h-auto w-full bg-[#231F20] text-white py-10 sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
+    <section className="h-auto w-full bg-[#231F20] py-10 text-white sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
       <div className="container">
         <CardCarousel
           label={data?.label}
@@ -20,7 +20,9 @@ export default function ContactLocations({ data }) {
               style={{ "--reveal-delay": `${index * 0.1}s` }}
               className={cn(
                 "h-full sm:pl-8 xl:pl-10 2xl:pl-12.5 3xl:pl-[calc(60*var(--rr))]",
-                index === 0 ? "ps-0 pl-0! sm:ps-0" : "sm:border-s border-white/15",
+                index === 0
+                  ? "ps-0 pl-0! sm:ps-0"
+                  : "border-white/15 sm:border-s",
               )}
             >
               <h2 className="font-display text-xl sm:text-lg lg:text-lg 2xl:text-2xl 3xl:text-3xl">

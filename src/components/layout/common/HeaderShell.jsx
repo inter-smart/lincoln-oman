@@ -17,7 +17,7 @@ export default function HeaderShell({ children }) {
   return (
     <header
       data-scrolled={scrolled || undefined}
-      className="group/header fixed inset-x-0 top-0 z-30 text-white transition-[background-color,padding] duration-500 data-scrolled:bg-night/95 data-scrolled:backdrop-blur-md"
+      className="group/header fixed inset-x-0 top-0 z-30 text-white transition-[background-color,padding] duration-500 data-scrolled:bg-night/95 data-scrolled:backdrop-blur-md max-lg:h-25"
     >
       {children}
     </header>

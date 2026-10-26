@@ -2,6 +2,7 @@ import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 import FloatingRail from "@/components/layout/common/FloatingRail";
 import RevealObserver from "@/components/layout/common/RevealObserver";
+import SmoothScroll from "@/components/layout/common/SmoothScroll";
 import { allowIndexing, siteUrl } from "@/data/seo";
 import { site } from "@/data/site";
 import { display, sans } from "./fonts";
@@ -55,6 +56,7 @@ export default function RootLayout({ children }) {
         <Footer data={site.footer} />
         <FloatingRail items={site.rail} />
         <RevealObserver />
+        <SmoothScroll />
       </body>
     </html>
   );

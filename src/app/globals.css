@@ -345,3 +345,25 @@ body {
     width: calc(var(--logo-h) * 0.366);
   }
 }
+
+/* Site scrollbar: slim orange thumb on a faint orange track, no arrow buttons. Applies to the page scroll only. */
+html::-webkit-scrollbar {
+  width: 4px;
+}
+html::-webkit-scrollbar-button {
+  display: none;
+}
+html::-webkit-scrollbar-track {
+  background: rgb(0, 0, 0);
+}
+html::-webkit-scrollbar-thumb {
+  background: #e8634b;
+  border-radius: 3px;
+}
+/* Firefox has no ::-webkit-scrollbar; Chromium would let scrollbar-color override the rules above. */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #e8634b rgb(232 99 75 / 0.15);
+  }
+}
