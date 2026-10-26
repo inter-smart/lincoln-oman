@@ -134,6 +134,176 @@
   }
 }
 
+/* Rich-text (CMS) content: add `typography` to the wrapper and every tag inside is styled, so editor HTML needs no classes */
+@utility typography {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-ink);
+  overflow-wrap: break-word;
+
+  @media (min-width: 576px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1551px) {
+    font-size: max(calc(16 * var(--rr)), 14px);
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+  & > :last-child {
+    margin-bottom: 0;
+  }
+
+  & p,
+  & ul,
+  & ol,
+  & blockquote,
+  & figure,
+  & table,
+  & pre,
+  & dl {
+    margin-block: 0 1.65em;
+  }
+
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-block: 1.6em 0.6em;
+  }
+  & h1 {
+    font-size: 1.9em;
+  }
+  & h2 {
+    font-size: 1.6em;
+  }
+  & h3 {
+    font-size: 1.4em;
+  }
+  & h4 {
+    font-size: 1.25em;
+  }
+  & h5 {
+    font-size: 1.1em;
+  }
+  & h6 {
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  & a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.3s;
+  }
+  & a:hover,
+  & a:focus-visible {
+    opacity: 0.7;
+  }
+
+  & strong,
+  & b,
+  & th {
+    font-weight: 600;
+  }
+  & em,
+  & i,
+  & cite {
+    font-style: italic;
+  }
+  & small {
+    font-size: 0.85em;
+  }
+  & sub,
+  & sup {
+    font-size: 0.75em;
+  }
+  & mark {
+    background: color-mix(in srgb, var(--color-ember) 25%, transparent);
+    color: inherit;
+  }
+
+  & ul,
+  & ol {
+    padding-inline-start: 1.4em;
+  }
+  & ul {
+    list-style: disc;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li {
+    margin-block: 0.4em;
+  }
+  & li > ul,
+  & li > ol {
+    margin-block: 0.4em 0;
+  }
+
+  & blockquote {
+    border-inline-start: 2px solid var(--color-ember);
+    padding-inline-start: 1.2em;
+    font-family: var(--font-display);
+    font-size: 1.15em;
+  }
+
+  & img,
+  & video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-block: 1.65em;
+  }
+  & figure img {
+    margin-block: 0;
+  }
+  & figcaption {
+    margin-top: 0.6em;
+    font-size: 0.85em;
+    color: var(--color-ash);
+  }
+
+  & hr {
+    border: 0;
+    border-top: 1px solid var(--color-silver);
+    margin-block: 2em;
+  }
+
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  & th,
+  & td {
+    border: 1px solid var(--color-silver);
+    padding: 0.6em 0.8em;
+    text-align: start;
+  }
+
+  & code,
+  & kbd,
+  & pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+  }
+  & pre {
+    overflow-x: auto;
+    padding: 1em;
+    border-radius: 10px;
+    background: var(--color-night);
+    color: #fff;
+  }
+}
+
 body {
   background: #fff;
   color: var(--color-ink);

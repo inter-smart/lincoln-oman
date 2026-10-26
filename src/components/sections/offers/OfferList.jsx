@@ -57,7 +57,7 @@ export default function OfferList({ data }) {
                 />
               </div>
               <EmblemMark className="absolute start-[54%] top-1/2 hidden h-[80%] -translate-x-1/2 -translate-y-1/2 bg-[#2A2526] sm:block" />
-              <div className="relative flex flex-1 flex-col items-start p-5 sm:py-8 sm:ps-[calc(5%+1.25rem)] xl:py-[calc(40*var(--rr))] xl:pe-[calc(30*var(--rr))] 2xl:ps-[calc(10%+1.25rem)]">
+              <div className="relative flex flex-1 flex-col items-start p-5 sm:py-8 sm:ps-[calc(7%+1.25rem)] xl:py-[calc(40*var(--rr))] xl:pe-[calc(30*var(--rr))] 2xl:ps-[calc(10%+1.25rem)]">
                 <div className="font-display text-xl leading-[1.4] whitespace-pre-line sm:text-2xl lg:text-xl 3xl:text-fluid-32">
                   {item.title}
                 </div>

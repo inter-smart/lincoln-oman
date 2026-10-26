@@ -1,6 +1,13 @@
 import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 const field =
@@ -11,7 +18,12 @@ const field =
 // Without data.image the left column is the emblem watermark + title (special-offers band).
 export default function EnquiryForm({ data }) {
   return (
-    <section className="pb-(--section-space)">
+    <section
+      className={cn(
+        "pb-(--section-space)",
+        data?.spaced && "pt-8 sm:pt-10 xl:pt-[calc(55*var(--rr))]",
+      )}
+    >
       <div className="container">
         <div
           data-reveal
@@ -55,6 +67,30 @@ export default function EnquiryForm({ data }) {
                 </label>
               ))}
             </div>
+            {data?.selects && (
+              <div className="mt-3.5 grid gap-3.5 sm:grid-cols-2">
+                {data.selects.map((select) => (
+                  <Select key={select.name} name={select.name} required>
+                    <SelectTrigger
+                      aria-label={`${select.label} (required)`}
+                      className={`${field} h-12 data-[placeholder]:text-ink data-[size=default]:h-12 [&_svg]:text-ember!`}
+                    >
+                      <SelectValue placeholder={`${select.label}*`} />
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      className="bg-white text-ink"
+                    >
+                      {select.options.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ))}
+              </div>
+            )}
             <label className="mt-4 block">
               <span className="sr-only">{data?.message?.label}</span>
               <textarea
