@@ -1,8 +1,6 @@
 import Image from "next/image";
 import CenterCarousel from "@/components/layout/common/CenterCarousel";
 
-// Full-bleed photo slider: the centred slide is full height, the neighbours are inset and faded.
-// Arrows sit inside the centred slide's edges (--slide-w is the slide width).
 export default function ExteriorDesign({ data }) {
   return (
     <section
