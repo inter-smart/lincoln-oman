@@ -90,7 +90,7 @@ const local_data = {
 export default function page() {
   return (
     <>
-      <InnerBanner data={local_data.banner} />
+      <InnerBanner data={local_data.banner} as="div" />
       <Breadcrumb items={local_data.breadcrumb} />
       <GalleryGrid data={local_data.gallery} />
     </>
