@@ -111,8 +111,8 @@ export const site = {
         id: "general",
         title: "General Links",
         links: [
-          { id: "terms", label: "Terms & Conditions", href: "#" },
-          { id: "privacy", label: "Privacy Policy", href: "#" },
+          { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions" },
+          { id: "privacy", label: "Privacy Policy", href: "/privacy-policy" },
           { id: "news", label: "News & Events", href: "/newsroom" },
           { id: "gallery", label: "Gallery", href: "/gallery" },
         ],
@@ -130,7 +130,7 @@ export const site = {
     phone: "92880658",
     email: "lincolnacm@omantel.net.om",
     legal: [
-      { id: "terms", label: "Terms & Conditions", href: "#" },
+      { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions" },
       { id: "sitemap", label: "Sitemap", href: "/sitemap.xml" },
       { id: "legal", label: "Legal notice", href: "#" },
     ],
