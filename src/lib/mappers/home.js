@@ -1,60 +1,25 @@
 import { GET_ENDPOINTS } from "../constants/api.js";
 import {
-  CMS_PATH_ALIASES,
   HOME_LABELS,
-  MODEL_CARD_POSITION,
-  MONTHS,
-  NEWS_CARD_POSITION,
   SHOWCASE_MEDIA,
   SHOWCASE_PANEL_ORDER,
-  SPEC_ICON_SIZE,
 } from "../constants/home.js";
-import { ROUTES } from "../constants/routes.js";
-import { ApiError } from "../api/request.js";
 import { htmlListItems, htmlParagraphs, htmlToText } from "./html.js";
+import {
+  cta,
+  fail,
+  link,
+  mapModels,
+  mapNews,
+  need as needFrom,
+  slugify,
+} from "./shared.js";
 
 // Turns the PHP home response into the shape the home section components read (src/data/home.js).
 // There is no static fallback: a missing block throws.
 
-function need(value, path) {
-  if (value === undefined || value === null) {
-    throw new ApiError(`Home API response is missing "${path}"`, {
-      status: 502,
-      endpoint: GET_ENDPOINTS.HOME,
-    });
-  }
-  return value;
-}
-
-const slugify = (text) =>
-  text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-
-// Absolute links pass through; relative ones the CMS spelled differently from our routes are corrected.
-const link = (href) => CMS_PATH_ALIASES[href] ?? href;
-
-const cta = (label, href) => ({ label, href: link(href) });
-
-// "27 Oct 2026" -> { date: "27.10.2026", datetime: "2026-10-27" }, without Date so the day never shifts with timezone.
-function parsePublishedOn(value) {
-  const match = /^(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\s+(\d{4})$/.exec(
-    String(value).trim(),
-  );
-  const month = match && MONTHS[match[2].toLowerCase()];
-  if (!month) {
-    throw new ApiError(`Home API news has an unreadable date "${value}"`, {
-      status: 502,
-      endpoint: GET_ENDPOINTS.HOME,
-    });
-  }
-  const day = match[1].padStart(2, "0");
-  return {
-    date: `${day}.${month}.${match[3]}`,
-    datetime: `${match[3]}-${month}-${day}`,
-  };
-}
+const SOURCE = { endpoint: GET_ENDPOINTS.HOME, label: "Home" };
+const need = (value, path) => needFrom(SOURCE, value, path);
 
 function mapHeroMedia(slide) {
   const file = (field) => need(slide[field], `sliders[${slide.id}].${field}`);
@@ -73,9 +38,9 @@ function mapHeroMedia(slide) {
         alt: slide.image_alt_text ?? "",
       };
     default:
-      throw new ApiError(
-        `Home API slider ${slide.id} has an unknown media_type "${slide.media_type}"`,
-        { status: 502, endpoint: GET_ENDPOINTS.HOME },
+      throw fail(
+        SOURCE,
+        `slider ${slide.id} has an unknown media_type "${slide.media_type}"`,
       );
   }
 }
@@ -88,25 +53,6 @@ function mapHero(sliders) {
       title: slide.title,
       media: mapHeroMedia(slide),
       cta: cta(slide.action_title, slide.action_url),
-    })),
-  };
-}
-
-function mapModels(title, list) {
-  return {
-    title,
-    items: list.map((model) => ({
-      id: model.slug,
-      name: model.name,
-      href: ROUTES.VEHICLE_DETAIL(model.slug),
-      video: model.video,
-      image: model.image,
-      position: MODEL_CARD_POSITION,
-      specs: (model.features ?? []).map((feature) => ({
-        id: slugify(feature.title),
-        label: feature.title,
-        icon: { src: feature.icon, ...SPEC_ICON_SIZE },
-      })),
     })),
   };
 }
@@ -170,22 +116,6 @@ function mapOwnership(section) {
   };
 }
 
-function mapNews(title, list) {
-  return {
-    title,
-    more: { label: HOME_LABELS.VIEW_MORE, href: ROUTES.NEWSROOM },
-    readMore: HOME_LABELS.READ_MORE,
-    items: list.map((item) => ({
-      id: String(item.id),
-      title: item.title,
-      href: ROUTES.NEWS_DETAIL(item.slug),
-      image: need(item.media, `news[${item.id}].media`).image,
-      position: NEWS_CARD_POSITION,
-      ...parsePublishedOn(item.published_on),
-    })),
-  };
-}
-
 export function mapHome(payload) {
   const cms = need(payload?.home_cms, "home_cms");
   const section = (key) => need(cms[key], `home_cms.${key}`);
@@ -207,7 +137,11 @@ export function mapHome(payload) {
     navigator: mapShowcase("section_four", section("section_four")),
     offer: mapOffer(section("section_five")),
     ownership: mapOwnership(section("section_six")),
-    news: mapNews(section("section_seven").title, need(payload.news, "news")),
+    news: mapNews(
+      SOURCE,
+      section("section_seven").title,
+      need(payload.news, "news"),
+    ),
     seo: {
       title: payload.banner?.meta_title ?? null,
       description: payload.banner?.meta_description ?? null,

@@ -7,6 +7,16 @@ const ENTITIES = {
   quot: '"',
   apos: "'",
   nbsp: " ",
+  reg: "®",
+  copy: "©",
+  trade: "™",
+  lsquo: "‘",
+  rsquo: "’",
+  ldquo: "“",
+  rdquo: "”",
+  ndash: "–",
+  mdash: "—",
+  hellip: "…",
 };
 const BLOCK_TAGS = /<\/?(?:p|li|ul|ol|div|br)\b[^>]*>/gi;
 

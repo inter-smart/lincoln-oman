@@ -8,17 +8,6 @@ import { site } from "@/data/site";
 import { display, sans } from "./fonts";
 import "./globals.css";
 
-export const metadata = {
-  metadataBase: new URL(siteUrl),
-  title: { default: title, template: "%s | Lincoln Oman" },
-  description,
-  alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: "Lincoln Oman", locale: "en_OM", url: "/", title, description },
-  twitter: { card: "summary_large_image", title, description },
-  robots: allowIndexing
-    ? undefined
-    : { index: false, follow: false, noarchive: true, googleBot: { index: false, follow: false, noarchive: true } },
-};
 
 export const viewport = { themeColor: "#231f20" };
 

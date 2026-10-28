@@ -1,6 +1,7 @@
 // Site routes for breadcrumbs, canonicals, redirects and sitemap entries.
 export const ROUTES = {
   HOME: "/",
+  ABOUT: "/about",
   NEWSROOM: "/newsroom",
   NEWS_DETAIL: (slug) => `/newsroom/${slug}`,
   SPECIAL_OFFERS: "/special-offers",

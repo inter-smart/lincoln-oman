@@ -4,7 +4,7 @@
 export const GET_ENDPOINTS = {
   SITE_SETTINGS: "/site-settings",
   HOME: "/home",
-  ABOUT: "/pages/about",
+  ABOUT: "/about-us",
   CERTIFIED: "/pages/lincoln-certified",
   OWNERS: "/pages/owners",
   GALLERY: "/pages/gallery",
