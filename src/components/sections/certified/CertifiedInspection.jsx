@@ -9,18 +9,20 @@ export default function CertifiedInspection({ data, id }) {
       className="scroll-mt-(--spy-offset,96px) py-(--section-space)"
     >
       <div className="relative container grid items-center gap-7.5 lg:grid-cols-[minmax(0,762fr)_minmax(0,798fr)] lg:gap-10 xl:gap-[calc(80*var(--rr))]">
-        <div
-          data-reveal
-          className="relative aspect-762/242 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
-        >
-          <Image
-            src={data.image}
-            alt={data.title}
-            fill
-            sizes="(min-width: 992px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
+        {data.image && (
+          <div
+            data-reveal
+            className="relative aspect-762/242 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
+          >
+            <Image
+              src={data.image}
+              alt={data.title}
+              fill
+              sizes="(min-width: 992px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
         <div
           data-reveal
           style={{ "--reveal-delay": "0.1s" }}

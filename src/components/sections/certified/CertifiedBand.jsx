@@ -50,19 +50,21 @@ export default function CertifiedBand({
             />
           )}
         </div>
-        <div
-          data-reveal
-          style={{ "--reveal-delay": "0.15s" }}
-          className={`relative overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] ${imageRatio}`}
-        >
-          <Image
-            src={data.image}
-            alt={data.title}
-            fill
-            sizes="(min-width: 992px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
+        {data.image && (
+          <div
+            data-reveal
+            style={{ "--reveal-delay": "0.15s" }}
+            className={`relative overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] ${imageRatio}`}
+          >
+            <Image
+              src={data.image}
+              alt={data.title}
+              fill
+              sizes="(min-width: 992px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

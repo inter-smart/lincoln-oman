@@ -19,11 +19,13 @@ export default function CertifiedStatement({
     >
       <div data-reveal className="container">
         <h2 className="title text-ink">{data?.title}</h2>
-        {data?.description && (
+        {data?.description ? (
           <div
-            className= "mx-auto mt-3 max-w-[calc(var(--measure)*1px)] text-sm leading-[26px] sm:text-[15px] xl:mt-[calc(18*var(--rr))] xl:max-w-[calc(var(--measure)*var(--rr))] xl:text-fluid-16"
+            className={copy}
             dangerouslySetInnerHTML={{ __html: data.description }}
           />
+        ) : (
+          data?.text && <p className={copy}>{data.text}</p>
         )}
         {data?.actions?.length > 0 && (
           <div className="mt-8 flex flex-wrap justify-center gap-2.5 xl:mt-[calc(36*var(--rr))]">

@@ -42,23 +42,40 @@ const divider = (
   </div>
 );
 
+// A section (and its tab) is shown only when the CMS gave it a title.
+const hasTitle = (section) => Boolean(section?.title?.trim());
+
 export default async function page() {
   const { data, error } = await getCertified();
   if (error || !data) notFound();
-  const { certified_cms, banner } = data;
-  const { section_one, section_two: tabs, section_three } = certified_cms;
+  const { banner, certified_cms } = data;
 
-  // The design has no tab for the 14 Days Exchange Promise section (tab_six) — flagged to the client.
-  const tabItems = [
-    { id: "benefits", label: tabs.tab_one.title },
-    { id: "maintenance", label: tabs.tab_two.title },
-    { id: "warranty", label: tabs.tab_three.title },
-    { id: "inspection", label: tabs.tab_four.title },
-    { id: "history", label: tabs.tab_five.title },
-    { id: "finance", label: tabs.tab_seven.title },
-  ].map((tab) => ({ ...tab, href: `#${tab.id}` }));
+  // Give the CMS fields the names the page uses.
+  const { section_one: intro, section_three: cta } = certified_cms;
+  const {
+    tab_one: benefits,
+    tab_two: maintenance,
+    tab_three: warranty,
+    tab_four: inspection,
+    tab_five: history,
+    tab_six: exchange,
+    tab_seven: finance,
+  } = certified_cms.section_two;
 
-  const financeActions = [tabs.tab_seven.button_one, tabs.tab_seven.button_two]
+  // Tab bar: one tab per section, in page order. Each key is also the section's anchor id.
+  const tabs = Object.entries({
+    benefits,
+    maintenance,
+    warranty,
+    inspection,
+    history,
+    exchange,
+    finance,
+  })
+    .filter(([, section]) => hasTitle(section))
+    .map(([id, section]) => ({ id, label: section.title, href: `#${id}` }));
+
+  const financeButtons = [finance?.button_one, finance?.button_two]
     .filter((button) => button?.title)
     .map((button) => ({
       id: button.title,
@@ -79,24 +96,45 @@ export default async function page() {
         }}
       />
       <Breadcrumb items={breadcrumb} />
-      <CertifiedIntro data={section_one} />
+
+      {hasTitle(intro) && <CertifiedIntro data={intro} />}
+
       <div>
-        <SectionTabs items={tabItems} label="Lincoln Certified sections" />
-        <CertifiedBenefits data={tabs.tab_one} />
-        <CertifiedBand id="maintenance" data={tabs.tab_two} />
-        <CertifiedStatement id="warranty" data={tabs.tab_three} measure={790} />
-        {divider}
-        <CertifiedInspection id="inspection" data={tabs.tab_four} />
-        {divider}
-        <CertifiedStatement id="history" data={tabs.tab_five} measure={620} />
-        <CertifiedBand data={tabs.tab_six} emblem imageRatio="aspect-762/242" />
-        <CertifiedStatement
-          id="finance"
-          data={{ ...tabs.tab_seven, actions: financeActions }}
-          measure={620}
-        />
+        {tabs.length > 0 && (
+          <SectionTabs items={tabs} label="Lincoln Certified sections" />
+        )}
+        {hasTitle(benefits) && <CertifiedBenefits data={benefits} />}
+        {hasTitle(maintenance) && (
+          <CertifiedBand id="maintenance" data={maintenance} />
+        )}
+        {hasTitle(warranty) && (
+          <CertifiedStatement id="warranty" data={warranty} measure={790} />
+        )}
+        {hasTitle(inspection) && (
+          <>
+            {divider}
+            <CertifiedInspection id="inspection" data={inspection} />
+          </>
+        )}
+        {hasTitle(history) && (
+          <>
+            {divider}
+            <CertifiedStatement id="history" data={history} measure={620} />
+          </>
+        )}
+        {hasTitle(exchange) && (
+          <CertifiedBand id="exchange" data={exchange} emblem imageRatio="aspect-762/242" />
+        )}
+        {hasTitle(finance) && (
+          <CertifiedStatement
+            id="finance"
+            data={{ ...finance, actions: financeButtons }}
+            measure={620}
+          />
+        )}
       </div>
-      <ContactCta data={section_three} />
+
+      {hasTitle(cta) && <ContactCta data={cta} />}
     </>
   );
 }
