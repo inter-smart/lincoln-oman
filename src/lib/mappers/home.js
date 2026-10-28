@@ -4,7 +4,7 @@ import {
   SHOWCASE_MEDIA,
   SHOWCASE_PANEL_ORDER,
 } from "../constants/home.js";
-import { htmlListItems, htmlParagraphs, htmlToText } from "./html.js";
+import { htmlListItems, htmlMetaTags, htmlParagraphs, htmlToText } from "./html.js";
 import {
   cta,
   fail,
@@ -146,6 +146,7 @@ export function mapHome(payload) {
       title: payload.banner?.meta_title ?? null,
       description: payload.banner?.meta_description ?? null,
       keywords: payload.banner?.meta_keywords ?? null,
+      otherMetaTags: htmlMetaTags(payload.banner?.other_meta_tags),
     },
   };
 }

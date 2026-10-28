@@ -1,6 +1,6 @@
 import { GET_ENDPOINTS } from "../constants/api.js";
 import { ABOUT_INFO_MEDIA, ABOUT_LABELS } from "../constants/about.js";
-import { htmlToText } from "./html.js";
+import { htmlMetaTags, htmlToText } from "./html.js";
 import { mapModels, mapNews, need as needFrom } from "./shared.js";
 
 // Turns the PHP about-us response into the shape the about page sections read.
@@ -62,6 +62,7 @@ export function mapAbout(payload) {
       title: banner.meta_title ?? null,
       description: banner.meta_description ?? null,
       keywords: banner.meta_keywords ?? null,
+      otherMetaTags: htmlMetaTags(banner.other_meta_tags),
     },
   };
 }
