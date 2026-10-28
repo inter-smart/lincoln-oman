@@ -6,18 +6,22 @@ import Newsroom from "@/components/sections/home/Newsroom";
 import Offer from "@/components/sections/home/Offer";
 import Ownership from "@/components/sections/home/Ownership";
 import { home } from "@/data/home";
+import { getHome } from "@/lib/api/pages/home";
 
-export default function page() {
+export default async function page() {
+  const api = await getHome();
+
   return (
     <>
+      {/* The hero is not on the API yet. */}
       <Hero data={home.hero} />
-      <ExploreModels data={home.models} />
-      <Legacy data={home.legacy} />
-      <ModelShowcase data={home.continental} />
-      <ModelShowcase data={home.navigator} />
-      <Offer data={home.offer} />
-      <Ownership data={home.ownership} />
-      <Newsroom data={home.news} />
+      <ExploreModels data={api.models} />
+      <Legacy data={api.legacy} />
+      <ModelShowcase data={api.continental} />
+      <ModelShowcase data={api.navigator} />
+      <Offer data={api.offer} />
+      <Ownership data={api.ownership} />
+      <Newsroom data={api.news} />
     </>
   );
 }

@@ -3,7 +3,7 @@
 // ponytail: the paths below are placeholders until the PHP team confirms the real endpoints.
 export const GET_ENDPOINTS = {
   SITE_SETTINGS: "/site-settings",
-  HOME: "/pages/home",
+  HOME: "/home",
   ABOUT: "/pages/about",
   CERTIFIED: "/pages/lincoln-certified",
   OWNERS: "/pages/owners",
