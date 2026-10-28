@@ -209,8 +209,9 @@ export function mapHome(payload) {
     ownership: mapOwnership(section("section_six")),
     news: mapNews(section("section_seven").title, need(payload.news, "news")),
     seo: {
-      title: payload.banner?.meta_title ?? undefined,
-      description: payload.banner?.meta_description ?? undefined,
+      title: payload.banner?.meta_title ?? null,
+      description: payload.banner?.meta_description ?? null,
+      keywords: payload.banner?.meta_keywords ?? null,
     },
   };
 }

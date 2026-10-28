@@ -7,6 +7,19 @@ import Offer from "@/components/sections/home/Offer";
 import Ownership from "@/components/sections/home/Ownership";
 import { getHome } from "@/lib/api/pages/home";
 
+// Title, description and keywords come straight from the `banner` block of the home API.
+export async function generateMetadata() {
+  const { title, description, keywords } = (await getHome()).seo;
+
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: { type: "website", siteName: "Lincoln Oman", locale: "en_OM", url: "/", title, description },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
+
 export default async function page() {
   const api = await getHome();
 

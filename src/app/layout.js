@@ -3,14 +3,10 @@ import Header from "@/components/layout/header";
 import FloatingRail from "@/components/layout/common/FloatingRail";
 import RevealObserver from "@/components/layout/common/RevealObserver";
 import SmoothScroll from "@/components/layout/common/SmoothScroll";
-import { allowIndexing, siteUrl } from "@/data/seo";
+import { allowIndexing, defaultDescription as description, defaultTitle as title, siteUrl } from "@/data/seo";
 import { site } from "@/data/site";
 import { display, sans } from "./fonts";
 import "./globals.css";
-
-const title = "Lincoln Oman — Arabian Car Marketing";
-const description =
-  "Explore the Lincoln line-up — Navigator, Aviator, Corsair and Nautilus — with ownership, offers and news from Arabian Car Marketing, Muscat.";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
