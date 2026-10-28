@@ -17,6 +17,14 @@ const field =
 // labels are visually hidden because the design shows them as placeholders.
 // Without data.image the left column is the emblem watermark + title (special-offers band).
 export default function EnquiryForm({ data }) {
+  // Content is either { title, image: { src, alt } } (local pages) or the CMS's { enquiry_title, enquiry_image: { path } }
+  const title = data?.title ?? data?.enquiry_title;
+  const image = data?.image?.src
+    ? data.image
+    : data?.enquiry_image?.path
+      ? { src: data.enquiry_image.path, alt: title }
+      : null;
+
   return (
     <section
       className={cn(
@@ -29,11 +37,11 @@ export default function EnquiryForm({ data }) {
           data-reveal
           className="grid items-center gap-6 rounded-[10px] bg-night p-4 text-white sm:rounded-[15px] sm:p-6 lg:grid-cols-[minmax(0,455fr)_minmax(0,1053fr)] lg:gap-8 xl:gap-[calc(45*var(--rr))] xl:py-[calc(45*var(--rr))] xl:ps-[calc(38*var(--rr))] xl:pe-[calc(50*var(--rr))] 2xl:rounded-[20px]"
         >
-          {data?.image ? (
+          {image ? (
             <div className="relative aspect-455/359 overflow-hidden rounded-[10px] max-lg:hidden">
               <Image
-                src={data.image.src}
-                alt={data.image.alt ?? ""}
+                src={image.src}
+                alt={image.alt ?? ""}
                 fill
                 sizes="(min-width: 992px) 30vw, 100vw"
                 className="object-cover"
@@ -42,15 +50,15 @@ export default function EnquiryForm({ data }) {
           ) : (
             <div className="flex items-center gap-5 xl:gap-[calc(35*var(--rr))]">
               <EmblemMark className="h-20 shrink-0 bg-white/10 sm:h-32 xl:h-[calc(270*var(--rr))]" />
-              <h2 className="title whitespace-pre-line">{data?.title}</h2>
+              <h2 className="title whitespace-pre-line">{title}</h2>
             </div>
           )}
           <form action={data?.action} method="post">
-            {data?.image && <h2 className="title">{data.title}</h2>}
+            {image && <h2 className="title">{title}</h2>}
             <div
               className={cn(
                 "grid gap-3.5 sm:grid-cols-3",
-                data?.image && "mt-5 xl:mt-[calc(30*var(--rr))]",
+                image && "mt-5 xl:mt-[calc(30*var(--rr))]",
               )}
             >
               {data?.fields?.map((input) => (
