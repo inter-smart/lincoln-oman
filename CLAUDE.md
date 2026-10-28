@@ -1,4 +1,10 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Lincoln — Project Notes for AI Sessions
+
+**Next.js here is not the Next.js you know** (`AGENTS.md`): read the relevant guide in `node_modules/next/dist/docs/` before writing Next-specific code.
 
 Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any work. It records how the project is built, what was decided with the client, and the mistakes not to repeat. The global handbook (`D:\wamp\www\AI_Build\Frontend-Engineering-Handbook\`) still applies; this file adds project specifics and wins where they differ.
 
@@ -22,19 +28,38 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 
 - Next.js 16.4 App Router (Turbopack), React 19.3, plain JS/JSX, Tailwind v4 (no config file — tokens in `src/app/globals.css`), shadcn/ui on `radix-ui`, Embla 8, lucide-react.
 - `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` (`node --test src/lib`).
+  - **On Node 22 `npm test` fails with `MODULE_NOT_FOUND`** (the directory is read as a file). Run all tests with `node --test "src/lib/**/*.test.*"` and one with `node --test src/lib/meta-tags.test.js`. Tests only cover pure `src/lib` code (no `server-only`, no `@/` alias in the files under test).
+  - Env vars (`.env.local`): `CMS_API_URL`, `CMS_API_TOKEN` (server-only bearer token), `CMS_MEDIA_HOST` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import.
 - Only **one** `next dev` per project is allowed. If it says "Another next dev server is already running", use the reported URL (the user often has one on **:3001**). Don't kill the user's server without asking. Port 3100 belongs to zelliny's server.
 - The dev server can be reaped when memory is low — report it and don't auto-restart. Use a production build (`next build && next start -p 3300`) for Lighthouse, and stop it afterwards.
 
 ## 3. Architecture (follow it, don't reinvent)
 
 ```
-src/app/page.js                 thin: composes sections with data from src/data/home.js
-src/app/layout.js               metadata, JSON-LD, Header/Footer/FloatingRail/RevealObserver
-src/data/{home,site,seo}.js     all content (CMS-shaped); site.js = header/footer/rail/menu
+src/app/page.js                 thin: `cache(() => apiGet("/home"))`, passes the raw backend sections to the components
+src/app/layout.js               JSON-LD, Header/Footer/FloatingRail/RevealObserver
+src/lib/api/{get,post,http}.js  apiGet / apiPost -> send (the only code that reads the token)
+src/lib/meta-tags.js            htmlMetaTags: safe head tags from banner.other_meta_tags
+src/data/{site,seo}.js          header/footer/rail/menu content and SEO defaults
 src/components/sections/home/*  one server component per section — NEVER "use client"
 src/components/layout/common/*  shared pieces + the small client leaves
 src/components/ui/*             shadcn primitives (button cva, sheet, navigation-menu)
 ```
+
+### Data layer (PHP CMS API)
+
+- **Only Home and About are API-driven.** The other routes (contact-us, owners, certified, gallery, newsroom, offers, vehicles, legal) still use static `metadata` and local/`src/data/*` content. When integrating one, copy the Home/About pattern below.
+- **Flow:** the page calls `apiGet("/endpoint")` (`src/lib/api/get.js`; paths are plain strings in the page) → `send` (`http.js`, `server-only`, the only code that reads the token; unwraps the `data` envelope) → the page hands the raw backend objects to the section components. **No mappers, no constants files:** components read the backend field names directly (`section.title`, `section.button_name`, `slide.media_type`, `news.published_on` …). To see the shape, `console.log` the page data or curl the endpoint with the bearer token.
+- **Page pattern:** `const getX = cache(() => apiGet("/x"))` at the top of the page (so `generateMetadata` and the page share one fetch), then destructure the response and pass e.g. `<Legacy data={home_cms.section_two} />`. `apiGet` never throws: it returns `{ data, error }` (error is the `ApiError`, also logged with `console.error`). Every page starts with `if (error || !data) notFound()` (in both `generateMetadata` and the page), so any API failure shows the 404 page. A missing field inside a successful response is not guarded. `apiPost` still throws (form errors need `error.details`).
+- **Rich-text fields arrive as HTML** (`description`): render with `dangerouslySetInnerHTML` on the element that already carries the classes. Home `section_five` description carries Tailwind classes inside the CMS HTML, so those classes are safelisted with `@source inline(...)` in `globals.css` — keep them in sync with the CMS. `section_six` (Ownership) is different: `Ownership.jsx` keeps its own `<ul>/<li>` markup and takes only each `<li>`'s content from the CMS list (bullet `<img>`s are stripped; the component draws the bullet).
+- Values the API doesn't send (labels like "View More" / "Read More", `/vehicles/${slug}`, `/newsroom/${slug}` links) are written inline in the component. `REVALIDATE` is `0` (go-live values 3600/900/300 are noted in `get.js`).
+- Backend links come through untouched (the CMS sends `/contact`, absolute URLs …): fix them in the CMS, not in the code.
+
+### Page metadata
+
+- The `banner` block carries `meta_title`, `meta_description`, `meta_keywords`, `other_meta_tags`. The page calls `generateMetadata() → buildMetadata({ title, description, keywords }, "/path")` (`src/lib/seo.js`) and renders `<PageMeta html={banner.other_meta_tags} />`. `buildMetadata` also sets `alternates.canonical` (and `og:url`) to the absolute URL of the page (`siteUrl` + path), and `htmlMetaTags` drops any canonical link from the CMS so there is only one.
+- `other_meta_tags` is a raw HTML string from the CMS. `htmlMetaTags()` keeps only `<meta>`, canonical/alternate `<link>` and valid JSON-LD, and drops tags the page already sets plus `robots`, so the CMS can't override noindex. React 19 hoists the rendered `<meta>`/`<link>` into `<head>`; Next's `metadata.other` can't emit `property=` tags.
+- **Known gap:** `layout.js` has no `export const metadata` since `e13d6d5` (`metadataBase`, title template, canonical, robots noindex meta are gone; `X-Robots-Tag` and `robots.txt` still enforce noindex). The unused `title`/`description`/`allowIndexing` imports there are leftovers. Don't assume the noindex *meta* tag exists.
 
 - **Client components are leaves only:** CardCarousel (Embla), HeaderShell (scroll flag), VehicleMenu, RevealObserver, HeroVideo, HoverVideo, ShowcaseStage. Server content goes in as `children`. Check: `grep -rl '"use client"' src/components/sections` must be empty.
 - **Carousels:** "Explore Lincoln Line" and "Lincoln Newsroom" use `CardCarousel` (Embla). Don't set overflow on the track yourself.
@@ -67,7 +92,7 @@ src/components/ui/*             shadcn primitives (button cva, sheet, navigation
 - **Model cards:** `HoverVideo` gets no `src` until the first hover/focus. On hover-out it pauses, fades out and rewinds to 0.
 - **Showcase (Continental / Navigator):** `ShowcaseStage` + `ShowcaseVideoCard`. Hover swaps the section background to the video; click/tap/Enter pins it (`aria-pressed`); a second activation returns to the photo.
 - All videos respect `prefers-reduced-motion` and Save-Data (`videoAllowed()`), are muted, use `playsInline`, and pause off-screen.
-- Every slot uses the one Navigator clip for now; swap per model in `src/data/home.js`.
+- Every slot uses the one Navigator clip for now; the home/about videos now come from the API (`video` fields).
 - **Images:** `next/image` everywhere, AVIF/WebP enabled. HTML `width`/`height` must be **integers** — put exact sub-pixel Figma sizes in `style`.
 - **Lighthouse baseline** (mobile, simulated): ~80–86, noisy on this machine. Desktop 99–100. Always run ≥ 3 mobile passes and report the median with conditions.
 

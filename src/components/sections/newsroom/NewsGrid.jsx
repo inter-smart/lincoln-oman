@@ -14,7 +14,7 @@ export default function NewsGrid({ data }) {
               data-reveal
               style={{ "--reveal-delay": `${(index % 4) * 0.1}s` }}
             >
-              <NewsCard item={item} readMore={data?.readMore} />
+              <NewsCard item={item} />
             </li>
           ))}
         </ul>

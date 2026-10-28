@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import Hero from "@/components/sections/home/Hero";
 import Legacy from "@/components/sections/home/Legacy";
@@ -6,29 +8,46 @@ import Newsroom from "@/components/sections/home/Newsroom";
 import Offer from "@/components/sections/home/Offer";
 import Ownership from "@/components/sections/home/Ownership";
 import PageMeta from "@/components/layout/common/page-meta";
-import { getHome } from "@/lib/api/pages/home";
-import { ROUTES } from "@/lib/constants/routes";
+import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
-// Title, description and keywords come straight from the `banner` block of the home API.
+// GET /home -> { sliders, home_cms: { section_one … section_seven }, explore_lincoln_line, news, banner }
+// cache() lets generateMetadata and the page share one request.
+const getHome = cache(() => apiGet("/home"));
+
 export async function generateMetadata() {
-  return buildMetadata((await getHome()).seo, ROUTES.HOME);
+  const { data, error } = await getHome();
+  if (error || !data) notFound();
+  const { banner } = data;
+  return buildMetadata(
+    {
+      title: banner.meta_title,
+      description: banner.meta_description,
+      keywords: banner.meta_keywords,
+    },
+    "/",
+  );
 }
 
 export default async function page() {
-  const api = await getHome();
+  const { data, error } = await getHome();
+  if (error || !data) notFound();
+  const { sliders, home_cms, explore_lincoln_line, news, banner } = data;
 
   return (
     <>
-      <PageMeta tags={api.seo.otherMetaTags} />
-      <Hero data={api.hero} />
-      <ExploreModels data={api.models} />
-      <Legacy data={api.legacy} />
-      <ModelShowcase data={api.continental} />
-      <ModelShowcase data={api.navigator} />
-      <Offer data={api.offer} />
-      <Ownership data={api.ownership} />
-      <Newsroom data={api.news} />
+      <PageMeta html={banner.other_meta_tags} />
+      <Hero slides={sliders} />
+      <ExploreModels
+        title={home_cms.section_one.title}
+        models={explore_lincoln_line}
+      />
+      <Legacy data={home_cms.section_two} />
+      <ModelShowcase data={home_cms.section_three} />
+      <ModelShowcase data={home_cms.section_four} videoFirst />
+      <Offer data={home_cms.section_five} />
+      <Ownership data={home_cms.section_six} />
+      <Newsroom title={home_cms.section_seven.title} news={news} />
     </>
   );
 }

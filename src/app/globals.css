@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Classes that only appear inside CMS HTML (home_cms.section_five `description`), so Tailwind can't see them in the source. */
+@source inline("mt-[12px] mt-[9px] text-[15px] leading-[26px] xl:text-fluid-16");
+
 /* The site has no dark theme: shadcn's dark: classes apply only under a .dark class, never from the OS setting. */
 @custom-variant dark (&:where(.dark, .dark *));
 

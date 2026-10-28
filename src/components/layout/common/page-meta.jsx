@@ -1,6 +1,9 @@
-// Extra head tags from the API's `other_meta_tags`. React 19 hoists <meta> and <link> into <head>.
-export default function PageMeta({ tags }) {
-  if (!tags) return null;
+import { htmlMetaTags } from "@/lib/meta-tags";
+
+// Extra head tags from the API's `banner.other_meta_tags` (a raw HTML string).
+// htmlMetaTags keeps only safe <meta>, canonical/alternate <link> and valid JSON-LD. React 19 hoists them into <head>.
+export default function PageMeta({ html }) {
+  const tags = htmlMetaTags(html);
 
   return (
     <>

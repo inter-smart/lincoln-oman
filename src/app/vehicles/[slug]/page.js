@@ -368,139 +368,56 @@ const local_data = {
       { id: "brochure", label: "Download Brochure", href: "#" },
     ],
   },
+  // Same fields as the API models list (explore_lincoln_line / featured_models).
   models: {
     title: "Explore More Models",
     items: [
       {
-        id: "l100",
         name: "L100 Concept",
-        href: "#",
+        slug: "l100",
         image: "/images/vehicle/model-l100.jpg",
         position: "67% 50%",
         video: "/videos/navigator-720.mp4",
-        specs: [
-          {
-            id: "engine",
-            label: "3.5L GTDI\nEngine",
-            icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 },
-          },
-          {
-            id: "assist",
-            label: "Driver Assist\nTechnology",
-            icon: {
-              src: "/icons/spec-driver-assist.svg",
-              width: 24.5644,
-              height: 24.2307,
-            },
-          },
-          {
-            id: "wheel",
-            label: "Polished 22”\nAluminum Wheel",
-            icon: {
-              src: "/icons/spec-wheel.svg",
-              width: 22.4353,
-              height: 22.4269,
-            },
-          },
+        features: [
+          { title: "3.5L GTDI Engine", icon: "/icons/spec-engine.svg" },
+          { title: "Driver Assist Technology", icon: "/icons/spec-driver-assist.svg" },
+          { title: "Polished 22” Aluminum Wheel", icon: "/icons/spec-wheel.svg" },
         ],
       },
       {
-        id: "aviator",
         name: "Aviator",
-        href: "#",
+        slug: "aviator",
         image: "/images/home/model-aviator.png",
         position: "50% 50%",
         video: "/videos/navigator-720.mp4",
-        specs: [
-          {
-            id: "engine",
-            label: "3.5L GTDI\nEngine",
-            icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 },
-          },
-          {
-            id: "assist",
-            label: "Driver Assist\nTechnology",
-            icon: {
-              src: "/icons/spec-driver-assist.svg",
-              width: 24.5644,
-              height: 24.2307,
-            },
-          },
-          {
-            id: "wheel",
-            label: "Polished 22”\nAluminum Wheel",
-            icon: {
-              src: "/icons/spec-wheel.svg",
-              width: 22.4353,
-              height: 22.4269,
-            },
-          },
+        features: [
+          { title: "3.5L GTDI Engine", icon: "/icons/spec-engine.svg" },
+          { title: "Driver Assist Technology", icon: "/icons/spec-driver-assist.svg" },
+          { title: "Polished 22” Aluminum Wheel", icon: "/icons/spec-wheel.svg" },
         ],
       },
       {
-        id: "corsair",
         name: "Corsair",
-        href: "#",
+        slug: "corsair",
         image: "/images/home/model-corsair.png",
         position: "52% 50%",
         video: "/videos/navigator-720.mp4",
-        specs: [
-          {
-            id: "engine",
-            label: "3.5L GTDI\nEngine",
-            icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 },
-          },
-          {
-            id: "assist",
-            label: "Driver Assist\nTechnology",
-            icon: {
-              src: "/icons/spec-driver-assist.svg",
-              width: 24.5644,
-              height: 24.2307,
-            },
-          },
-          {
-            id: "wheel",
-            label: "Polished 22”\nAluminum Wheel",
-            icon: {
-              src: "/icons/spec-wheel.svg",
-              width: 22.4353,
-              height: 22.4269,
-            },
-          },
+        features: [
+          { title: "3.5L GTDI Engine", icon: "/icons/spec-engine.svg" },
+          { title: "Driver Assist Technology", icon: "/icons/spec-driver-assist.svg" },
+          { title: "Polished 22” Aluminum Wheel", icon: "/icons/spec-wheel.svg" },
         ],
       },
       {
-        id: "nautilus",
         name: "Nautilus",
-        href: "#",
+        slug: "nautilus",
         image: "/images/home/model-nautilus.png",
         position: "75% 50%",
         video: "/videos/navigator-720.mp4",
-        specs: [
-          {
-            id: "engine",
-            label: "3.5L GTDI\nEngine",
-            icon: { src: "/icons/spec-engine.svg", width: 28, height: 20 },
-          },
-          {
-            id: "assist",
-            label: "Driver Assist\nTechnology",
-            icon: {
-              src: "/icons/spec-driver-assist.svg",
-              width: 24.5644,
-              height: 24.2307,
-            },
-          },
-          {
-            id: "wheel",
-            label: "Polished 22”\nAluminum Wheel",
-            icon: {
-              src: "/icons/spec-wheel.svg",
-              width: 22.4353,
-              height: 22.4269,
-            },
-          },
+        features: [
+          { title: "3.5L GTDI Engine", icon: "/icons/spec-engine.svg" },
+          { title: "Driver Assist Technology", icon: "/icons/spec-driver-assist.svg" },
+          { title: "Polished 22” Aluminum Wheel", icon: "/icons/spec-wheel.svg" },
         ],
       },
     ],
@@ -531,7 +448,11 @@ export default function page() {
         />
       </div>
       <VehicleCta data={local_data?.cta} />
-      <ExploreModels data={local_data?.models} variant="about" />
+      <ExploreModels
+        title={local_data?.models.title}
+        models={local_data?.models.items}
+        variant="about"
+      />
     </>
   );
 }

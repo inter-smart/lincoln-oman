@@ -23,17 +23,20 @@ export default function Legacy({ data, variant = "default" }) {
           data-reveal
           className="mt-7.5 title lg:mt-10 xl:mt-[calc(115*var(--rr))] 2xl:mt-12.5 3xl:mt-17.5"
         >
-          {data?.title}
+          {data.title}
         </h2>
-        <p
+        <div
           data-reveal
           className="mt-[18px] max-w-[836px] text-sm leading-[26px] sm:text-[15px] xl:max-w-[calc(836*var(--rr))] xl:text-fluid-16"
-        >
-          {data?.text}
-        </p>
+          dangerouslySetInnerHTML={{ __html: data.description }}
+        />
         <div data-reveal className="mt-[32px]">
           <ButtonLink
-            data={data?.cta}
+            data={
+              variant === "about"
+                ? { label: "Hear The Story!", href: "" }
+                : { label: data.button_name, href: data.link }
+            }
             variant={variant === "about" ? "dark" : "light"}
           />
         </div>

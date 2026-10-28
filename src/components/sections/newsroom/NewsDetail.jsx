@@ -62,7 +62,7 @@ export default function NewsDetail({ data }) {
                 data-reveal
                 style={{ "--reveal-delay": `${index * 0.1}s` }}
               >
-                <NewsCard item={item} readMore={recent.readMore} />
+                <NewsCard item={item} />
               </li>
             ))}
           </ul>

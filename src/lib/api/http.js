@@ -1,5 +1,4 @@
 import "server-only"; // a client-component import fails the build, so the token cannot leak
-import { API_TIMEOUT_MS, AUTH } from "@/lib/constants/api";
 import { ApiError, buildUrl, parseBody, unwrapEnvelope } from "./request";
 
 // Read lazily: a missing value fails that request with an ApiError, not module import.
@@ -26,12 +25,12 @@ export async function send(endpoint, { method, params, body, fetchOptions }) {
   const res = await fetch(buildUrl(baseUrl, endpoint, params), {
     method,
     headers: {
-      [AUTH.HEADER]: `${AUTH.SCHEME} ${token}`,
+      Authorization: `Bearer ${token}`,
       Accept: "application/json",
       ...(body && { "Content-Type": "application/json" }),
     },
     body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(API_TIMEOUT_MS),
+    signal: AbortSignal.timeout(8000),
     ...fetchOptions,
   });
 

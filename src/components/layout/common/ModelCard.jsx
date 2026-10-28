@@ -4,45 +4,47 @@ import HoverVideo from "@/components/layout/common/HoverVideo";
 
 // "Explore Lincoln Line" card (Figma 01–04, Default → Variant2 on hover/focus):
 // a video plays, a dark gradient rises, and the three specs and the "—+" mark fade up over it.
-export default function ModelCard({ item }) {
+// `model` is one API model: { slug, name, image, video, features: [{ title, icon }] }.
+// `position` (optional) sets the photo crop; it defaults to centred.
+export default function ModelCard({ model }) {
   return (
     <Link
-      href={item?.href ?? "#"}
-      className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
+      href={`/vehicles/${model.slug}`}
+      className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate sm:rounded-[15px] 2xl:rounded-[20px]"
     >
       <Image
-        src={item?.image}
+        src={model.image}
         alt=""
         fill
         sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
         className="object-cover"
-        style={{ objectPosition: item?.position }}
+        style={{ objectPosition: model.position }}
       />
       {/* Figma's hover variant is a video fill: it plays while hovered and rewinds on hover-out */}
-      {item?.video && <HoverVideo src={item.video} />}
+      {model.video && <HoverVideo src={model.video} />}
       <span className="absolute inset-x-0 top-[52.2%] bottom-0 bg-linear-to-b from-transparent to-black opacity-0 transition-opacity duration-500 group-hocus:opacity-100" />
 
       <ul className="absolute inset-x-0 top-[73%] flex translate-y-4 justify-between px-[clamp(14px,6.35%,25px)] opacity-0 transition-[opacity,translate] duration-500 2xl:top-[77%] group-hocus:translate-y-0 group-hocus:opacity-100 group-hocus:delay-100">
-        {item?.specs?.map((spec) => (
+        {model.features?.map((feature) => (
           <li
-            key={spec.id}
+            key={feature.title}
             className="flex flex-col items-center gap-[10px] text-center text-[10px] leading-[normal] whitespace-pre-line 2xl:text-[13px] 3xl:text-[14px]"
           >
             <Image
-              src={spec.icon.src}
+              src={feature.icon}
               alt=""
-              width={Math.ceil(spec.icon.width)}
-              height={Math.ceil(spec.icon.height)}
+              width={28}
+              height={28}
               className="h-[24px] w-auto"
             />
-            {spec.label}
+            {feature.title}
           </li>
         ))}
       </ul>
-      <span className="absolute bottom-[20px] left-5 2xl:left-[25px] text-lg leading-[normal] xl:text-fluid-25 2xl:text-[19px]">
-        {item?.name}
+      <span className="absolute bottom-[20px] left-5 text-lg leading-[normal] xl:text-fluid-25 2xl:left-[25px] 2xl:text-[19px]">
+        {model.name}
       </span>
-      <div className="absolute right-5 2xl:right-6.25 bottom-6.25 flex aspect-35/15 h-auto w-7.5 2xl:w-8.75 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-x-0 group-hocus:opacity-100">
+      <div className="absolute right-5 bottom-6.25 flex aspect-35/15 h-auto w-7.5 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 2xl:right-6.25 2xl:w-8.75 group-hocus:translate-x-0 group-hocus:opacity-100">
         <Image
           src="/icons/card-plus-hover.svg"
           alt=""

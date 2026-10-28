@@ -1,19 +1,25 @@
-import { HTTP_METHODS } from "@/lib/constants/api";
-import { REVALIDATE } from "@/lib/constants/cache";
+import { unstable_rethrow } from "next/navigation";
 import { send } from "./http";
 
 /**
- * Read from the PHP API with a GET. Cached, and refreshed every `revalidate` seconds.
- * Pass an entry from GET_ENDPOINTS, e.g. apiGet(GET_ENDPOINTS.NEWS_DETAIL(slug)).
- * A 404 throws ApiError with status 404, so a page can call notFound().
+ * Read from the PHP API with a GET, e.g. apiGet("/home") or apiGet(`/newsroom/${slug}`).
+ * Never throws: returns { data, error }. On success `error` is null; on any failure (HTTP error,
+ * timeout, bad config) `data` is null and `error` is the ApiError (see error.status / error.details).
+ * The page decides what to do, e.g. `if (error) notFound()`.
+ * Refreshed every `revalidate` seconds (0 = always fresh; go-live values: 3600 site, 900 content, 300 listings).
  */
-export function apiGet(
-  endpoint,
-  { params, revalidate = REVALIDATE.CONTENT } = {},
-) {
-  return send(endpoint, {
-    method: HTTP_METHODS.GET,
-    params,
-    fetchOptions: { next: { revalidate } },
-  });
+export async function apiGet(endpoint, { params, revalidate = 0 } = {}) {
+  try {
+    const data = await send(endpoint, {
+      method: "GET",
+      params,
+      fetchOptions: { next: { revalidate } },
+    });
+    return { data, error: null };
+  } catch (error) {
+    // Next signals "render this route dynamically" (revalidate: 0) by throwing; that must not become an API error.
+    unstable_rethrow(error);
+    console.error(`apiGet ${endpoint} failed:`, error.message);
+    return { data: null, error };
+  }
 }

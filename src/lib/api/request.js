@@ -1,5 +1,3 @@
-import { API_ENVELOPE_KEY } from "../constants/api.js";
-
 // Pure request helpers, kept apart from http.js so `npm test` can run them (no server-only, no @/ alias).
 
 export class ApiError extends Error {
@@ -21,8 +19,9 @@ export function buildUrl(baseUrl, endpoint, params) {
   return url;
 }
 
+// The PHP response wraps its payload as { status, message, data }.
 export function unwrapEnvelope(json) {
-  return API_ENVELOPE_KEY ? (json?.[API_ENVELOPE_KEY] ?? json) : json;
+  return json?.data ?? json;
 }
 
 // Empty bodies (204) and non-JSON error pages come back as null instead of throwing.
