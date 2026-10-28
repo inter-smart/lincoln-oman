@@ -1,9 +1,5 @@
 // Home page content, shaped like a future CMS response.
 // ponytail: every video slot uses the one supplied Navigator clip for now — swap per model when real footage arrives.
-const video = {
-  mobile: "/videos/navigator-720.mp4",
-  desktop: "/videos/navigator-1080.mp4",
-};
 const videoCard = "/videos/navigator-720.mp4";
 // Figma gives every model card the same three specs (Navigator's) — kept as designed, flagged for real data.
 const specs = [
@@ -30,10 +26,29 @@ const specs = [
 
 export const home = {
   hero: {
-    title: "Immerse Yourself in Captivating Elegance",
-    poster: "/images/home/hero-poster.jpg",
-    video,
-    cta: { label: "Explore Models", href: "#" },
+    title: "Featured vehicles",
+    items: [
+      {
+        id: "navigator-1",
+        title: "Immerse Yourself in Captivating Elegance",
+        media: {
+          type: "video",
+          url: "/videos/navigator-1080.mp4",
+          poster: "/images/home/hero-poster.jpg",
+        },
+        cta: { label: "Explore Models", href: "#" },
+      },
+      {
+        id: "navigator-2",
+        title: "Immerse Yourself in Captivating Elegance",
+        media: {
+          type: "video",
+          url: "/videos/navigator-1080.mp4",
+          poster: "/images/home/hero-poster.jpg",
+        },
+        cta: { label: "Explore Models", href: "#" },
+      },
+    ],
   },
 
   models: {
@@ -91,7 +106,10 @@ export const home = {
     text: "Crafted for those who expect more from every mile.",
     word: "Continental",
     background: "/images/home/continental-bg.png",
-    video,
+    video: {
+      mobile: "/videos/navigator-720.mp4",
+      desktop: "/videos/navigator-1080.mp4",
+    },
     media: [
       {
         id: "c1",
@@ -108,7 +126,10 @@ export const home = {
     text: "Command attention. Experience first-class travel in every journey.",
     word: "Navigator",
     background: "/images/home/navigator-bg.png",
-    video,
+    video: {
+      mobile: "/videos/navigator-720.mp4",
+      desktop: "/videos/navigator-1080.mp4",
+    },
     media: [
       { id: "n1", video: videoCard, poster: "/images/home/video-poster.jpg" },
       {
