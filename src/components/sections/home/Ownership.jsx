@@ -1,12 +1,11 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import { listItems } from "@/lib/list-items";
 
 // `data` is home_cms.section_six. `description` is a CMS <ul>; each <li> becomes one row.
 // Any bullet <img> the CMS put inside an <li> is stripped: the component draws every bullet itself.
 export default function Ownership({ data }) {
-  const items = [...data.description.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)]
-    .map(([, html]) => html.replace(/<img[^>]*>/gi, "").trim())
-    .filter(Boolean);
+  const items = listItems(data.description);
 
   return (
     <section className="relative overflow-hidden bg-night text-white">
