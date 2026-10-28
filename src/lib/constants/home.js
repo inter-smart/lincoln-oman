@@ -2,6 +2,7 @@ import { ROUTES } from "./routes.js";
 
 // Home values the PHP API does not send. The mapper reads them from here instead of hard-coding them.
 export const HOME_LABELS = {
+  HERO: "Featured vehicles",
   VIEW_MORE: "View More",
   READ_MORE: "Read More",
 };

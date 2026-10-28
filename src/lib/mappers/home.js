@@ -14,7 +14,7 @@ import { ApiError } from "../api/request.js";
 import { htmlListItems, htmlParagraphs, htmlToText } from "./html.js";
 
 // Turns the PHP home response into the shape the home section components read (src/data/home.js).
-// The hero (`sliders`) is not mapped yet. There is no static fallback: a missing block throws.
+// There is no static fallback: a missing block throws.
 
 function need(value, path) {
   if (value === undefined || value === null) {
@@ -53,6 +53,42 @@ function parsePublishedOn(value) {
   return {
     date: `${day}.${month}.${match[3]}`,
     datetime: `${match[3]}-${month}-${day}`,
+  };
+}
+
+function mapHeroMedia(slide) {
+  const file = (field) => need(slide[field], `sliders[${slide.id}].${field}`);
+
+  switch (slide.media_type) {
+    case "video":
+      return {
+        type: "video",
+        url: file("video"),
+        poster: slide.video_thumbnail_image ?? undefined,
+      };
+    case "image":
+      return {
+        type: "image",
+        url: file("image"),
+        alt: slide.image_alt_text ?? "",
+      };
+    default:
+      throw new ApiError(
+        `Home API slider ${slide.id} has an unknown media_type "${slide.media_type}"`,
+        { status: 502, endpoint: GET_ENDPOINTS.HOME },
+      );
+  }
+}
+
+function mapHero(sliders) {
+  return {
+    title: HOME_LABELS.HERO,
+    items: sliders.map((slide) => ({
+      id: String(slide.id),
+      title: slide.title,
+      media: mapHeroMedia(slide),
+      cta: cta(slide.action_title, slide.action_url),
+    })),
   };
 }
 
@@ -157,6 +193,7 @@ export function mapHome(payload) {
   const legacy = section("section_two");
 
   return {
+    hero: mapHero(need(payload.sliders, "sliders")),
     models: mapModels(
       section("section_one").title,
       need(payload.explore_lincoln_line, "explore_lincoln_line"),

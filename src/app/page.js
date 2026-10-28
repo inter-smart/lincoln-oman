@@ -5,7 +5,6 @@ import ModelShowcase from "@/components/sections/home/ModelShowcase";
 import Newsroom from "@/components/sections/home/Newsroom";
 import Offer from "@/components/sections/home/Offer";
 import Ownership from "@/components/sections/home/Ownership";
-import { home } from "@/data/home";
 import { getHome } from "@/lib/api/pages/home";
 
 export default async function page() {
@@ -13,8 +12,7 @@ export default async function page() {
 
   return (
     <>
-      {/* The hero is not on the API yet. */}
-      <Hero data={home.hero} />
+      <Hero data={api.hero} />
       <ExploreModels data={api.models} />
       <Legacy data={api.legacy} />
       <ModelShowcase data={api.continental} />
