@@ -35,11 +35,11 @@ export default function Hero({ data }) {
         priority
         className="absolute inset-x-0 bottom-0 h-[336px] w-full rotate-180 object-cover"
       />
-      <div className="container absolute inset-x-0 bottom-[61px] flex flex-col items-center text-center">
-        <h1 className="animate-in fade-in slide-in-from-bottom-6 font-display duration-1000 text-[28px] leading-[1.2] tracking-[2px] md:text-[30px] xl:text-fluid-40">
+      <div className="absolute inset-x-0 bottom-[61px] container flex flex-col items-center text-center">
+        <h1 className="animate-in font-display text-[28px] leading-[1.2] tracking-[2px] duration-1000 fade-in slide-in-from-bottom-6 md:text-[30px] xl:text-fluid-40">
           {data?.title}
         </h1>
-        <div className="mt-[26px] animate-in fade-in slide-in-from-bottom-6 delay-200 duration-1000 fill-mode-backwards">
+        <div className="mt-[26px] animate-in delay-200 duration-1000 fill-mode-backwards fade-in slide-in-from-bottom-6">
           <ButtonLink data={data?.cta} size="lg" arrow="white" />
         </div>
       </div>
