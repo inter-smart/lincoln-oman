@@ -17,6 +17,10 @@ const nextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // CMS-hosted media, once the API serves absolute image URLs.
+    remotePatterns: process.env.CMS_MEDIA_HOST
+      ? [{ protocol: "https", hostname: process.env.CMS_MEDIA_HOST }]
+      : [],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
