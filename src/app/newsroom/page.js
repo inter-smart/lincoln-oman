@@ -1,72 +1,55 @@
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import PageMeta from "@/components/layout/common/page-meta";
 import NewsGrid from "@/components/sections/newsroom/NewsGrid";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Newsroom",
-  description:
-    "Lincoln Oman newsroom: the latest news, awards and exclusive offers from Lincoln in Oman.",
-  alternates: { canonical: "/newsroom" },
-};
+// GET /news -> { news: [{ id, slug, title, published_on, media, … }], banner, pagination }
+// cache() lets generateMetadata and the page share one request.
+const getNews = cache(() => apiGet("/news"));
 
-const news = [
-  {
-    title: "Lincoln Nautilus nominated for Middle East Car of the Year 2020",
-    slug: "nautilus-nominated-middle-east-car-of-the-year-2020",
-    image: "/images/home/news-1.png",
-    position: "34% 50%",
-  },
-  {
-    title: "Lincoln Oman Unveils Exclusive Ramadan Offers",
-    slug: "ramadan-offers",
-    image: "/images/home/news-2.png",
-  },
-  {
-    title: "Experience Exceptional Lincoln Luxury with Exclusive Offers",
-    slug: "exceptional-lincoln-luxury",
-    image: "/images/home/news-3.png",
-  },
-  {
-    title: "Extraordinary Lincoln Now With Exclusive Delights",
-    slug: "extraordinary-lincoln-now-with-exclusive-delights",
-    image: "/images/home/news-4.png",
-  },
+export async function generateMetadata() {
+  const { data, error } = await getNews();
+  if (error || !data) notFound();
+  const { banner } = data;
+  return buildMetadata(
+    {
+      title: banner.meta_title,
+      description: banner.meta_description,
+      keywords: banner.meta_keywords,
+    },
+    "/newsroom",
+  );
+}
+
+const breadcrumb = [
+  { id: "home", label: "Home", href: "/" },
+  { id: "newsroom", label: "Newsroom" },
 ];
 
-const local_data = {
-  banner: {
-    title: "Newsroom",
-    media: {
-      // Figma banner (interior shot) was not in the supplied assets: existing interior photo stands in.
-      url: "/images/vehicle/interior-1.jpg",
-      alternativeText: "Lincoln interior with the centre touchscreen",
-    },
-  },
-  breadcrumb: [
-    { id: "home", label: "Home", href: "/" },
-    { id: "newsroom", label: "Newsroom" },
-  ],
-  newsroom: {
-    title: "Lincoln Newsroom",
-    loadingLabel: "Loading More...",
-    // Figma row 1 is the home order; row 2 starts with the "Exclusive Delights" card.
-    items: [...news, news[3], ...news.slice(0, 3)].map((item, i) => ({
-      id: `n${i + 1}`,
-      published_on: "09 Mar 2020",
-      slug: item.slug,
-      title: item.title,
-      media: { image: item.image },
-      position: item.position,
-    })),
-  },
-};
+export default async function page() {
+  const { data, error } = await getNews();
+  if (error || !data) notFound();
+  const { news, banner } = data;
 
-export default function page() {
   return (
     <>
-      <InnerBanner data={local_data.banner} as="div" />
-      <Breadcrumb items={local_data.breadcrumb} />
-      <NewsGrid data={local_data.newsroom} />
+      <PageMeta html={banner.other_meta_tags} />
+      <InnerBanner
+        as="div"
+        data={{
+          title: banner.banner_title,
+          media: {
+            url: banner.banner,
+            alternativeText: banner.banner_alt_text,
+          },
+        }}
+      />
+      <Breadcrumb items={breadcrumb} />
+      <NewsGrid title="Lincoln Newsroom" news={news} />
     </>
   );
 }
