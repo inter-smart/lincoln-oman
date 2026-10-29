@@ -49,7 +49,7 @@ export const site = {
     {
       id: "appointment",
       label: "Book an Appointment",
-      href: "#",
+      href: "/contact-us",
       icon: { src: "/icons/rail-service.svg", width: 20.579, height: 24.0083 },
     },
     {
@@ -125,7 +125,7 @@ export const site = {
     legal: [
       { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions" },
       { id: "sitemap", label: "Sitemap", href: "/sitemap.xml" },
-      { id: "legal", label: "Legal notice", href: "#" },
+      { id: "legal", label: "Legal notice", href: "/privacy-policy" },
     ],
     copyright: "(© izmo Holdings UK Ltd 2010-2026)",
     followLabel: "Follow Us:",

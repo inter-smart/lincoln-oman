@@ -84,13 +84,15 @@ export default function Footer({ data, settings }) {
           </div>
 
           <div className="col-span-2 flex flex-col items-start gap-[12px] xl:col-span-1 xl:items-end">
-            <Image
-              src="/images/logo.png"
-              alt="Lincoln"
-              width={600}
-              height={208}
-              className="mb-[47px] h-auto w-[165px]"
-            />
+            <Link href="/">
+              <Image
+                src="/images/logo.png"
+                alt="Lincoln"
+                width={600}
+                height={208}
+                className="mb-[47px] h-auto w-[165px]"
+              />
+            </Link>
             {settings?.phone_number && (
               <a href={`tel:${settings.phone_number}`} className={linkHover}>
                 Phone: {settings.phone_number}
@@ -122,7 +124,7 @@ export default function Footer({ data, settings }) {
               <span className="uppercase">{data?.followLabel}</span>
               <span className="relative block h-[19.42px] w-[213.11px]">
                 <Image
-                src="/icons/social.svg"
+                  src="/icons/social.svg"
                   alt=""
                   width={214}
                   height={20}
