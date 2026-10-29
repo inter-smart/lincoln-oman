@@ -39,7 +39,7 @@ export const offers = {
       { name: "model", label: "Model", options: [] },
       { name: "interested", label: "Interested", options: [] },
     ],
-    message: { name: "message", label: "Message" },
+    message: { name: "message", label: "Message", optional: true },
     submit: "Submit",
   },
 };

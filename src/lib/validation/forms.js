@@ -36,7 +36,7 @@ export const offerSchema = z.object({
   phone,
   model: label("Please choose a model"),
   interested: label("Please choose what you are interested in"),
-  message,
+  message: optionalMessage,
 });
 
 export const quoteSchema = z.object({
