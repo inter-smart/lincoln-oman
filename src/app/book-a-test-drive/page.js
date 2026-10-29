@@ -49,13 +49,10 @@ export default async function page() {
     <>
       <InnerBanner
         data={{
-          title: banner?.banner_title ?? testDrive.fallback.banner.title,
-          media: {
-            url: banner?.banner ?? testDrive.fallback.banner.url,
-            alternativeText:
-              banner?.banner_alt_text ??
-              testDrive.fallback.banner.alternativeText,
-          },
+          banner_title: banner?.banner_title ?? testDrive.fallback.banner.title,
+          banner: banner?.banner ?? testDrive.fallback.banner.url,
+          banner_alt_text:
+            banner?.banner_alt_text ?? testDrive.fallback.banner.alternativeText,
         }}
         as="div"
       />
