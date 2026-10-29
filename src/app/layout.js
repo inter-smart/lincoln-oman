@@ -3,42 +3,56 @@ import Header from "@/components/layout/header";
 import FloatingRail from "@/components/layout/common/FloatingRail";
 import RevealObserver from "@/components/layout/common/RevealObserver";
 import SmoothScroll from "@/components/layout/common/SmoothScroll";
-import { allowIndexing, defaultDescription as description, defaultTitle as title, siteUrl } from "@/data/seo";
+import { siteUrl } from "@/data/seo";
 import { site } from "@/data/site";
+import { apiGet } from "@/lib/api/get";
+import { addressLines } from "@/lib/address-lines";
 import { display, sans } from "./fonts";
 import "./globals.css";
 
-
 export const viewport = { themeColor: "#231f20" };
 
-// Dealer details for search engines, from the footer content.
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "AutoDealer",
-  name: site.footer.address.lines[0],
-  brand: { "@type": "Brand", name: "Lincoln" },
-  url: siteUrl,
-  telephone: site.footer.phone,
-  email: site.footer.email,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: site.footer.address.lines[1],
-    addressLocality: "Muscat",
-    addressCountry: "OM",
-  },
-};
+// Dealer details for search engines, from the site settings.
+function dealerJsonLd(settings) {
+  const [name, ...street] = addressLines(settings.address);
+  return {
+    "@context": "https://schema.org",
+    "@type": "AutoDealer",
+    name,
+    brand: { "@type": "Brand", name: "Lincoln" },
+    url: siteUrl,
+    telephone: settings.phone_number,
+    email: settings.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: street.join(", "),
+      addressLocality: "Muscat",
+      addressCountry: "OM",
+    },
+  };
+}
 
-export default function RootLayout({ children }) {
+// GET /site-settings -> { address (HTML), email, phone_number, whatsapp_number, map_link }
+// Shown in the footer and the JSON-LD below. whatsapp_number and map_link are not used yet.
+// No notFound() here: a failed request must not turn every page (and the 404 page) into an error.
+// On failure `settings` is null and the footer leaves those details out. Cached for an hour.
+export default async function RootLayout({ children }) {
+  const { data: settings } = await apiGet("/site-settings", {
+    revalidate: 3600,
+  });
+
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body className="pb-[49px] font-sans antialiased md:pb-0">
         <a href="#main" className="sr-only z-50 bg-white px-4 py-2 text-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
           Skip to content
         </a>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+        {settings && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(dealerJsonLd(settings)).replace(/</g, "\\u003c") }} />
+        )}
         <Header data={site} />
         <main id="main">{children}</main>
-        <Footer data={site.footer} />
+        <Footer data={site.footer} settings={settings} />
         <FloatingRail items={site.rail} />
         <RevealObserver />
         <SmoothScroll />

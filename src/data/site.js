@@ -1,4 +1,5 @@
-// Shared header / footer / floating-rail content. Shaped like a future CMS response.
+// Shared header / footer / floating-rail content (links and labels the API doesn't send).
+// Footer address, phone and email are not here: they come from GET /site-settings in layout.js.
 export const site = {
   nav: [
     { id: "home", label: "Home", href: "/" },
@@ -118,17 +119,9 @@ export const site = {
         ],
       },
     ],
+    // The address text, phone and email come from GET /site-settings (see layout.js); only the title is local.
     // Figma repeats "Arabian Car Marketing Co. LLC" as a 4th line — dropped as a copy-paste leftover.
-    address: {
-      title: "Our Address",
-      lines: [
-        "Arabian Car Marketing Co. LLC",
-        "134 Al Romelah Street",
-        "Wattayah Muscat",
-      ],
-    },
-    phone: "92880658",
-    email: "lincolnacm@omantel.net.om",
+    address: { title: "Our Address" },
     legal: [
       { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions" },
       { id: "sitemap", label: "Sitemap", href: "/sitemap.xml" },
