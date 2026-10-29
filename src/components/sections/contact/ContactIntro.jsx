@@ -1,17 +1,13 @@
-import Image from "next/image";
-import DatePicker from "@/components/layout/common/DatePicker";
-import { buttonVariants } from "@/components/ui/button";
+import FormShell from "@/components/layout/common/form/FormShell";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DateField,
+  SelectField,
+  SubmitButton,
+  TermsFields,
+  TextareaField,
+  TextField,
+} from "@/components/layout/common/form/FormFields";
 import { cn } from "@/lib/utils";
-
-const field =
-  "w-full border-0 border-b border-ink bg-transparent pb-3 xl:pb-[calc(18*var(--rr))] text-sm text-ink placeholder:text-ink focus-visible:border-ember focus-visible:outline-none sm:text-base xl:text-fluid-16";
 
 export default function ContactIntro({ data }) {
   return (
@@ -26,6 +22,12 @@ export default function ContactIntro({ data }) {
             <p className="mt-3 max-w-[calc(520*var(--rr))] text-[13px] leading-[1.8] text-ink sm:text-sm 2xl:mt-5 2xl:text-base">
               {data.text}
             </p>
+          )}
+          {data?.textHtml && (
+            <div
+              className="mt-3 max-w-[calc(520*var(--rr))] text-[13px] leading-[1.8] text-ink sm:text-sm 2xl:mt-5 2xl:text-base"
+              dangerouslySetInnerHTML={{ __html: data.textHtml }}
+            />
           )}
           {data?.hours && (
             <>
@@ -42,10 +44,9 @@ export default function ContactIntro({ data }) {
             </>
           )}
         </div>
-        <form
+        <FormShell
+          formKey={data?.form?.formKey ?? "contact"}
           data-reveal
-          action={data?.form?.action}
-          method="post"
           style={{ "--reveal-delay": "0.1s" }}
         >
           <h2 className="title">{data?.form?.title}</h2>
@@ -54,124 +55,73 @@ export default function ContactIntro({ data }) {
               {data.form.intro}
             </p>
           )}
+          {data?.form?.introHtml && (
+            <div
+              className="mt-2 text-[13px] text-ink sm:text-sm 2xl:text-base"
+              dangerouslySetInnerHTML={{ __html: data.form.introHtml }}
+            />
+          )}
           <div className="mt-6 grid gap-x-[calc(56*var(--rr))] gap-y-5 sm:grid-cols-2 lg:gap-y-6.25 xl:mt-[calc(36*var(--rr))] 2xl:gap-y-[calc(50*var(--rr))]">
-            {data?.form?.fields?.map((input) => (
-              <div
-                key={input.name}
-                className={cn("relative", input.wide && "sm:col-span-2")}
-              >
-                {input.date ? (
-                  <DatePicker
+            {data?.form?.fields?.map((input) => {
+              const className = input.wide ? "sm:col-span-2" : undefined;
+              if (input.date) {
+                return (
+                  <DateField
+                    key={input.name}
                     name={input.name}
                     label={input.label}
-                    className={`${field} pt-2`}
+                    className={className}
                   />
-                ) : input.options ? (
-                  <Select name={input.name} required={!input.optional}>
-                    <SelectTrigger
-                      aria-label={
-                        input.optional
-                          ? input.label
-                          : `${input.label} (required)`
-                      }
-                      className={`${field} h-auto justify-between rounded-none px-0 pt-2 shadow-none data-placeholder:text-ink data-[size=default]:h-auto [&_svg]:text-ember!`}
-                    >
-                      <SelectValue
-                        placeholder={`${input.label}${input.optional ? "" : "*"}`}
-                      />
-                    </SelectTrigger>
-                    <SelectContent
-                      position="popper"
-                      className="bg-white text-ink"
-                    >
-                      {input.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <label className="block">
-                    <span className="sr-only">{input.label} (required)</span>
-                    <input
-                      type={input.type}
-                      name={input.name}
-                      autoComplete={input.autoComplete}
-
-
-                      
-                      placeholder={`${input.label}*`}
-                      required
-                      className={`${field} pt-2`}
-                    />
-                  </label>
-                )}
-              </div>
-            ))}
+                );
+              }
+              if (input.options) {
+                return (
+                  <SelectField
+                    key={input.name}
+                    name={input.name}
+                    label={input.label}
+                    options={input.options}
+                    optional={input.optional}
+                    variant="underline"
+                    className={className}
+                  />
+                );
+              }
+              return (
+                <TextField
+                  key={input.name}
+                  name={input.name}
+                  label={input.label}
+                  type={input.type}
+                  autoComplete={input.autoComplete}
+                  variant="underline"
+                  className={className}
+                />
+              );
+            })}
             <div
               className={cn(
                 "flex items-end gap-4 sm:col-span-2 sm:gap-[calc(34*var(--rr))]",
                 data?.form?.terms && "flex-col items-stretch",
               )}
             >
-              <label className="block flex-1">
-                <span className="sr-only">{data?.form?.message?.label}</span>
-                <textarea
-                  name={data?.form?.message?.name}
-                  placeholder={data?.form?.message?.label}
-                  rows={2}
-                  className={`${field} resize-none pt-2`}
-                />
-              </label>
-              {data?.form?.terms && (
-                <div className="space-y-2.5 text-[13px] text-ink sm:text-sm 2xl:text-base">
-                  <p>{data.form.terms.text}</p>
-                  <fieldset className="flex gap-6">
-                    <legend className="sr-only">{data.form.terms.text}</legend>
-                    {data.form.terms.choices?.map((choice) => (
-                      <label key={choice} className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="marketing"
-                          value={choice.toLowerCase()}
-                          className="size-4 shrink-0 accent-slate"
-                        />
-                        {choice}
-                      </label>
-                    ))}
-                  </fieldset>
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      name="agree"
-                      required
-                      className="size-4 shrink-0 accent-slate"
-                    />
-                    {data.form.terms.agree}
-                  </label>
-                </div>
-              )}
-              <button
-                type="submit"
-                className={cn(
-                  buttonVariants({ variant: "dark" }),
-                  "px-7",
-                  data?.form?.terms && "self-start",
-                )}
+              <TextareaField
+                name={data?.form?.message?.name}
+                label={data?.form?.message?.label}
+                optional={data?.form?.message?.optional}
+                variant="underline"
+                className="flex-1"
+              />
+              {data?.form?.terms && <TermsFields terms={data.form.terms} />}
+              <SubmitButton
+                variant="dark"
+                className={data?.form?.terms && "self-start"}
               >
                 {data?.form?.submit}
-                <Image
-                  src="/icons/chevron-accent.svg"
-                  alt=""
-                  width={7}
-                  height={4}
-                  className="-rotate-90"
-                />
-              </button>
+              </SubmitButton>
             </div>
           </div>
-        </form>
+        </FormShell>
       </div>
     </section>
   );

@@ -7,15 +7,15 @@ export const owners = {
   ],
   navLabel: "Owner services",
   // Form fields only: the title and image come from owners_cms (enquiry_title / enquiry_image).
-  // No form backend exists yet: `action` is a placeholder until the client confirms where enquiries go.
+  // Submits to POST /page-enquiries with type "owners" (name, email, subject, message).
   enquiry: {
-    action: "#",
+    formKey: "owners",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },
       { name: "subject", label: "Subject", type: "text" },
     ],
-    message: { name: "message", label: "Message" },
+    message: { name: "message", label: "Message", optional: true },
     submit: "Submit",
   },
 };

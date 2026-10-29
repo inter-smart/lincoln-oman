@@ -26,7 +26,7 @@ const local_data = {
   enquiry: {
     title: "Thank you for\nyour Interest\nEnquire our offer",
     spaced: true,
-    action: "#",
+    formKey: "offer",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },

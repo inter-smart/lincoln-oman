@@ -29,7 +29,7 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 - Next.js 16.4 App Router (Turbopack), React 19.3, plain JS/JSX, Tailwind v4 (no config file — tokens in `src/app/globals.css`), shadcn/ui on `radix-ui`, Embla 8, lucide-react.
 - `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` (`node --test src/lib`).
   - **On Node 22 `npm test` fails with `MODULE_NOT_FOUND`** (the directory is read as a file). Run all tests with `node --test "src/lib/**/*.test.*"` and one with `node --test src/lib/meta-tags.test.js`. Tests only cover pure `src/lib` code (no `server-only`, no `@/` alias in the files under test).
-  - Env vars (`.env.local`): `CMS_API_URL`, `CMS_API_TOKEN` (server-only bearer token), `CMS_MEDIA_HOST` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import.
+  - Env vars (`.env.local`): `CMS_API_URL`, `CMS_API_TOKEN` (server-only bearer token), `CMS_MEDIA_HOST` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import. Forms also need `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` (reCAPTCHA v3; without the site key submit shows a "spam check" error).
 - Only **one** `next dev` per project is allowed. If it says "Another next dev server is already running", use the reported URL (the user often has one on **:3001**). Don't kill the user's server without asking. Port 3100 belongs to zelliny's server.
 - The dev server can be reaped when memory is low — report it and don't auto-restart. Use a production build (`next build && next start -p 3300`) for Lighthouse, and stop it afterwards.
 
@@ -57,6 +57,14 @@ src/components/ui/*                   shadcn primitives (button cva, sheet, navi
 - **Rich-text fields arrive as HTML** (`description`): render with `dangerouslySetInnerHTML` on the element that already carries the classes. Home `section_five` description carries Tailwind classes inside the CMS HTML, so those classes are safelisted with `@source inline(...)` in `globals.css` — keep them in sync with the CMS. `section_six` (Ownership) is different: `Ownership.jsx` keeps its own `<ul>/<li>` markup and takes only each `<li>`'s content from the CMS list (bullet `<img>`s are stripped; the component draws the bullet).
 - Values the API doesn't send (labels like "View More" / "Read More", `/vehicles/${slug}`, `/newsroom/${slug}` links) are written inline in the component. `REVALIDATE` is `0` (go-live values 3600/900/300 are noted in `get.js`).
 - Backend links come through untouched (the CMS sends `/contact`, absolute URLs …): fix them in the CMS, not in the code.
+
+### Forms (react-hook-form + zod + reCAPTCHA v3)
+
+- Schemas: `src/lib/validation/{patterns,fields,forms}.js` (pure, tested). One schema per form key: `contact`, `offer`, `quote`, `testDrive`. Free text is **rejected** (not stripped) when it holds HTML, script URLs, template/SQL/shell syntax or control chars (`isPlainText`). Phone = E.164 style, normalised.
+- Client: `FormShell` (`useForm`, `mode: "onChange"`, loads the reCAPTCHA script lazily, shows status) + field leaves in `FormFields.jsx`. `EnquiryForm` (pill variant, `data.formKey`) and `ContactIntro` (underline variant, `data.form.formKey`) stay server components.
+- Server: `src/app/actions/forms.js` `submitForm(formKey, values, token)` re-validates, verifies the token (`src/lib/recaptcha.js`, score ≥ 0.5, action = form key), maps UI names to the Laravel payload and `apiPost`s. Per-endpoint field names differ (`phone_number`, `vehicle_id`, consent flags): change them only in that file. 422 `errors` are mapped back onto fields.
+- Vehicle dropdowns come from `GET /vehicle-models` (`withVehicleOptions`). Owners (`owners`) and Special Offers list (`offers`) forms post to `/page-enquiries` (name, email, subject, message + `type` `owners`/`offer`); the offer detail form posts to `/special-offer-enquiries`.
+- `src/app/book-a-test-drive/thank-you` exists but is not linked from the form yet.
 
 ### Adding an API page (checklist)
 

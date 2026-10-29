@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -9,19 +9,37 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function DatePicker({ name, label, className }) {
-  const [date, setDate] = useState();
+// Controlled by the form: `value` is "yyyy-MM-dd" (or ""), onChange gets the same format.
+export default function DatePicker({
+  id,
+  label,
+  className,
+  value,
+  onChange,
+  onBlur,
+  invalid,
+  describedBy,
+}) {
   const [open, setOpen] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const date = value ? parse(value, "yyyy-MM-dd", new Date()) : undefined;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) onBlur?.();
+      }}
+    >
       <PopoverTrigger asChild>
         <button
+          id={id}
           type="button"
           aria-label={`${label} (required)`}
-          className={`${className} flex items-center justify-between text-left ${date ? "" : "text-ink"}`}
+          aria-describedby={describedBy}
+          className={`${className} flex items-center justify-between text-left ${date ? "" : "text-ink"} ${invalid ? "border-[#b3261e] outline-2 outline-offset-2 outline-[#b3261e]/0" : ""}`}
         >
           {date ? format(date, "dd-MM-yyyy") : `${label}*`}
           <svg
@@ -43,21 +61,11 @@ export default function DatePicker({ name, label, className }) {
           selected={date}
           disabled={{ before: today }}
           onSelect={(d) => {
-            setDate(d);
+            onChange(d ? format(d, "yyyy-MM-dd") : "");
             setOpen(false);
           }}
         />
       </PopoverContent>
-      {/* Native required check can't run on a button: the hidden input carries the value. */}
-      <input
-        name={name}
-        value={date ? format(date, "yyyy-MM-dd") : ""}
-        required
-        readOnly
-        tabIndex={-1}
-        aria-hidden
-        className="pointer-events-none absolute h-0 w-0 opacity-0"
-      />
     </Popover>
   );
 }

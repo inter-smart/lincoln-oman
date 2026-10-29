@@ -94,13 +94,13 @@ const local_data = {
   },
   enquiry: {
     title: "Thank you for\nyour Interest\nEnquire our offer",
-    action: "#",
+    formKey: "offers",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },
       { name: "subject", label: "Subject", type: "text" },
     ],
-    message: { name: "message", label: "Message" },
+    message: { name: "message", label: "Message", optional: true },
     submit: "Submit",
   },
 };

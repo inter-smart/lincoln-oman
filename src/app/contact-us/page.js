@@ -40,7 +40,7 @@ const local_data = {
     },
     form: {
       title: "Connect with Us",
-      action: "#",
+      formKey: "contact",
       fields: [
         { name: "name", label: "Name", type: "text", autoComplete: "name" },
         { name: "email", label: "Email", type: "email", autoComplete: "email" },
@@ -52,7 +52,7 @@ const local_data = {
           wide: true,
         },
       ],
-      message: { name: "message", label: "Message" },
+      message: { name: "message", label: "Message", optional: true },
       submit: "Submit",
     },
   },
