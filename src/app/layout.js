@@ -53,7 +53,7 @@ export default async function RootLayout({ children }) {
         <Header data={site} vehicles={settings?.vehicles} />
         <main id="main">{children}</main>
         <Footer data={site.footer} settings={settings} />
-        <FloatingRail items={site.rail} />
+        <FloatingRail phone={settings?.phone_number} email={settings?.email} items={site.rail} />
         <RevealObserver />
         <SmoothScroll />
       </body>

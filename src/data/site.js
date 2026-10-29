@@ -38,7 +38,7 @@ export const site = {
   rail: [
     {
       id: "callback",
-      label: "Email or Call Me Back",
+      label: "Call Me Back",
       href: "#",
       icon: {
         src: "/icons/rail-calendar.svg",
@@ -66,7 +66,7 @@ export const site = {
     },
     {
       id: "email",
-      label: "Email or Call Me Back",
+      label: "Email Me",
       href: "#",
       icon: { src: "/icons/rail-mail.svg", width: 21.8614, height: 16.1242 },
     },

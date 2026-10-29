@@ -39,7 +39,7 @@ export default async function page() {
     <>
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={breadcrumb} />
-      <NewsGrid title="Lincoln Newsroom" news={news} />
+      <NewsGrid title={banner?.page_title} news={news} />
     </>
   );
 }
