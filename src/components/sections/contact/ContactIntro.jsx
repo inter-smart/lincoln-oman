@@ -48,6 +48,7 @@ export default function ContactIntro({ data, form }) {
         </div>
         <FormShell
           formKey={formData?.formKey ?? "contact"}
+          successHref={formData?.successHref}
           data-reveal
           style={{ "--reveal-delay": "0.1s" }}
         >

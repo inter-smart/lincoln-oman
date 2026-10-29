@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -78,11 +79,13 @@ const DEFAULTS = {
  * Client wrapper for every enquiry form: react-hook-form + the shared zod schema (validates on every change),
  * reCAPTCHA v3 token on submit, then the `submitForm` server action. The fields are children (see FormFields.jsx).
  * `tone`: "dark" when the form sits on the dark card (EnquiryForm), "light" on white.
+ * `successHref`: when set, a successful submit navigates there (e.g. the test-drive thank-you page) instead of only showing the status line.
  */
 export default function FormShell({
   formKey,
   tone = "light",
   successMessage = "Thank you! Your message has been sent. We'll be in touch soon.",
+  successHref,
   className,
   children,
   ...props
@@ -92,6 +95,7 @@ export default function FormShell({
     mode: "onChange",
     defaultValues: DEFAULTS[formKey],
   });
+  const router = useRouter();
   const { handleSubmit, setError, reset, formState } = methods;
   const [status, setStatus] = useState(null); // { ok, message }
 
@@ -124,6 +128,10 @@ export default function FormShell({
 
     if (result.ok) {
       reset();
+      if (successHref) {
+        router.push(successHref);
+        return;
+      }
       setStatus({ ok: true, message: successMessage });
       return;
     }
