@@ -22,8 +22,12 @@ const radius =
 // Gallery page: title, featured video, then the photo grid. Each photo opens in the Fancybox lightbox.
 // `galleries` is the raw /galleries list: one { media_type: "video", video } and many { media_type: "image", image }.
 export default function GalleryGrid({ title, galleries }) {
-  const film = galleries.find((item) => item.media_type === "video");
-  const photos = galleries.filter((item) => item.media_type === "image");
+  const film = galleries.find(
+    (item) => item.media_type === "video" && item.video?.path,
+  );
+  const photos = galleries.filter(
+    (item) => item.media_type === "image" && item.image?.path,
+  );
 
   return (
     <section className="py-(--section-space)">
@@ -37,7 +41,7 @@ export default function GalleryGrid({ title, galleries }) {
             controls
             playsInline
             preload="none"
-            poster={film.video.thumbnail}
+            poster={film.video.thumbnail ?? undefined}
             aria-label="Lincoln gallery film"
             className={`mt-6 aspect-1624/705 w-full bg-black object-cover xl:mt-[calc(30*var(--rr))] ${radius}`}
           >

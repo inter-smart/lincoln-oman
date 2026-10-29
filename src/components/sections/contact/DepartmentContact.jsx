@@ -52,19 +52,21 @@ export default function DepartmentContact({ data, department_contacts }) {
             ))}
           </ul>
         </div>
-        <div
-          data-reveal
-          style={{ "--reveal-delay": "0.1s" }}
-          className="relative aspect-483/323 overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[15px] 3xl:rounded-[20px]"
-        >
-          <Image
-            src={data.bottom_section_image}
-            alt="Department Contact"
-            fill
-            sizes="(min-width: 1200px) 25vw, 100vw"
-            className="object-cover"
-          />
-        </div>
+        {data?.bottom_section_image && (
+          <div
+            data-reveal
+            style={{ "--reveal-delay": "0.1s" }}
+            className="relative aspect-483/323 overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[15px] 3xl:rounded-[20px]"
+          >
+            <Image
+              src={data?.bottom_section_image}
+              alt={data?.bottom_section_title}
+              fill
+              sizes="(min-width: 1200px) 25vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

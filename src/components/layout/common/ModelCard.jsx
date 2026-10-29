@@ -12,14 +12,16 @@ export default function ModelCard({ model }) {
       href={`/vehicles/${model.slug}`}
       className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate sm:rounded-[15px] 2xl:rounded-[20px]"
     >
-      <Image
-        src={model.image}
-        alt=""
-        fill
-        sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
-        className="object-cover"
-        style={{ objectPosition: model.position }}
-      />
+      {model.image && (
+        <Image
+          src={model.image}
+          alt=""
+          fill
+          sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
+          className="object-cover"
+          style={{ objectPosition: model.position }}
+        />
+      )}
       {/* Figma's hover variant is a video fill: it plays while hovered and rewinds on hover-out */}
       {model.video && <HoverVideo src={model.video} />}
       <span className="absolute inset-x-0 top-[52.2%] bottom-0 bg-linear-to-b from-transparent to-black opacity-0 transition-opacity duration-500 group-hocus:opacity-100" />
@@ -30,13 +32,15 @@ export default function ModelCard({ model }) {
             key={feature.title}
             className="flex flex-col items-center gap-[10px] text-center text-[10px] leading-[normal] whitespace-pre-line 2xl:text-[13px] 3xl:text-[14px]"
           >
-            <Image
-              src={feature.icon}
-              alt=""
-              width={28}
-              height={28}
-              className="h-[24px] w-auto"
-            />
+            {feature.icon && (
+              <Image
+                src={feature.icon}
+                alt=""
+                width={28}
+                height={28}
+                className="h-[24px] w-auto"
+              />
+            )}
             {feature.title}
           </li>
         ))}

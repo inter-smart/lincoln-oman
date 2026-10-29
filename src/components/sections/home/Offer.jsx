@@ -28,19 +28,21 @@ export default function Offer({ data }) {
             />
           </div>
         </div>
-        <div
-          data-reveal
-          style={{ "--reveal-delay": "0.15s" }}
-          className="relative aspect-[904/517]"
-        >
-          <Image
-            src={data.image}
-            alt={data.alt_tag ?? ""}
-            fill
-            sizes="(min-width: 992px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
+        {data.image && (
+          <div
+            data-reveal
+            style={{ "--reveal-delay": "0.15s" }}
+            className="relative aspect-[904/517]"
+          >
+            <Image
+              src={data.image}
+              alt={data.alt_tag ?? ""}
+              fill
+              sizes="(min-width: 992px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

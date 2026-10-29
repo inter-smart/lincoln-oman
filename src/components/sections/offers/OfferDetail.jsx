@@ -10,7 +10,9 @@ export default function OfferDetail({ offer, labels }) {
   return (
     <section className="pb-(--section-space)">
       <div className="container">
-        <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-2 xl:gap-[calc(80*var(--rr))]">
+        <div
+          className={`grid items-center gap-6 sm:gap-8 xl:gap-[calc(80*var(--rr))] ${offer?.image?.path ? "lg:grid-cols-2" : ""}`}
+        >
           <div data-reveal>
             <h2 className="title">{offer?.title}</h2>
             {expiry && (
@@ -41,19 +43,21 @@ export default function OfferDetail({ offer, labels }) {
               </ul>
             )}
           </div>
-          <div
-            data-reveal
-            style={{ "--reveal-delay": "0.1s" }}
-            className="relative aspect-810/415 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
-          >
-            <Image
-              src={offer?.image?.path}
-              alt={offer?.image?.alt ?? offer?.title ?? ""}
-              fill
-              sizes="(min-width: 1920px) 810px, (min-width: 992px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          {offer?.image?.path && (
+            <div
+              data-reveal
+              style={{ "--reveal-delay": "0.1s" }}
+              className="relative aspect-810/415 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
+            >
+              <Image
+                src={offer.image.path}
+                alt={offer.image.alt ?? offer.title ?? ""}
+                fill
+                sizes="(min-width: 1920px) 810px, (min-width: 992px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -51,6 +51,7 @@ export default function ContactLocations({ contact_addresses }) {
                 </span>
               </address>
               <ButtonLink
+                isExternal={true}
                 data={{ label: "Get Direction", href: item.direction }}
                 className="mt-3.75 2xl:mt-[calc(40*var(--rr))]"
               />

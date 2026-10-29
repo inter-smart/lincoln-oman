@@ -9,15 +9,17 @@ export default function Ownership({ data }) {
 
   return (
     <section className="relative overflow-hidden bg-night text-white">
-      <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[66.2%]">
-        <Image
-          src={data.image}
-          alt={data.alt_tag ?? ""}
-          fill
-          sizes="(min-width: 992px) 66vw, 100vw"
-          className="object-cover"
-        />
-      </div>
+      {data.image && (
+        <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[66.2%]">
+          <Image
+            src={data.image}
+            alt={data.alt_tag ?? ""}
+            fill
+            sizes="(min-width: 992px) 66vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+      )}
       {/* Lincoln emblem drawn in the band colour over the photo's left edge */}
       <Image
         src="/icons/emblem-cutout.svg"

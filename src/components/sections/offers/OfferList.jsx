@@ -31,17 +31,23 @@ export default function OfferList({ data, labels }) {
                 style={{ "--reveal-delay": `${(index % 2) * 0.1}s` }}
                 className="relative flex flex-col overflow-hidden rounded-[10px] bg-night text-white sm:flex-row sm:rounded-[15px] 2xl:rounded-[20px]"
               >
-                <div className="relative aspect-16/10 shrink-0 sm:aspect-auto sm:w-[54%]">
-                  <Image
-                    src={item.image?.path}
-                    alt={item.image?.alt ?? item.title}
-                    fill
-                    sizes="(min-width: 1920px) 433px, (min-width: 992px) 27vw, (min-width: 576px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                <EmblemMark className="absolute start-[54%] top-1/2 hidden h-[80%] -translate-x-1/2 -translate-y-1/2 bg-[#2A2526] sm:block" />
-                <div className="relative flex flex-1 flex-col items-start p-5 sm:py-8 sm:ps-[calc(7%+1.25rem)] xl:py-[calc(40*var(--rr))] xl:pe-[calc(30*var(--rr))] 2xl:ps-[calc(10%+1.25rem)]">
+                {item.image?.path && (
+                  <>
+                    <div className="relative aspect-16/10 shrink-0 sm:aspect-auto sm:w-[54%]">
+                      <Image
+                        src={item.image.path}
+                        alt={item.image.alt ?? item.title}
+                        fill
+                        sizes="(min-width: 1920px) 433px, (min-width: 992px) 27vw, (min-width: 576px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <EmblemMark className="absolute start-[54%] top-1/2 hidden h-[80%] -translate-x-1/2 -translate-y-1/2 bg-[#2A2526] sm:block" />
+                  </>
+                )}
+                <div
+                  className={`relative flex flex-1 flex-col items-start p-5 sm:py-8 xl:py-[calc(40*var(--rr))] xl:pe-[calc(30*var(--rr))] ${item.image?.path ? "sm:ps-[calc(7%+1.25rem)] 2xl:ps-[calc(10%+1.25rem)]" : "sm:ps-8"}`}
+                >
                   <div className="font-display text-xl leading-[1.4] sm:text-2xl lg:text-xl 3xl:text-fluid-32">
                     {item.title}
                   </div>
