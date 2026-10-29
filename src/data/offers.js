@@ -35,16 +35,9 @@ export const offers = {
       { name: "phone", label: "Phone", type: "tel", autoComplete: "tel" },
     ],
     selects: [
-      {
-        name: "model",
-        label: "Model",
-        options: ["Navigator", "Aviator", "Corsair", "Nautilus"],
-      },
-      {
-        name: "interested",
-        label: "Interested",
-        options: ["Service", "Test drive", "Quote"],
-      },
+      // Options come from vehicle_models / interested_in of GET /special-offers/{slug} (filled in by the page).
+      { name: "model", label: "Model", options: [] },
+      { name: "interested", label: "Interested", options: [] },
     ],
     message: { name: "message", label: "Message" },
     submit: "Submit",
