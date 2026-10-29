@@ -8,7 +8,7 @@ export default function ModelCard({ item }) {
   return (
     <Link
       href={item?.href ?? "#"}
-      className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
+      className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate sm:rounded-[15px] 2xl:rounded-[20px]"
     >
       <Image
         src={item?.image}
@@ -39,10 +39,10 @@ export default function ModelCard({ item }) {
           </li>
         ))}
       </ul>
-      <span className="absolute bottom-[20px] left-5 2xl:left-[25px] text-lg leading-[normal] xl:text-fluid-25 2xl:text-[19px]">
+      <span className="absolute bottom-[20px] left-5 text-lg leading-[normal] xl:text-fluid-25 2xl:left-[25px] 2xl:text-[19px]">
         {item?.name}
       </span>
-      <div className="absolute right-5 2xl:right-6.25 bottom-6.25 flex aspect-35/15 h-auto w-7.5 2xl:w-8.75 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-x-0 group-hocus:opacity-100">
+      <div className="absolute right-5 bottom-6.25 flex aspect-35/15 h-auto w-7.5 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 2xl:right-6.25 2xl:w-8.75 group-hocus:translate-x-0 group-hocus:opacity-100">
         <Image
           src="/icons/card-plus-hover.svg"
           alt=""

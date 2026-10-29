@@ -99,8 +99,6 @@ export default function ContactIntro({ data }) {
                       name={input.name}
                       autoComplete={input.autoComplete}
 
-
-                      
                       placeholder={`${input.label}*`}
                       required
                       className={`${field} pt-2`}

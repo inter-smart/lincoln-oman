@@ -25,7 +25,7 @@ export default function ModelVariants({ data }) {
             <div className="relative mt-6 xl:mt-[calc(53*var(--rr))]">
               <span
                 aria-hidden
-                className="absolute inset-x-[-20%] top-[13%] text-center font-sans text-[clamp(36px,10.42vw,200px)] leading-none font-extralight tracking-[0.04em] text-transparent uppercase opacity-0 transition-opacity duration-500 [-webkit-text-stroke:1px_#C9C9C9] group-data-active/slide:opacity-50 before:absolute before:inset-[auto_0_0_0] before:z-1 before:h-[70%] before:w-full before:bg-linear-to-t before:from-white before:to-transparent before:content-['']"
+                className="absolute inset-x-[-20%] top-[10%] text-center font-sans text-[clamp(36px,10.42vw,200px)] leading-none font-extralight tracking-[0.04em] text-transparent uppercase opacity-0 transition-opacity duration-500 [-webkit-text-stroke:1px_#C9C9C9] group-data-active/slide:opacity-50 before:absolute before:inset-[auto_0_0_0] before:z-1 before:h-[70%] before:w-full before:bg-linear-to-t before:from-white before:to-transparent before:content-['']"
               >
                 {data?.word}
               </span>

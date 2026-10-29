@@ -16,7 +16,6 @@ const sizes = {
 const radius =
   "overflow-hidden rounded-[10px] md:rounded-[15px] 2xl:rounded-[20px]";
 
-// Gallery page: title, featured video, then the photo grid. Each photo opens in the Fancybox lightbox.
 export default function GalleryGrid({ data }) {
   return (
     <section className="py-(--section-space)">

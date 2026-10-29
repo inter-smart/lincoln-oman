@@ -83,7 +83,7 @@ export default function Footer({ data }) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] 2xl:text-base xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px]">
+        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px] 2xl:text-base">
           <p>
             {data?.legal?.map((link, index) => (
               <span key={link.id}>

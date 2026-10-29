@@ -29,7 +29,10 @@ const local_data = {
       { id: "test-drive", label: "Test Drive", href: "#" },
       { id: "enquire", label: "Enquire Now", href: "#" },
     ],
-    media: { url: "/images/vehicle/banner.jpg", alternativeText: "" },
+    media: {
+      type: "video",
+      url: "/videos/vehicle-detail.mp4",
+    },
   },
   breadcrumb: [
     { id: "home", label: "Home", href: "/" },
@@ -260,6 +263,16 @@ const local_data = {
         id: "connectivity",
         title: "Advanced Media Connectivity",
         image: { src: "/images/vehicle/media-3.jpg", alt: "" },
+      },
+      {
+        id: "hotspot",
+        title: "5G LTE Wi-Fi hotspot",
+        image: { src: "/images/vehicle/media-4.jpg", alt: "" },
+      },
+      {
+        id: "touchscreen",
+        title: "11.1-inch center touchscreen",
+        image: { src: "/images/vehicle/media-2.jpg", alt: "" },
       },
       {
         id: "hotspot",

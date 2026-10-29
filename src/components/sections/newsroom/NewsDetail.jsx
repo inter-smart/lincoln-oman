@@ -47,7 +47,10 @@ export default function NewsDetail({ data }) {
             dangerouslySetInnerHTML={{ __html: article?.body }}
           />
         </article>
-        <aside aria-labelledby="recent-news">
+        <aside
+          aria-labelledby="recent-news"
+          className="xl:sticky xl:top-[calc(var(--header-h,0px)+24px)] xl:self-start"
+        >
           <h2
             id="recent-news"
             data-reveal

@@ -2,21 +2,33 @@ import Image from "next/image";
 import Link from "next/link";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
-// `as="div"` for pages whose content already renders the <h1>
 export default function InnerBanner({ data, as: Title = "h1" }) {
   return (
     <section className="relative z-0 block w-full before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-[''] max-sm:h-95 sm:h-auto">
       <div className="block aspect-1920/760 h-full w-full overflow-hidden sm:h-auto">
-        <Image
-          src={data?.media?.url}
-          alt={data?.media?.alternativeText ?? "Inner Banner"}
-          width={1920}
-          height={760}
-          priority
-          sizes="100vw"
-          className="size-full object-cover"
-          style={{ objectPosition: data?.position }}
-        />
+        {data?.media?.type === "video" ? (
+          <video
+            src={data.media.url}
+            poster={data.media.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="size-full object-cover"
+            style={{ objectPosition: data?.position }}
+          />
+        ) : (
+          <Image
+            src={data?.media?.url}
+            alt={data?.media?.alternativeText ?? "Inner Banner"}
+            width={1920}
+            height={760}
+            priority
+            sizes="100vw"
+            className="size-full object-cover"
+            style={{ objectPosition: data?.position }}
+          />
+        )}
       </div>
       <span
         aria-hidden
