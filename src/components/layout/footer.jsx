@@ -5,8 +5,25 @@ import Composite, { creditLogo } from "@/components/layout/common/Composite";
 const linkHover =
   "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
-// `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email), null if the request failed.
+// `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email, vehicles), null if the request failed.
 export default function Footer({ data, settings }) {
+  const vehicles = settings?.vehicles;
+  // The Vehicles column is filled from the API models and left out when there are none.
+  const columns = data?.columns
+    ?.map((column) =>
+      column.id === "vehicles"
+        ? {
+            ...column,
+            links: vehicles?.map((vehicle) => ({
+              id: vehicle.slug,
+              label: vehicle.name,
+              href: `/vehicles/${vehicle.slug}`,
+            })),
+          }
+        : column,
+    )
+    .filter((column) => column.links?.length);
+
   return (
     <footer className="relative bg-night text-[15px] text-white xl:text-fluid-16">
       <a
@@ -37,7 +54,7 @@ export default function Footer({ data, settings }) {
 
       <div className="container pt-10 sm:pt-[50px] lg:pt-[70px] xl:pt-[calc(113*var(--rr))] 2xl:pt-[90px]">
         <div className="grid grid-cols-2 gap-x-[24px] gap-y-[40px] md:grid-cols-3 xl:grid-cols-[repeat(4,1fr)_auto_auto] xl:gap-x-[32px] 4xl:grid-cols-[15.6%_15.06%_16.9%_17.8%_auto_1fr] 4xl:gap-x-0">
-          {data?.columns?.map((column) => (
+          {columns?.map((column) => (
             <nav key={column.id} aria-label={column.title}>
               <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
                 {column.title}

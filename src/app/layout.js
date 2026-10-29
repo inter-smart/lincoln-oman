@@ -32,10 +32,10 @@ function dealerJsonLd(settings) {
   };
 }
 
-// GET /site-settings -> { address (HTML), email, phone_number, whatsapp_number, map_link }
-// Shown in the footer and the JSON-LD below. whatsapp_number and map_link are not used yet.
+// GET /site-settings -> { address (HTML), email, phone_number, whatsapp_number, map_link, vehicles: [{ id, name, slug, image }] }
+// Shown in the header (Vehicles menu), the footer and the JSON-LD below. whatsapp_number and map_link are not used yet.
 // No notFound() here: a failed request must not turn every page (and the 404 page) into an error.
-// On failure `settings` is null and the footer leaves those details out. Cached for an hour.
+// On failure `settings` is null: the header and footer leave the vehicles and these details out. Cached for an hour.
 export default async function RootLayout({ children }) {
   const { data: settings } = await apiGet("/site-settings", {
     revalidate: 3600,
@@ -50,7 +50,7 @@ export default async function RootLayout({ children }) {
         {settings && (
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(dealerJsonLd(settings)).replace(/</g, "\\u003c") }} />
         )}
-        <Header data={site} />
+        <Header data={site} vehicles={settings?.vehicles} />
         <main id="main">{children}</main>
         <Footer data={site.footer} settings={settings} />
         <FloatingRail items={site.rail} />
