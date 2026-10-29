@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import PageMeta from "@/components/layout/common/page-meta";
 import OwnersContent from "@/components/sections/owners/OwnersContent";
 import { owners } from "@/data/owners";
 import { apiGet } from "@/lib/api/get";
@@ -23,6 +22,7 @@ export async function generateMetadata() {
       title: banner.meta_title,
       description: banner.meta_description,
       keywords: banner.meta_keywords,
+      otherMetaTags: banner.other_meta_tags,
     },
     "/owners",
   );
@@ -48,7 +48,6 @@ export default async function page() {
 
   return (
     <>
-      <PageMeta html={banner.other_meta_tags} />
       <InnerBanner
         data={{
           title: banner.banner_title,

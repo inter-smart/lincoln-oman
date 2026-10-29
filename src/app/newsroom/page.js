@@ -2,7 +2,6 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import PageMeta from "@/components/layout/common/page-meta";
 import NewsGrid from "@/components/sections/newsroom/NewsGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
@@ -20,6 +19,7 @@ export async function generateMetadata() {
       title: banner.meta_title,
       description: banner.meta_description,
       keywords: banner.meta_keywords,
+      otherMetaTags: banner.other_meta_tags,
     },
     "/newsroom",
   );
@@ -37,7 +37,6 @@ export default async function page() {
 
   return (
     <>
-      <PageMeta html={banner.other_meta_tags} />
       <InnerBanner
         as="div"
         data={{

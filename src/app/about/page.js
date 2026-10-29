@@ -6,7 +6,6 @@ import AboutInfo from "@/components/sections/about/about-info";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import AboutCommitment from "@/components/sections/about/about-commitment";
-import PageMeta from "@/components/layout/common/page-meta";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -23,6 +22,7 @@ export async function generateMetadata() {
       title: banner.meta_title,
       description: banner.meta_description,
       keywords: banner.meta_keywords,
+      otherMetaTags: banner.other_meta_tags,
     },
     "/about",
   );
@@ -35,7 +35,6 @@ export default async function page() {
 
   return (
     <>
-      <PageMeta html={banner.other_meta_tags} />
       <InnerBanner
         data={{
           title: banner.banner_title,

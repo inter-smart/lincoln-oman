@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import ContactCta from "@/components/layout/common/ContactCta";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import PageMeta from "@/components/layout/common/page-meta";
 import SectionTabs from "@/components/layout/common/SectionTabs";
 import CertifiedBand from "@/components/sections/certified/CertifiedBand";
 import CertifiedBenefits from "@/components/sections/certified/CertifiedBenefits";
@@ -26,6 +25,7 @@ export async function generateMetadata() {
       title: banner.meta_title,
       description: banner.meta_description,
       keywords: banner.meta_keywords,
+      otherMetaTags: banner.other_meta_tags,
     },
     "/lincoln-certified",
   );
@@ -85,7 +85,6 @@ export default async function page() {
 
   return (
     <>
-      <PageMeta html={banner.other_meta_tags} />
       <InnerBanner
         data={{
           title: banner.banner_title,
@@ -123,7 +122,12 @@ export default async function page() {
           </>
         )}
         {hasTitle(exchange) && (
-          <CertifiedBand id="exchange" data={exchange} emblem imageRatio="aspect-762/242" />
+          <CertifiedBand
+            id="exchange"
+            data={exchange}
+            emblem
+            imageRatio="aspect-762/242"
+          />
         )}
         {hasTitle(finance) && (
           <CertifiedStatement

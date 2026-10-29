@@ -7,7 +7,6 @@ import ModelShowcase from "@/components/sections/home/ModelShowcase";
 import Newsroom from "@/components/sections/home/Newsroom";
 import Offer from "@/components/sections/home/Offer";
 import Ownership from "@/components/sections/home/Ownership";
-import PageMeta from "@/components/layout/common/page-meta";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -24,6 +23,7 @@ export async function generateMetadata() {
       title: banner.meta_title,
       description: banner.meta_description,
       keywords: banner.meta_keywords,
+      otherMetaTags: banner.other_meta_tags,
     },
     "/",
   );
@@ -36,7 +36,6 @@ export default async function page() {
 
   return (
     <>
-      <PageMeta html={banner.other_meta_tags} />
       <Hero slides={sliders} />
       <ExploreModels
         title={home_cms.section_one.title}

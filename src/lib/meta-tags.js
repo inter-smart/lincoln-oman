@@ -1,4 +1,4 @@
-// Turns the API's `other_meta_tags` HTML string (banner.other_meta_tags) into safe head tags for <PageMeta>.
+// Turns the API's `other_meta_tags` HTML string (banner.other_meta_tags) into Next `generateMetadata` fields (see buildMetadata).
 const ENTITIES = {
   amp: "&",
   lt: "<",
@@ -35,8 +35,13 @@ const OWNED_META = new Set([
   "robots",
   "og:title",
   "og:description",
+  "og:url",
+  "og:site_name",
+  "og:locale",
+  "og:type",
   "twitter:title",
   "twitter:description",
+  "twitter:card",
 ]);
 const META_ATTRS = ["name", "property", "content", "itemprop"];
 const LINK_ATTRS = ["rel", "href", "hreflang"];
@@ -56,12 +61,11 @@ function attributes(source, allowed) {
 }
 
 /**
- * The head tags in the API's `other_meta_tags` string, as safe attribute objects.
- * Only <meta>, <link rel=alternate> and valid JSON-LD scripts survive; anything else
- * (other scripts, http-equiv) is dropped because the HTML comes from the CMS.
+ * The <meta> and <link rel=alternate> tags in the API's `other_meta_tags` string, as safe attribute objects.
+ * Anything else (scripts, JSON-LD, http-equiv) is dropped because the HTML comes from the CMS.
  */
 export function htmlMetaTags(html) {
-  const tags = { meta: [], links: [], jsonLd: [] };
+  const tags = { meta: [], links: [] };
   const source = html ?? "";
 
   for (const [, body] of source.matchAll(/<meta\b([^>]*)>/gi)) {
@@ -78,16 +82,76 @@ export function htmlMetaTags(html) {
       tags.links.push(attrs);
   }
 
-  for (const [, head, body] of source.matchAll(
-    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
-  )) {
-    if (!/\btype\s*=\s*["']?application\/ld\+json/i.test(head)) continue;
-    try {
-      tags.jsonLd.push(JSON.stringify(JSON.parse(body)));
-    } catch {
-      // Invalid JSON-LD is dropped rather than shipped to search engines.
+  return tags;
+}
+
+const IMAGE_FIELDS = {
+  "og:image:alt": "alt",
+  "og:image:width": "width",
+  "og:image:height": "height",
+};
+
+/**
+ * `other_meta_tags` as the Metadata fields Next can render: { other, openGraph, twitter, languages }.
+ * Only the fields the CMS filled are present. Tags Next has no field for (JSON-LD, itemprop, other
+ * `property=` tags) are dropped; metadata `other` only writes `name=` tags.
+ *   <meta name=X>                 -> other[X] (identical repeats collapsed)
+ *   og:image, og:image:alt/w/h    -> openGraph.images
+ *   twitter:image/site/creator    -> twitter.images / site / creator
+ *   <link rel=alternate hreflang> -> languages
+ */
+export function metadataFromTags(html) {
+  const { meta, links } = htmlMetaTags(html);
+  const other = {};
+  const images = [];
+  const twitter = {};
+  const languages = {};
+
+  for (const attrs of meta) {
+    const { name, property, content } = attrs;
+    if (name === undefined && property === undefined) continue;
+
+    if (name === undefined) {
+      const key = property.toLowerCase();
+      if (key === "og:image") images.push({ url: content });
+      else if (IMAGE_FIELDS[key] && images.length)
+        images[images.length - 1][IMAGE_FIELDS[key]] = content;
+      continue;
+    }
+
+    switch (name.toLowerCase()) {
+      case "twitter:image":
+        (twitter.images ??= []).push(content);
+        break;
+      case "twitter:site":
+        twitter.site = content;
+        break;
+      case "twitter:creator":
+        twitter.creator = content;
+        break;
+      default: {
+        const values = (other[name] ??= []);
+        if (!values.includes(content)) values.push(content);
+      }
     }
   }
 
-  return tags;
+  for (const { hreflang, href } of links) {
+    if (hreflang) languages[hreflang] = href;
+  }
+
+  const fields = {};
+  const otherNames = Object.keys(other);
+  if (otherNames.length) {
+    fields.other = Object.fromEntries(
+      otherNames.map((key) => [
+        key,
+        other[key].length > 1 ? other[key] : other[key][0],
+      ]),
+    );
+  }
+  if (images.length) fields.openGraph = { images };
+  if (Object.keys(twitter).length) fields.twitter = twitter;
+  if (Object.keys(languages).length) fields.languages = languages;
+  return fields;
 }

@@ -36,29 +36,40 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 ## 3. Architecture (follow it, don't reinvent)
 
 ```
-src/app/page.js                 thin: `cache(() => apiGet("/home"))`, passes the raw backend sections to the components
+src/app/<route>/page.js         server page: fetch via apiGet, pass backend objects to section components
 src/app/layout.js               JSON-LD, Header/Footer/FloatingRail/RevealObserver
 src/lib/api/{get,post,http}.js  apiGet / apiPost -> send (the only code that reads the token)
-src/lib/meta-tags.js            htmlMetaTags: safe head tags from banner.other_meta_tags
-src/data/{site,seo}.js          header/footer/rail/menu content and SEO defaults
-src/components/sections/home/*  one server component per section — NEVER "use client"
-src/components/layout/common/*  shared pieces + the small client leaves
-src/components/ui/*             shadcn primitives (button cva, sheet, navigation-menu)
+src/lib/api/request.js          pure helpers (ApiError, buildUrl, unwrapEnvelope) — testable
+src/lib/meta-tags.js            metadataFromTags: banner.other_meta_tags -> Metadata fields (used by buildMetadata)
+src/lib/seo.js                  buildMetadata(): title/description/keywords + canonical
+src/lib/{owners-sections,split-media-html,list-items}.js   pure CMS-HTML parsers (unit-tested)
+src/data/{site,seo,owners,legal}.js   header/footer/rail/menu content, SEO defaults, static labels
+src/components/sections/<page>/*      one server component per section — NEVER "use client"
+src/components/layout/common/*        shared pieces (InnerBanner, Breadcrumb, EnquiryForm) + small client leaves
+src/components/ui/*                   shadcn primitives (button cva, sheet, navigation-menu)
 ```
 
 ### Data layer (PHP CMS API)
 
-- **Only Home and About are API-driven.** The other routes (contact-us, owners, certified, gallery, newsroom, offers, vehicles, legal) still use static `metadata` and local/`src/data/*` content. When integrating one, copy the Home/About pattern below.
-- **Flow:** the page calls `apiGet("/endpoint")` (`src/lib/api/get.js`; paths are plain strings in the page) → `send` (`http.js`, `server-only`, the only code that reads the token; unwraps the `data` envelope) → the page hands the raw backend objects to the section components. **No mappers, no constants files:** components read the backend field names directly (`section.title`, `section.button_name`, `slide.media_type`, `news.published_on` …). To see the shape, `console.log` the page data or curl the endpoint with the bearer token.
+- **API-driven routes:** `/` (`/home`), `/about`, `/newsroom` and `/newsroom/[slug]` (`/news/${slug}`), `/lincoln-certified`, `/owners`. The rest (contact-us, gallery, offers, vehicles, legal, request-a-quote, book-a-test-drive) still use static `metadata` and `src/data/*` content. To integrate one, copy the pattern below (`src/app/owners/page.js` is the most complete example).
+- **Flow:** the page calls `apiGet("/endpoint")` (`src/lib/api/get.js`; paths are plain strings in the page) → `send` (`http.js`, `server-only`, the only code that reads the token; unwraps the `data` envelope) → the page hands the raw backend objects to the section components. **No mappers, no constants files:** components read the backend field names directly (`section.title`, `section.button_name`, `slide.media_type`, `news.published_on` …). To see the shape, `console.log` the page data or curl the endpoint with the bearer token. **Exception:** when the CMS sends one rich-text blob that must become several layout blocks (Owners), a pure parser in `src/lib` does the splitting (`ownersSections`, `splitMediaHtml`, `listItems`) and has a `*.test.js`. Keep such parsers free of `server-only` and `@/` imports so `node --test` can run them.
 - **Page pattern:** `const getX = cache(() => apiGet("/x"))` at the top of the page (so `generateMetadata` and the page share one fetch), then destructure the response and pass e.g. `<Legacy data={home_cms.section_two} />`. `apiGet` never throws: it returns `{ data, error }` (error is the `ApiError`, also logged with `console.error`). Every page starts with `if (error || !data) notFound()` (in both `generateMetadata` and the page), so any API failure shows the 404 page. A missing field inside a successful response is not guarded. `apiPost` still throws (form errors need `error.details`).
 - **Rich-text fields arrive as HTML** (`description`): render with `dangerouslySetInnerHTML` on the element that already carries the classes. Home `section_five` description carries Tailwind classes inside the CMS HTML, so those classes are safelisted with `@source inline(...)` in `globals.css` — keep them in sync with the CMS. `section_six` (Ownership) is different: `Ownership.jsx` keeps its own `<ul>/<li>` markup and takes only each `<li>`'s content from the CMS list (bullet `<img>`s are stripped; the component draws the bullet).
 - Values the API doesn't send (labels like "View More" / "Read More", `/vehicles/${slug}`, `/newsroom/${slug}` links) are written inline in the component. `REVALIDATE` is `0` (go-live values 3600/900/300 are noted in `get.js`).
 - Backend links come through untouched (the CMS sends `/contact`, absolute URLs …): fix them in the CMS, not in the code.
 
+### Adding an API page (checklist)
+
+1. `const getX = cache(() => apiGet("/x"))` in `src/app/<route>/page.js`; start `generateMetadata` and the page with `if (error || !data) notFound()`.
+2. `generateMetadata` → `buildMetadata({ title, description, keywords, otherMetaTags }, "/route")` from the `banner` block (for detail pages the block is `news.meta_tags`).
+3. Render `<InnerBanner data={{ title: banner.banner_title, media: { url: banner.banner, alternativeText: banner.banner_alt_text } }} />`, `<Breadcrumb />`, then the section components.
+4. Hide a section when the CMS sends it empty (see `hasContent`/`textOf` in the Owners page) instead of rendering an empty shell.
+5. Static labels, breadcrumbs and form copy the API doesn't send go in `src/data/<page>.js`.
+
 ### Page metadata
 
-- The `banner` block carries `meta_title`, `meta_description`, `meta_keywords`, `other_meta_tags`. The page calls `generateMetadata() → buildMetadata({ title, description, keywords }, "/path")` (`src/lib/seo.js`) and renders `<PageMeta html={banner.other_meta_tags} />`. `buildMetadata` also sets `alternates.canonical` (and `og:url`) to the absolute URL of the page (`siteUrl` + path), and `htmlMetaTags` drops any canonical link from the CMS so there is only one.
-- `other_meta_tags` is a raw HTML string from the CMS. `htmlMetaTags()` keeps only `<meta>`, canonical/alternate `<link>` and valid JSON-LD, and drops tags the page already sets plus `robots`, so the CMS can't override noindex. React 19 hoists the rendered `<meta>`/`<link>` into `<head>`; Next's `metadata.other` can't emit `property=` tags.
+- The `banner` block carries `meta_title`, `meta_description`, `meta_keywords`, `other_meta_tags`. Every head tag comes from `generateMetadata() → buildMetadata({ title, description, keywords, otherMetaTags }, "/path")` (`src/lib/seo.js`); pages render nothing for metadata in the body. `buildMetadata` also sets `alternates.canonical` (and `og:url`) to the absolute URL of the page (`siteUrl` + path).
+- `other_meta_tags` is a raw HTML string from the CMS. `metadataFromTags()` (`src/lib/meta-tags.js`, tested) maps what Next can render: `name=` metas → `other`, `og:image*` → `openGraph.images`, `twitter:image/site/creator` → `twitter`, `<link rel=alternate hreflang>` → `alternates.languages`. **Everything else is dropped** (JSON-LD, `itemprop`, other `property=` tags: Next's `metadata.other` only writes `name=`). Tags `buildMetadata` already sets (title, description, og:url/site_name/locale/type, twitter:card), `robots` and canonical are ignored, so the CMS can't override noindex or add a second canonical.
 - **Known gap:** `layout.js` has no `export const metadata` since `e13d6d5` (`metadataBase`, title template, canonical, robots noindex meta are gone; `X-Robots-Tag` and `robots.txt` still enforce noindex). The unused `title`/`description`/`allowIndexing` imports there are leftovers. Don't assume the noindex *meta* tag exists.
 
 - **Client components are leaves only:** CardCarousel (Embla), HeaderShell (scroll flag), VehicleMenu, RevealObserver, HeroVideo, HoverVideo, ShowcaseStage. Server content goes in as `children`. Check: `grep -rl '"use client"' src/components/sections` must be empty.

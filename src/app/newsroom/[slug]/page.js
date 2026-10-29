@@ -2,7 +2,6 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import PageMeta from "@/components/layout/common/page-meta";
 import NewsDetail from "@/components/sections/newsroom/NewsDetail";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
@@ -21,6 +20,7 @@ export async function generateMetadata({ params }) {
       title: news.meta_tags.meta_title,
       description: news.meta_tags.meta_description,
       keywords: news.meta_tags.meta_keywords,
+      otherMetaTags: news.meta_tags.other_meta_tags,
     },
     `/newsroom/${news.slug}`,
   );
@@ -34,7 +34,6 @@ export default async function page({ params }) {
 
   return (
     <>
-      <PageMeta html={news.meta_tags.other_meta_tags} />
       <InnerBanner
         data={{
           title: news.banner.banner_title,
@@ -51,7 +50,11 @@ export default async function page({ params }) {
           { id: "article", label: news.title },
         ]}
       />
-      <NewsDetail news={news} recent={recent_news} recent_news_title="Recent Newsroom" />
+      <NewsDetail
+        news={news}
+        recent={recent_news}
+        recent_news_title="Recent Newsroom"
+      />
     </>
   );
 }
