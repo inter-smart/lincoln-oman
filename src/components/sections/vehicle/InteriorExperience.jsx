@@ -1,8 +1,7 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
 
-export default function InteriorExperience({ data }) {
-  const items = data?.items ?? [];
+export default function InteriorExperience({ items }) {
   return (
     <section
       id="interior"
@@ -10,10 +9,10 @@ export default function InteriorExperience({ data }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title">
-          {data?.title}
+          Interior Experience
         </h2>
         <CardCarousel
-          label={data?.title}
+          label="Interior Experience"
           arrows
           className="mt-[30px] [--arrow-inset:calc(-80*var(--rr))] [--slide-gap:16px] xl:mt-[calc(45*var(--rr))] xl:[--slide-gap:calc(22*var(--rr))]"
           slideClassName="basis-[85%] sm:basis-[45%] lg:basis-1/4"
@@ -28,12 +27,11 @@ export default function InteriorExperience({ data }) {
               className="relative h-90 overflow-hidden rounded-[10px] sm:h-105 sm:rounded-[15px] 2xl:h-[calc(571*var(--rr))] 2xl:rounded-[20px]"
             >
               <Image
-                src={item.image.src}
-                alt={item.image.alt}
+                src={item.image}
+                alt=""
                 fill
                 sizes="(min-width: 992px) 50vw, 85vw"
                 className="object-cover"
-                style={{ objectPosition: item.image.position }}
               />
               <span
                 aria-hidden
@@ -43,9 +41,9 @@ export default function InteriorExperience({ data }) {
                 <div className="font-display text-xl leading-[1.2] sm:text-2xl xl:text-fluid-30">
                   {item.title}
                 </div>
-                {item.text && (
+                {item.description && (
                   <div className="mt-1 text-sm tracking-[0.05em] sm:text-base xl:text-fluid-18">
-                    {item.text}
+                    {item.description}
                   </div>
                 )}
               </div>
