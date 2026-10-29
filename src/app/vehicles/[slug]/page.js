@@ -114,8 +114,8 @@ export default async function page({ params }) {
       show: performance_highlights,
     },
     { id: "media", label: "Media connectivity", show: media_connectivities },
-    { id: "gallery", label: "Themes", show: galleries },
-    { id: "safety", label: "Luxury & Convenience", show: safeties },
+    { id: "gallery", label: "Gallery", show: galleries },
+    { id: "safety", label: "Safety", show: safeties },
   ]
     .filter((tab) => tab.show?.length > 0)
     .map(({ id, label }) => ({ id, label, href: `#${id}` }));
