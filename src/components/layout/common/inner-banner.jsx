@@ -2,9 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
-// `data` is the backend `banner` block: (banner_title, banner, banner_alt_text) on most pages, (title, image, alt_text, description) on the vehicle page.
-// `text`, `link`, `actions`, `position` are optional local extras.
-// `as="div"` for pages whose content already renders the <h1>
 export default function InnerBanner({ data, as: Title = "h1" }) {
   const src = data.banner ?? data.image;
   const title = data.banner_title ?? data.title;

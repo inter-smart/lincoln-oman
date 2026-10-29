@@ -1,17 +1,29 @@
 "use client";
-
 import { useEffect, useRef } from "react";
-import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
 
-// Opens the server-rendered `[data-fancybox]` links inside it in a Fancybox lightbox (images and videos).
 export default function GalleryLightbox({ children, className }) {
   const rootRef = useRef(null);
-
   useEffect(() => {
     const root = rootRef.current;
-    // Hash off: the URL hash belongs to the in-page tab bar
-    Fancybox.bind(root, "[data-fancybox]", { Hash: false });
+    Fancybox.bind(root, "[data-fancybox]", {
+      Hash: false,
+      hideScrollbar: true,
+      on: {
+        initLayout: () => {
+          window.dispatchEvent(new Event("lincoln:overlay-open"));
+          document
+            .querySelectorAll(".fancybox__container")
+            .forEach((container) => {
+              container.setAttribute("data-lenis-prevent", "");
+            });
+        },
+        destroy: () => {
+          window.dispatchEvent(new Event("lincoln:overlay-close"));
+        },
+      },
+    });
     return () => {
       Fancybox.unbind(root);
       Fancybox.close();

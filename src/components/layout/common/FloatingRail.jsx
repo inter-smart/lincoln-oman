@@ -16,8 +16,11 @@ export default function FloatingRail({ items, phone, email }) {
   };
 
   return (
-    <nav aria-label="Quick actions" className="fixed inset-x-0 bottom-0 z-40 border-t border-silver bg-white/70 backdrop-blur-[14.7px] md:inset-x-auto md:right-[36px] md:bottom-[61px] md:border-0 md:bg-transparent md:backdrop-blur-none">
-      <ul className="flex justify-around md:flex-col md:items-end md:gap-[17px]">
+    <nav
+      aria-label="Quick actions"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-silver bg-white/70 backdrop-blur-[14.7px] md:inset-x-auto md:right-5 md:bottom-[61px] md:border-0 md:bg-transparent md:backdrop-blur-none 2xl:right-8.75"
+    >
+      <ul className="flex justify-around md:flex-col md:items-end md:gap-2.5 2xl:gap-[17px]">
         {items.map((item, index) => (
           <li key={item.id}>
             <Link
@@ -33,7 +36,13 @@ export default function FloatingRail({ items, phone, email }) {
                 {item.icon === "wheel" ? (
                   <Composite {...wheelIcon} />
                 ) : (
-                  <Image src={item.icon.src} alt="" width={Math.ceil(item.icon.width)} height={Math.ceil(item.icon.height)} style={{ width: item.icon.width, height: item.icon.height }} />
+                  <Image
+                    src={item.icon.src}
+                    alt=""
+                    width={Math.ceil(item.icon.width)}
+                    height={Math.ceil(item.icon.height)}
+                    style={{ width: item.icon.width, height: item.icon.height }}
+                  />
                 )}
               </span>
             </Link>

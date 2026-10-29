@@ -92,7 +92,7 @@ export default function Header({ data, vehicles }) {
               showCloseButton={false}
               overlayClassName="bg-transparent lg:bg-black/50"
               aria-describedby={undefined}
-              className="max-h-dvh gap-0 overflow-y-auto border-none bg-night/80 pb-9 text-white backdrop-blur-md"
+              className="z-1001 max-h-dvh gap-0 overflow-y-auto border-none bg-night/80 pb-9 text-white backdrop-blur-md"
             >
               <SheetTitle className="sr-only">Menu</SheetTitle>
               <div className="mx-auto w-full max-w-[720px] px-9">

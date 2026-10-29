@@ -15,6 +15,15 @@ export default function SmoothScroll() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let lenis;
     let cancelled = false;
+    let overlayOpen = false;
+    const stopForOverlay = () => {
+      overlayOpen = true;
+      lenis?.stop();
+    };
+    const startAfterOverlay = () => {
+      overlayOpen = false;
+      lenis?.start();
+    };
     const start = async () => {
       const { default: Lenis } = await import("lenis");
       if (cancelled) return;
@@ -26,13 +35,18 @@ export default function SmoothScroll() {
         anchors: true,
       });
       lenisRef.current = lenis;
+      if (overlayOpen) lenis.stop();
     };
+    window.addEventListener("lincoln:overlay-open", stopForOverlay);
+    window.addEventListener("lincoln:overlay-close", startAfterOverlay);
     const idle = window.requestIdleCallback ?? ((cb) => setTimeout(cb, 1));
     const cancelIdle = window.cancelIdleCallback ?? clearTimeout;
     const id = idle(start);
     return () => {
       cancelled = true;
       cancelIdle(id);
+      window.removeEventListener("lincoln:overlay-open", stopForOverlay);
+      window.removeEventListener("lincoln:overlay-close", startAfterOverlay);
       lenis?.destroy();
       lenisRef.current = null;
     };

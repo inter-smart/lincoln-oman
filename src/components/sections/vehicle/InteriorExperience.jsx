@@ -35,14 +35,14 @@ export default function InteriorExperience({ items }) {
               />
               <span
                 aria-hidden
-                className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-500 group-data-active/slide:opacity-100"
+                className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent"
               />
-              <div className="absolute inset-x-5 bottom-5 translate-y-3 opacity-0 transition-[opacity,translate] duration-500 group-data-active/slide:translate-y-0 group-data-active/slide:opacity-100 group-data-active/slide:delay-200 xl:inset-x-[calc(36*var(--rr))] xl:bottom-[calc(35*var(--rr))]">
+              <div className="absolute inset-x-5 bottom-5 xl:inset-x-[calc(36*var(--rr))] xl:bottom-[calc(35*var(--rr))]">
                 <div className="font-display text-xl leading-[1.2] sm:text-2xl xl:text-fluid-30">
                   {item.title}
                 </div>
                 {item.description && (
-                  <div className="mt-1 text-sm tracking-[0.05em] sm:text-base xl:text-fluid-18">
+                  <div className="mt-1 max-h-0 translate-y-3 overflow-hidden text-sm tracking-[0.05em] opacity-0 transition-[max-height,opacity,transform] duration-500 group-data-active/slide:max-h-12 group-data-active/slide:translate-y-0 group-data-active/slide:opacity-100 group-data-active/slide:delay-200 sm:text-base xl:text-fluid-18">
                     {item.description}
                   </div>
                 )}
