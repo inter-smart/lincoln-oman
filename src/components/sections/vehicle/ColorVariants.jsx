@@ -1,6 +1,6 @@
 import ColorPicker from "@/components/layout/common/ColorPicker";
 
-export default function ColorVariants({ data }) {
+export default function ColorVariants({ items }) {
   return (
     <section
       id="colors"
@@ -8,13 +8,13 @@ export default function ColorVariants({ data }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title text-ink">
-          {data?.title}
+          Color Variants
         </h2>
         <div
           data-reveal
           className="mt-6 xl:mt-[calc(60*var(--rr))] xl:ps-[calc(80*var(--rr))]"
         >
-          <ColorPicker data={data} />
+          <ColorPicker items={items} />
         </div>
       </div>
     </section>

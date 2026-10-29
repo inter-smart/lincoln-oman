@@ -8,7 +8,7 @@ export default function ButtonLink({ data, variant, size, arrow = "accent", clas
   if (!data?.label) return null;
 
   return (
-    <Link href={data?.href ?? "#"} scroll={scroll} target={isExternal ? "_blank" : "_self"} className={cn(buttonVariants({ variant, size }), className)}>
+    <Link href={data?.href ?? "#"} scroll={scroll} target={(data.isExternal || isExternal) ? "_blank" : "_self"} className={cn(buttonVariants({ variant, size }), className)}>
       {data.label}
       <Image
         src={arrow === "white" ? "/icons/chevron-hero.svg" : "/icons/chevron-accent.svg"}
