@@ -11,12 +11,10 @@ export const metadata = {
 
 const local_data = {
   banner: {
-    title: "Request a Quote",
-    media: {
-      // Figma banner (interior shot) was not in the supplied assets: existing interior photo stands in.
-      url: "/images/vehicle/interior-1.jpg",
-      alternativeText: "Lincoln interior with the centre touchscreen",
-    },
+    banner_title: "Request a Quote",
+    // Figma banner (interior shot) was not in the supplied assets: existing interior photo stands in.
+    banner: "/images/vehicle/interior-1.jpg",
+    banner_alt_text: "Lincoln interior with the centre touchscreen",
   },
   breadcrumb: [
     { id: "home", label: "Home", href: "/" },
@@ -24,10 +22,10 @@ const local_data = {
   ],
   intro: {
     title: "Request a Quote",
-    lead: "Get a personalized quote for your requirements.",
+    description: "<p>Get a personalized quote for your requirements.</p>",
     text: "Share what you’re looking for, and our team will help you explore suitable options and pricing.",
+    enquiry_title: "Let’s Get Started",
     form: {
-      title: "Let’s Get Started",
       intro: "Complete the form, and we’ll be in touch.",
       action: "#",
       fields: [
@@ -58,7 +56,7 @@ export default function page() {
     <>
       <InnerBanner data={local_data.banner} as="div" />
       <Breadcrumb items={local_data.breadcrumb} />
-      <ContactIntro data={local_data.intro} />
+      <ContactIntro data={local_data.intro} form={local_data.intro.form} />
     </>
   );
 }

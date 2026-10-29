@@ -80,16 +80,7 @@ export default async function page({ searchParams }) {
 
   return (
     <>
-      <InnerBanner
-        as="div"
-        data={{
-          title: banner.banner_title,
-          media: {
-            url: banner.banner,
-            alternativeText: banner.banner_alt_text,
-          },
-        }}
-      />
+      <InnerBanner as="div" data={banner} />
       <Breadcrumb items={offers.breadcrumb} />
       <OfferList
         labels={offers}

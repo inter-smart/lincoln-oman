@@ -35,15 +35,7 @@ export default async function page() {
 
   return (
     <>
-      <InnerBanner
-        data={{
-          title: banner.banner_title,
-          media: {
-            url: banner.banner,
-            alternativeText: banner.banner_alt_text,
-          },
-        }}
-      />
+      <InnerBanner data={banner} />
       <Legacy data={about_cms.section_one} variant="about" />
       <AboutInfo data={about_cms.section_two} />
       <ExploreModels

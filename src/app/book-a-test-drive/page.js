@@ -11,11 +11,9 @@ export const metadata = {
 
 const local_data = {
   banner: {
-    title: "Book a Test Drive",
-    media: {
-      url: "/images/test-drive/banner.png",
-      alternativeText: "Lincoln sedan driving through a sunlit tunnel",
-    },
+    banner_title: "Book a Test Drive",
+    banner: "/images/test-drive/banner.png",
+    banner_alt_text: "Lincoln sedan driving through a sunlit tunnel",
   },
   breadcrumb: [
     { id: "home", label: "Home", href: "/" },
@@ -23,10 +21,10 @@ const local_data = {
   ],
   intro: {
     title: "Book a Test Drive",
-    lead: "Experience your next car from behind the wheel.",
+    description: "<p>Experience your next car from behind the wheel.</p>",
     text: "Discover the comfort, performance, and driving experience firsthand.",
+    enquiry_title: "Let’s Get You Driving",
     form: {
-      title: "Let’s Get You Driving",
       intro: "Complete the form, and our team will be in touch.",
       action: "#",
       fields: [
@@ -64,7 +62,7 @@ export default function page() {
     <>
       <InnerBanner data={local_data.banner} as="div" />
       <Breadcrumb items={local_data.breadcrumb} />
-      <ContactIntro data={local_data.intro} />
+      <ContactIntro data={local_data.intro} form={local_data.intro.form} />
     </>
   );
 }

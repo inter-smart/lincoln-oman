@@ -34,15 +34,7 @@ export default async function page({ params }) {
 
   return (
     <>
-      <InnerBanner
-        data={{
-          title: news.banner.banner_title,
-          media: {
-            url: news.banner.banner,
-            alternativeText: news.banner.banner_alt_text,
-          },
-        }}
-      />
+      <InnerBanner data={news.banner} />
       <Breadcrumb
         items={[
           { id: "home", label: "Home", href: "/" },

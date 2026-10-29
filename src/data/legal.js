@@ -1,6 +1,7 @@
 // Legal pages (CMS-shaped). `body` is rich-text HTML from the backend editor — styled by the `typography` utility.
 const banner = {
-  media: { url: "/images/owners/banner.jpg", alternativeText: "" },
+  banner: "/images/owners/banner.jpg",
+  banner_alt_text: "",
   position: "50% 100%",
 };
 
@@ -10,7 +11,7 @@ const crumbs = (id, label) => [
 ];
 
 export const terms = {
-  banner: { title: "Terms & Conditions", ...banner },
+  banner: { banner_title: "Terms & Conditions", ...banner },
   breadcrumb: crumbs("terms", "Terms & Conditions"),
   updated: "Last updated: 1 January 2026",
   body: `
@@ -43,7 +44,7 @@ export const terms = {
 };
 
 export const privacy = {
-  banner: { title: "Privacy Policy", ...banner },
+  banner: { banner_title: "Privacy Policy", ...banner },
   breadcrumb: crumbs("privacy", "Privacy Policy"),
   updated: "Last updated: 1 January 2026",
   body: `

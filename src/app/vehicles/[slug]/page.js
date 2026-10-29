@@ -22,14 +22,15 @@ export const metadata = {
 
 const local_data = {
   banner: {
-    title: "The Lincoln Navigator",
+    banner_title: "The Lincoln Navigator",
     text: "Prices starting from AED 369,495",
     link: { label: "Download Brochure", href: "#" },
     actions: [
       { id: "test-drive", label: "Test Drive", href: "#" },
       { id: "enquire", label: "Enquire Now", href: "#" },
     ],
-    media: { url: "/images/vehicle/banner.jpg", alternativeText: "" },
+    banner: "/images/vehicle/banner.jpg",
+    banner_alt_text: "",
   },
   breadcrumb: [
     { id: "home", label: "Home", href: "/" },

@@ -4,6 +4,9 @@
 /* Classes that only appear inside CMS HTML (home_cms.section_five `description`), so Tailwind can't see them in the source. */
 @source inline("mt-[12px] mt-[9px] text-[15px] leading-[26px] xl:text-fluid-16");
 
+/* Same for the Contact Us working-hours list (contact_cms.working_hours_description). */
+@source inline("mt-3 space-y-1.25 text-[13px] text-ink sm:text-sm xl:mt-3.75 2xl:space-y-2.5 2xl:text-base text-ember");
+
 /* The site has no dark theme: shadcn's dark: classes apply only under a .dark class, never from the OS setting. */
 @custom-variant dark (&:where(.dark, .dark *));
 
