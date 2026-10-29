@@ -12,23 +12,23 @@ export const offers = {
   loadMoreLabel: "Load More",
   expiresLabel: "Expires",
   emptyText: "There are no offers available at the moment.",
-  // No form backend exists yet: `action` is a placeholder until the client confirms where enquiries go.
+  // Listing-page form: POST /page-enquiries with type "offer" (formKey "offers"), see src/app/actions/forms.js.
   enquiry: {
     title: "Thank you for\nyour Interest\nEnquire our offer",
-    action: "#",
+    formKey: "offers",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },
       { name: "subject", label: "Subject", type: "text" },
     ],
-    message: { name: "message", label: "Message" },
+    message: { name: "message", label: "Message", optional: true },
     submit: "Submit",
   },
-  // Enquiry form on a single offer (/special-offers/[slug]); same placeholder `action` as above.
+  // Enquiry form on a single offer (/special-offers/[slug]): POST /special-offer-enquiries (formKey "offer").
   detailEnquiry: {
     title: "Thank you for\nyour Interest\nEnquire our offer",
     spaced: true,
-    action: "#",
+    formKey: "offer",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },
