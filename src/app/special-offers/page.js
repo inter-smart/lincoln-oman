@@ -11,7 +11,7 @@ import { buildMetadata } from "@/lib/seo";
 const PATH = "/special-offers";
 
 // GET /special-offers[?location_id=<id>][&page=<n>]
-//   -> { special_offers: [{ id, slug, title, dealership, service_center, expires_at, image, location }], banner, pagination }
+//   -> { special_offers: [{ id, slug, title, dealership, service_center, expires_at, image, location }], locations: [{ id, name }], banner, pagination }
 // cache() lets generateMetadata and the page share one request.
 const getOffers = cache((locationId = "", page = 1) =>
   apiGet("/special-offers", {
@@ -40,15 +40,6 @@ export async function generateMetadata() {
 // A query value is used only when it is a positive whole number ("2"), otherwise it is ignored.
 const positiveInt = (value) => (/^[1-9]\d*$/.test(value ?? "") ? value : "");
 
-// One entry per location found on the offers, in the order they appear.
-const locationsOf = (items) => [
-  ...new Map(
-    items
-      .filter((item) => item.location)
-      .map((item) => [item.location.id, item.location]),
-  ).values(),
-];
-
 export default async function page({ searchParams }) {
   const query = await searchParams;
   const locationId = positiveInt(query.location_id);
@@ -57,7 +48,7 @@ export default async function page({ searchParams }) {
   // The unfiltered list gives the banner and the location choices.
   const all = await getOffers();
   if (all.error || !all.data) notFound();
-  const { banner } = all.data;
+  const { banner, locations } = all.data;
 
   const first = locationId ? await getOffers(locationId) : all;
   if (first.error || !first.data) notFound();
@@ -86,7 +77,7 @@ export default async function page({ searchParams }) {
         labels={offers}
         data={{
           items,
-          locations: locationsOf(all.data.special_offers),
+          locations,
           locationId,
           basePath: PATH,
           loadMore:
