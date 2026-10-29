@@ -5,9 +5,9 @@ export const contact = {
     { id: "home", label: "Home", href: "/" },
     { id: "contact", label: "Contact Us" },
   ],
-  // No form backend yet: `action` is a placeholder until the client confirms where enquiries go.
+  // Submits to POST /contact-enquiry (formKey "contact"): see src/app/actions/forms.js.
   form: {
-    action: "#",
+    formKey: "contact",
     fields: [
       { name: "name", label: "Name", type: "text", autoComplete: "name" },
       { name: "email", label: "Email", type: "email", autoComplete: "email" },
@@ -19,7 +19,7 @@ export const contact = {
         wide: true,
       },
     ],
-    message: { name: "message", label: "Message" },
+    message: { name: "message", label: "Message", optional: true },
     submit: "Submit",
   },
 };

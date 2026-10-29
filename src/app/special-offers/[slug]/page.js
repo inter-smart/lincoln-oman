@@ -8,7 +8,8 @@ import { offers } from "@/data/offers";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
-// GET /special-offers/{slug} -> { special_offer: { title, slug, description (HTML), image, … }, banner, meta_tags }
+// GET /special-offers/{slug} -> { special_offer: { title, slug, description (HTML), image, … }, banner, meta_tags,
+//   vehicle_models: [{ name }], interested_in: [{ name }] } (the last two fill the enquiry form's dropdowns)
 // cache() lets generateMetadata and the page share one request.
 const getOffer = cache((slug) =>
   apiGet(`/special-offers/${encodeURIComponent(slug)}`),
@@ -35,7 +36,16 @@ export default async function page({ params }) {
   const { slug } = await params;
   const { data, error } = await getOffer(slug);
   if (error || !data) notFound();
-  const { special_offer, banner } = data;
+  const { special_offer, banner, vehicle_models, interested_in } = data;
+
+  const optionNames = { model: vehicle_models, interested: interested_in };
+  const enquiry = {
+    ...offers.detailEnquiry,
+    selects: offers.detailEnquiry.selects.map((select) => ({
+      ...select,
+      options: optionNames[select.name].map((option) => option.name),
+    })),
+  };
 
   return (
     <>
@@ -47,7 +57,7 @@ export default async function page({ params }) {
           { id: "offer", label: special_offer.title },
         ]}
       />
-      <EnquiryForm data={offers.detailEnquiry} />
+      <EnquiryForm data={enquiry} />
       <OfferDetail offer={special_offer} labels={offers} />
     </>
   );
