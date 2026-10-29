@@ -16,7 +16,7 @@ export default function Hero({ slides }) {
             key={slide.id}
             className="relative size-full overflow-hidden"
           >
-            {slide.media_type === "image" && (
+            {slide.media_type === "image" && slide.image && (
               <Image
                 src={slide.image}
                 alt={slide.image_alt_text || ""}

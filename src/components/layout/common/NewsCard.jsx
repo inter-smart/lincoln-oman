@@ -14,14 +14,16 @@ export default function NewsCard({ item }) {
       className="group block outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
     >
       <span className="relative block aspect-[384/572] overflow-hidden rounded-[10px] bg-night">
-        <Image
-          src={item.media.image}
-          alt=""
-          fill
-          sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
-          className="object-cover"
-          style={{ objectPosition: item.position }}
-        />
+        {item.media?.image && (
+          <Image
+            src={item.media.image}
+            alt=""
+            fill
+            sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
+            className="object-cover"
+            style={{ objectPosition: item.position }}
+          />
+        )}
         <span
           aria-hidden
           className={buttonVariants({

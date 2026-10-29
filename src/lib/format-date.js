@@ -31,4 +31,36 @@ export function formatDate(value) {
   return { label: `${dd}.${mm}.${yyyy}`, dateTime: `${yyyy}-${mm}-${dd}` };
 }
 
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
+/**
+ * Turns the API's ISO date ("2027-01-07") into the design's "Jan 7, 2027".
+ * Returns { label, dateTime } where dateTime is the ISO date for <time dateTime>.
+ * If the value isn't an ISO date, label is the raw text and dateTime is undefined.
+ */
+export function formatExpiry(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec((value ?? "").trim());
+  const month = match ? Number(match[2]) : 0;
+  const day = match ? Number(match[3]) : 0;
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return { label: value, dateTime: undefined };
+  }
+
+  return {
+    label: `${MONTH_NAMES[month - 1]} ${day}, ${match[1]}`,
+    dateTime: `${match[1]}-${match[2]}-${match[3]}`,
+  };
+}

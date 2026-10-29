@@ -5,7 +5,8 @@ import Composite, { creditLogo } from "@/components/layout/common/Composite";
 const linkHover =
   "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
-export default function Footer({ data }) {
+// `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email), null if the request failed.
+export default function Footer({ data, settings }) {
   return (
     <footer className="relative bg-night text-[15px] text-white xl:text-fluid-16">
       <a
@@ -57,13 +58,12 @@ export default function Footer({ data }) {
             <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
               {data?.address?.title}
             </h2>
-            <address className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base">
-              {data?.address?.lines?.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </address>
+            {settings?.address && (
+              <address
+                className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base"
+                dangerouslySetInnerHTML={{ __html: settings.address }}
+              />
+            )}
           </div>
 
           <div className="col-span-2 flex flex-col items-start gap-[12px] xl:col-span-1 xl:items-end">
@@ -74,12 +74,16 @@ export default function Footer({ data }) {
               height={208}
               className="mb-[47px] h-auto w-[165px]"
             />
-            <a href={`tel:${data?.phone}`} className={linkHover}>
-              Phone: {data?.phone}
-            </a>
-            <a href={`mailto:${data?.email}`} className={linkHover}>
-              Email: {data?.email}
-            </a>
+            {settings?.phone_number && (
+              <a href={`tel:${settings.phone_number}`} className={linkHover}>
+                Phone: {settings.phone_number}
+              </a>
+            )}
+            {settings?.email && (
+              <a href={`mailto:${settings.email}`} className={linkHover}>
+                Email: {settings.email}
+              </a>
+            )}
           </div>
         </div>
 
@@ -101,7 +105,7 @@ export default function Footer({ data }) {
               <span className="uppercase">{data?.followLabel}</span>
               <span className="relative block h-[19.42px] w-[213.11px]">
                 <Image
-                  src="/icons/social.svg"
+                src="/icons/social.svg"
                   alt=""
                   width={214}
                   height={20}

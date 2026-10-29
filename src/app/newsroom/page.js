@@ -37,16 +37,7 @@ export default async function page() {
 
   return (
     <>
-      <InnerBanner
-        as="div"
-        data={{
-          title: banner.banner_title,
-          media: {
-            url: banner.banner,
-            alternativeText: banner.banner_alt_text,
-          },
-        }}
-      />
+      <InnerBanner as="div" data={banner} />
       <Breadcrumb items={breadcrumb} />
       <NewsGrid title="Lincoln Newsroom" news={news} />
     </>

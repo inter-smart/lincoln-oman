@@ -16,19 +16,21 @@ export default function NewsDetail({ news, recent, recent_news_title }) {
           >
             {news.title}
           </div>
-          <div
-            data-reveal
-            className="relative aspect-4/3 overflow-hidden rounded-[10px] bg-night sm:aspect-1256/596 xl:mt-[calc(36*var(--rr))]"
-          >
-            <Image
-              src={news.media.image}
-              alt={news.media.alt ?? news.title}
-              fill
-              priority
-              sizes="(min-width: 1200px) 75vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          {news.media?.image && (
+            <div
+              data-reveal
+              className="relative aspect-4/3 overflow-hidden rounded-[10px] bg-night sm:aspect-1256/596 xl:mt-[calc(36*var(--rr))]"
+            >
+              <Image
+                src={news.media.image}
+                alt={news.media.alt ?? news.title}
+                fill
+                priority
+                sizes="(min-width: 1200px) 75vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          )}
           <div
             data-reveal
             className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:mt-7 xl:mt-[calc(40*var(--rr))]"

@@ -4,14 +4,16 @@ import Image from "next/image";
 export default function AboutCommitment({ data }) {
   return (
     <section className="block h-auto w-full">
-      <div className="block aspect-1920/1120 h-auto w-full overflow-hidden">
-        <Image
-          src={data.image}
-          alt={data.title}
-          width={1920}
-          height={1120}
-          className="size-full object-cover"
-        />
+      <div className="block aspect-1920/1120 h-auto w-full overflow-hidden bg-night">
+        {data.image && (
+          <Image
+            src={data.image}
+            alt={data.title}
+            width={1920}
+            height={1120}
+            className="size-full object-cover"
+          />
+        )}
       </div>
       <div className="container">
         <div className="relative z-0 size-full">

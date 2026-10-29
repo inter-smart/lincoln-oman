@@ -85,15 +85,7 @@ export default async function page() {
 
   return (
     <>
-      <InnerBanner
-        data={{
-          title: banner.banner_title,
-          media: {
-            url: banner.banner,
-            alternativeText: banner.banner_alt_text,
-          },
-        }}
-      />
+      <InnerBanner data={banner} />
       <Breadcrumb items={breadcrumb} />
 
       {hasTitle(intro) && <CertifiedIntro data={intro} />}

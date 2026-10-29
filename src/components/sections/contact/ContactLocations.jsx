@@ -2,18 +2,19 @@ import { cn } from "@/lib/utils";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import CardCarousel from "@/components/layout/common/CardCarousel";
 
-export default function ContactLocations({ data }) {
+// `contact_addresses` is the raw /contact-us list; `address` is CMS HTML (one block span per line).
+export default function ContactLocations({ contact_addresses }) {
   return (
     <section className="h-auto w-full bg-[#231F20] py-10 text-white sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
       <div className="container">
         <CardCarousel
-          label={data?.label}
+          label="Lincoln Oman showrooms"
           arrows
           arrowClassName="top-1/2 -translate-y-1/2 rounded-full bg-night/80 hidden"
           className="[--arrow-inset:-12px] [--slide-gap:0px]"
           slideClassName="basis-full sm:basis-1/2 lg:basis-1/3"
         >
-          {data?.items?.map((item, index) => (
+          {contact_addresses.map((item, index) => (
             <div
               key={item.id}
               data-reveal
@@ -29,11 +30,7 @@ export default function ContactLocations({ data }) {
                 {item.title}
               </h2>
               <address className="mt-4 text-sm leading-[1.7] not-italic sm:text-sm 2xl:mt-5 2xl:text-base">
-                {item.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
+                <div dangerouslySetInnerHTML={{ __html: item.address }} />
                 <span className="mt-3 block xl:mt-[calc(14*var(--rr))]">
                   Phone:{" "}
                   <a
@@ -54,7 +51,8 @@ export default function ContactLocations({ data }) {
                 </span>
               </address>
               <ButtonLink
-                data={data?.direction}
+                isExternal={true}
+                data={{ label: "Get Direction", href: item.direction }}
                 className="mt-3.75 2xl:mt-[calc(40*var(--rr))]"
               />
             </div>

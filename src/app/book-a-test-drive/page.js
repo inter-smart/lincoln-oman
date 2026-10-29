@@ -47,7 +47,7 @@ export default async function page() {
 
   return (
     <>
-      <InnerBanner
+     <InnerBanner
         data={{
           title: banner?.banner_title ?? testDrive.fallback.banner.title,
           media: {
@@ -61,6 +61,10 @@ export default async function page() {
       />
       <Breadcrumb items={testDrive.breadcrumb} />
       <ContactIntro data={withVehicleOptions(intro, vehicle_models)} />
+    </>
+  );
+}
+
     </>
   );
 }

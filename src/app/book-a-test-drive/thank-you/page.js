@@ -10,11 +10,9 @@ export const metadata = {
 
 const local_data = {
   banner: {
-    title: "Thank You",
-    media: {
-      url: "/images/test-drive/banner.png",
-      alternativeText: "Lincoln sedan driving through a sunlit tunnel",
-    },
+    banner_title: "Thank You",
+    banner: "/images/test-drive/banner.png",
+    banner_alt_text: "Lincoln sedan driving through a sunlit tunnel",
   },
   breadcrumb: [
     { id: "home", label: "Home", href: "/" },
