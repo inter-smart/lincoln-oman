@@ -1,73 +1,62 @@
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import OfferDetail from "@/components/sections/offers/OfferDetail";
+import { offers } from "@/data/offers";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Lincoln Service Special",
-  description:
-    "Lincoln Service Special in Oman: available at all Lincoln dealerships and service centres. Enquire about this offer online.",
-  alternates: { canonical: "/special-offers/lincoln-service-special" },
-};
+// GET /special-offers/{slug} -> { special_offer: { title, slug, description (HTML), image, … }, banner, meta_tags }
+// cache() lets generateMetadata and the page share one request.
+const getOffer = cache((slug) =>
+  apiGet(`/special-offers/${encodeURIComponent(slug)}`),
+);
 
-const local_data = {
-  banner: {
-    title: "Special Offers",
-    media: {
-      url: "/images/offers/banner.jpg",
-      alternativeText: "Lincoln Nautilus side profile",
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const { data, error } = await getOffer(slug);
+  if (error || !data) notFound();
+  const { special_offer, meta_tags } = data;
+  return buildMetadata(
+    {
+      // The CMS can send no meta title; fall back to the offer's own title so the page is never untitled.
+      title: meta_tags.meta_title ?? special_offer.title,
+      description: meta_tags.meta_description,
+      keywords: meta_tags.meta_keywords,
+      otherMetaTags: meta_tags.other_meta_tags,
     },
-  },
-  breadcrumb: [
-    { id: "home", label: "Home", href: "/" },
-    { id: "offers", label: "Special Offers", href: "/special-offers" },
-    { id: "offer", label: "Lincoln Service Special" },
-  ],
-  enquiry: {
-    title: "Thank you for\nyour Interest\nEnquire our offer",
-    spaced: true,
-    action: "#",
-    fields: [
-      { name: "name", label: "Name", type: "text", autoComplete: "name" },
-      { name: "email", label: "Email", type: "email", autoComplete: "email" },
-      { name: "phone", label: "Phone", type: "tel", autoComplete: "tel" },
-    ],
-    selects: [
-      {
-        name: "model",
-        label: "Model",
-        options: ["Navigator", "Aviator", "Corsair", "Nautilus"],
-      },
-      {
-        name: "interested",
-        label: "Interested",
-        options: ["Service", "Test drive", "Quote"],
-      },
-    ],
-    message: { name: "message", label: "Message" },
-    submit: "Submit",
-  },
-  detail: {
-    title: "Lincoln Service Special",
-    expiry: "Expires Jan 20, 2025",
-    description: [
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-    ],
-    details: ["All Lincoln Dealerships", "UAE Service Centers"],
-    image: {
-      src: "/images/offers/offer-1.jpg",
-      alt: "A red Lincoln SUV parked in a city street",
-    },
-  },
-};
+    `/special-offers/${special_offer.slug}`,
+  );
+}
 
-export default function page() {
+export default async function page({ params }) {
+  const { slug } = await params;
+  const { data, error } = await getOffer(slug);
+  if (error || !data) notFound();
+  const { special_offer, banner } = data;
+
   return (
     <>
-      <InnerBanner data={local_data.banner} />
-      <Breadcrumb items={local_data.breadcrumb} />
-      <EnquiryForm data={local_data.enquiry} />
-      <OfferDetail data={local_data.detail} />
+      <InnerBanner
+        data={{
+          title: banner.banner_title,
+          media: {
+            url: banner.banner,
+            alternativeText: banner.banner_alt_text,
+          },
+        }}
+      />
+      <Breadcrumb
+        items={[
+          { id: "home", label: "Home", href: "/" },
+          { id: "offers", label: "Special Offers", href: "/special-offers" },
+          { id: "offer", label: special_offer.title },
+        ]}
+      />
+      <EnquiryForm data={offers.detailEnquiry} />
+      <OfferDetail offer={special_offer} labels={offers} />
     </>
   );
 }
