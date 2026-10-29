@@ -45,16 +45,7 @@ export default async function page() {
 
   return (
     <>
-      <InnerBanner
-        data={{
-          title: banner.banner_title,
-          media: {
-            url: banner.banner,
-            alternativeText: banner.banner_alt_text,
-          },
-        }}
-        as="div"
-      />
+      <InnerBanner as="div" data={banner} />
       <Breadcrumb items={quote.breadcrumb} />
       <ContactIntro data={withVehicleOptions(intro, vehicle_models)} />
     </>
