@@ -1,68 +1,66 @@
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
+import { testDrive } from "@/data/test-drive";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
+import { withVehicleOptions } from "@/lib/vehicle-options";
 
-export const metadata = {
-  title: "Book a Test Drive",
-  description:
-    "Book a Lincoln test drive in Oman: pick a model, date and time and our team will confirm your drive.",
-  alternates: { canonical: "/book-a-test-drive" },
-};
+// GET /test-drive -> { cms: { title, sub_title, description, enquiry_title, enquiry_description }, banner, vehicle_models: [{ id, name }] }
+// `banner` is null until the CMS adds one for this page: banner and meta then fall back to src/data/test-drive.js.
+// cache() lets generateMetadata and the page share one request.
+const getTestDrive = cache(() => apiGet("/test-drive"));
 
-const local_data = {
-  banner: {
-    banner_title: "Book a Test Drive",
-    banner: "/images/test-drive/banner.png",
-    banner_alt_text: "Lincoln sedan driving through a sunlit tunnel",
-  },
-  breadcrumb: [
-    { id: "home", label: "Home", href: "/" },
-    { id: "test-drive", label: "Book a Test Drive" },
-  ],
-  intro: {
-    title: "Book a Test Drive",
-    description: "<p>Experience your next car from behind the wheel.</p>",
-    text: "Discover the comfort, performance, and driving experience firsthand.",
-    enquiry_title: "Let’s Get You Driving",
-    form: {
-      intro: "Complete the form, and our team will be in touch.",
-      action: "#",
-      fields: [
-        { name: "name", label: "Name", type: "text", autoComplete: "name" },
-        { name: "email", label: "Email", type: "email", autoComplete: "email" },
-        { name: "phone", label: "Phone", type: "tel", autoComplete: "tel" },
-        {
-          name: "model",
-          label: "Vehicle Model",
-          options: ["Navigator", "Aviator", "Corsair", "Nautilus"],
-        },
-        {
-          name: "time",
-          label: "Preferred Time",
-          optional: true,
-          options: ["Morning", "Afternoon", "Evening"],
-        },
-        { name: "date", label: "dd-mm-yyyy", date: true },
-      ],
-      message: { name: "message", label: "Message" },
-      // Copy is as designed (it names Ford Motor Company): flagged for the client.
-      terms: {
-        choices: ["Yes", "No"],
-        text: "Terms and Conditions. I am happy to receive commercial messages from Ford Motor Company and affiliated authorized partners.",
-        agree:
-          "I agree to the terms and conditions and privacy policy of this website.",
-      },
-      submit: "Submit Request",
+export async function generateMetadata() {
+  const { data, error } = await getTestDrive();
+  if (error || !data) notFound();
+  const { banner } = data;
+  return buildMetadata(
+    {
+      title: banner?.meta_title ?? testDrive.fallback.meta.title,
+      description:
+        banner?.meta_description ?? testDrive.fallback.meta.description,
+      keywords: banner?.meta_keywords,
+      otherMetaTags: banner?.other_meta_tags,
     },
-  },
-};
+    "/book-a-test-drive",
+  );
+}
 
-export default function page() {
+export default async function page() {
+  const { data, error } = await getTestDrive();
+  if (error || !data) notFound();
+  const { cms, banner, vehicle_models } = data;
+
+  const intro = {
+    title: cms.title,
+    lead: cms.sub_title,
+    textHtml: cms.description,
+    form: {
+      ...testDrive.form,
+      title: cms.enquiry_title,
+      introHtml: cms.enquiry_description,
+    },
+  };
+
   return (
     <>
-      <InnerBanner data={local_data.banner} as="div" />
-      <Breadcrumb items={local_data.breadcrumb} />
-      <ContactIntro data={local_data.intro} form={local_data.intro.form} />
+      <InnerBanner
+        data={{
+          title: banner?.banner_title ?? testDrive.fallback.banner.title,
+          media: {
+            url: banner?.banner ?? testDrive.fallback.banner.url,
+            alternativeText:
+              banner?.banner_alt_text ??
+              testDrive.fallback.banner.alternativeText,
+          },
+        }}
+        as="div"
+      />
+      <Breadcrumb items={testDrive.breadcrumb} />
+      <ContactIntro data={withVehicleOptions(intro, vehicle_models)} />
     </>
   );
 }
