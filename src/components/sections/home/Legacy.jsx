@@ -7,18 +7,13 @@ export default function Legacy({ data, variant = "default" }) {
       className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
     >
       <div className="container flex flex-col items-center">
-        <div
-          data-observe
-          className="legacy-logo relative h-(--logo-h) overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]"
-        >
-          <Image
-            src="/images/logo.png"
-            alt="Lincoln"
-            width={600}
-            height={208}
-            className={`absolute top-0 left-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
-          />
-        </div>
+        <Image
+          src="/images/logo.png"
+          alt="Lincoln"
+          width={600}
+          height={208}
+          className={`h-(--logo-h) w-[calc(var(--logo-h)*2.884)] max-w-none [--logo-h:min(110px,calc((100vw-100px)/2.884))] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))] ${variant === "about" && "invert"}`}
+        />
         <h2
           data-reveal
           className="mt-7.5 title lg:mt-10 xl:mt-[calc(115*var(--rr))] 2xl:mt-12.5 3xl:mt-17.5"

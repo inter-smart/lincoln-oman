@@ -309,12 +309,6 @@ body {
   color: var(--color-ink);
 }
 
-/* Legacy emblem → full wordmark reveal (Figma "image 3" Default → Variant2) */
-.legacy-logo {
-  width: calc(var(--logo-h) * 2.884);
-  transition: width 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
-}
-
 /* Respect reduced motion for every animation and transition (tw-animate entrances, hovers, menus) */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -341,9 +335,6 @@ body {
     translate: 0 40px;
   }
 
-  .legacy-logo:not([data-visible]) {
-    width: calc(var(--logo-h) * 0.366);
-  }
 }
 
 /* Site scrollbar: slim orange thumb on a faint orange track, no arrow buttons. Applies to the page scroll only. */
