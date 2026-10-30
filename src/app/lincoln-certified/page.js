@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import ContactCta from "@/components/layout/common/ContactCta";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import SectionTabs from "@/components/layout/common/SectionTabs";
 import CertifiedBand from "@/components/sections/certified/CertifiedBand";
 import CertifiedBenefits from "@/components/sections/certified/CertifiedBenefits";
@@ -85,6 +86,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner data={banner} />
       <Breadcrumb items={breadcrumb} />
 

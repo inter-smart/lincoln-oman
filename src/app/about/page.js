@@ -4,6 +4,7 @@ import Legacy from "@/components/sections/home/Legacy";
 import Newsroom from "@/components/sections/home/Newsroom";
 import AboutInfo from "@/components/sections/about/about-info";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import AboutCommitment from "@/components/sections/about/about-commitment";
 import { apiGet } from "@/lib/api/get";
@@ -35,6 +36,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner data={banner} />
       <Legacy data={about_cms.section_one} variant="about" />
       <AboutInfo data={about_cms.section_two} />

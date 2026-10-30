@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import OfferDetail from "@/components/sections/offers/OfferDetail";
 import { offers } from "@/data/offers";
 import { apiGet } from "@/lib/api/get";
@@ -36,7 +37,8 @@ export default async function page({ params }) {
   const { slug } = await params;
   const { data, error } = await getOffer(slug);
   if (error || !data) notFound();
-  const { special_offer, banner, vehicle_models, interested_in } = data;
+  const { special_offer, meta_tags, banner, vehicle_models, interested_in } =
+    data;
 
   const optionNames = { model: vehicle_models, interested: interested_in };
   const enquiry = {
@@ -49,6 +51,7 @@ export default async function page({ params }) {
 
   return (
     <>
+      <MetaTags html={meta_tags.other_meta_tags} />
       <InnerBanner data={banner} />
       <Breadcrumb
         items={[

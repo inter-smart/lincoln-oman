@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import OfferList from "@/components/sections/offers/OfferList";
 import { offers } from "@/data/offers";
 import { apiGet } from "@/lib/api/get";
@@ -81,6 +82,7 @@ export default async function page({ searchParams }) {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={offers.breadcrumb} />
       <OfferList

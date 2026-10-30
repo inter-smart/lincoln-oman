@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import OwnersContent from "@/components/sections/owners/OwnersContent";
 import { owners } from "@/data/owners";
 import { apiGet } from "@/lib/api/get";
@@ -48,6 +49,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner data={banner} />
       <Breadcrumb items={owners.breadcrumb} />
       {services.length > 0 && (

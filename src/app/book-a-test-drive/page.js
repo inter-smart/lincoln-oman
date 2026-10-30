@@ -2,6 +2,7 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
 import { testDrive } from "@/data/test-drive";
 import { apiGet } from "@/lib/api/get";
@@ -47,6 +48,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner?.other_meta_tags} />
       <InnerBanner
         data={{
           banner_title: banner?.banner_title ?? testDrive.fallback.banner.title,

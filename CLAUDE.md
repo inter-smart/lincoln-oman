@@ -40,7 +40,7 @@ src/app/<route>/page.js         server page: fetch via apiGet, pass backend obje
 src/app/layout.js               JSON-LD, Header/Footer/FloatingRail/RevealObserver
 src/lib/api/{get,post,http}.js  apiGet / apiPost -> send (the only code that reads the token)
 src/lib/api/request.js          pure helpers (ApiError, buildUrl, unwrapEnvelope) — testable
-src/lib/meta-tags.js            metadataFromTags: banner.other_meta_tags -> Metadata fields (used by buildMetadata)
+src/lib/meta-tags.js            metadataFromTags (-> Metadata fields, used by buildMetadata) + rawMetaTags (-> <MetaTags>) for banner.other_meta_tags
 src/lib/seo.js                  buildMetadata(): title/description/keywords + canonical
 src/lib/{owners-sections,split-media-html,list-items}.js   pure CMS-HTML parsers (unit-tested)
 src/data/{site,seo,owners,legal}.js   header/footer/rail/menu content, SEO defaults, static labels
@@ -78,7 +78,11 @@ src/components/ui/*                   shadcn primitives (button cva, sheet, navi
 ### Page metadata
 
 - The `banner` block carries `meta_title`, `meta_description`, `meta_keywords`, `other_meta_tags`. Every head tag comes from `generateMetadata() → buildMetadata({ title, description, keywords, otherMetaTags }, "/path")` (`src/lib/seo.js`); pages render nothing for metadata in the body. `buildMetadata` also sets `alternates.canonical` (and `og:url`) to the absolute URL of the page (`siteUrl` + path).
-- `other_meta_tags` is a raw HTML string from the CMS. `metadataFromTags()` (`src/lib/meta-tags.js`, tested) maps what Next can render: `name=` metas → `other`, `og:image*` → `openGraph.images`, `twitter:image/site/creator` → `twitter`, `<link rel=alternate hreflang>` → `alternates.languages`. **Everything else is dropped** (JSON-LD, `itemprop`, other `property=` tags: Next's `metadata.other` only writes `name=`). Tags `buildMetadata` already sets (title, description, og:url/site_name/locale/type, twitter:card), `robots` and canonical are ignored, so the CMS can't override noindex or add a second canonical.
+- `other_meta_tags` is a raw HTML string from the CMS, split two ways (`src/lib/meta-tags.js`; its tests were deleted in `8f89856`):
+  - `metadataFromTags()` → Next Metadata, via `buildMetadata`: plain `name=` metas → `other`, `og:image*` → `openGraph.images`, **`og:locale` → `openGraph.locale` (the CMS replaces the page's `en_OM`)**, `twitter:image/site/creator` → `twitter`, `<link rel=alternate hreflang>` → `alternates.languages`.
+  - `rawMetaTags()` → `<MetaTags html={…} />` (`src/components/layout/common/MetaTags.jsx`, rendered by every page that reads `other_meta_tags`): the tags Next's `metadata.other` can't write, because it only writes `name=`. These are other `property=` (`fb:app_id`, `article:*`), `itemprop`, `name=` with `media` (`theme-color`) and `http-equiv`. `http-equiv` is allowlisted to `x-ua-compatible` and `content-language`; `refresh`, `set-cookie`, CSP etc. are dropped. React hoists the `<meta>` into `<head>`, except `itemprop` ones, which stay in the body. A new page must render `<MetaTags>` itself.
+  - **Still dropped:** JSON-LD, scripts and any other element. Tags `buildMetadata` already sets (title, description, og:url/site_name/type, twitter:card/title/description), `robots` and canonical are ignored, so the CMS can't override noindex or add a second canonical.
+  - **`theme-color` caveat:** `layout.js` sets an unconditional `viewport.themeColor` that renders before the CMS tag, and browsers use the first matching one, so a CMS `theme-color` with `media` has no effect until the layout value is changed.
 - **Known gap:** `layout.js` has no `export const metadata` since `e13d6d5` (`metadataBase`, title template, canonical, robots noindex meta are gone; `X-Robots-Tag` and `robots.txt` still enforce noindex). The unused `title`/`description`/`allowIndexing` imports there are leftovers. Don't assume the noindex *meta* tag exists.
 
 - **Client components are leaves only:** CardCarousel (Embla), HeaderShell (scroll flag), VehicleMenu, RevealObserver, HeroVideo, HoverVideo, ShowcaseStage. Server content goes in as `children`. Check: `grep -rl '"use client"' src/components/sections` must be empty.

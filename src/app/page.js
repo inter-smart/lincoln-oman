@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import Hero from "@/components/sections/home/Hero";
 import Legacy from "@/components/sections/home/Legacy";
@@ -36,6 +37,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <Hero slides={sliders} />
       <ExploreModels
         title={home_cms.section_one.title}

@@ -2,6 +2,7 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import LegalContent from "@/components/sections/legal/LegalContent";
 import { terms } from "@/data/legal";
 import { apiGet } from "@/lib/api/get";
@@ -33,6 +34,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={policy.other_meta_tags} />
       <InnerBanner data={policy.banner} />
       <Breadcrumb items={terms.breadcrumb} />
       <LegalContent data={{ body: policy.content }} />

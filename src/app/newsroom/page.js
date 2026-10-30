@@ -2,6 +2,7 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import NewsGrid from "@/components/sections/newsroom/NewsGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
@@ -37,6 +38,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={breadcrumb} />
       <NewsGrid title={banner?.page_title} news={news} />

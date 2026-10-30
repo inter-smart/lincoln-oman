@@ -2,6 +2,7 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
+import MetaTags from "@/components/layout/common/MetaTags";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
 import ContactLocations from "@/components/sections/contact/ContactLocations";
 import DepartmentContact from "@/components/sections/contact/DepartmentContact";
@@ -35,6 +36,7 @@ export default async function page() {
 
   return (
     <>
+      <MetaTags html={banner.other_meta_tags} />
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={contact.breadcrumb} />
       <ContactIntro data={contact_cms} form={contact.form} />
