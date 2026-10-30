@@ -2,36 +2,37 @@ import Image from "next/image";
 import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import HeroCarousel from "@/components/layout/common/HeroCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function Hero({ data }) {
-  const slides = data?.items?.length ? data.items : data ? [data] : [];
-
+// `slides` is the API's `sliders` list.
+export default async function Hero({ slides }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="top"
       className="relative h-svh max-h-[1000px] min-h-[560px] overflow-hidden bg-night text-white"
     >
-      <HeroCarousel label={data?.title || "Lincoln highlights"}>
+      <HeroCarousel label={ui.featuredVehicles}>
         {slides.map((slide, index) => (
           <article
-            key={slide.id || index}
+            key={slide.id}
             className="relative size-full overflow-hidden"
           >
-            {slide.media?.type === "image" && (
+            {slide.media_type === "image" && slide.image && (
               <Image
-                src={slide.media.url}
-                alt={slide.media.alt || ""}
+                src={slide.image}
+                alt={slide.image_alt_text || ""}
                 fill
                 priority={index === 0}
                 sizes="100vw"
                 className="object-cover"
               />
             )}
-            {slide.media?.type === "video" && (
+            {slide.media_type === "video" && (
               <>
-                {slide.media.poster && (
+                {slide.video_thumbnail_image && (
                   <Image
-                    src={slide.media.poster}
+                    src={slide.video_thumbnail_image}
                     alt=""
                     fill
                     priority={index === 0}
@@ -39,7 +40,7 @@ export default function Hero({ data }) {
                     className="object-cover"
                   />
                 )}
-                <HeroVideo sources={slide.media.url} />
+                <HeroVideo sources={slide.video} />
               </>
             )}
             <Image
@@ -63,7 +64,11 @@ export default function Hero({ data }) {
                 {slide.title}
               </h1>
               <div className="mt-[26px] animate-in delay-200 duration-1000 fill-mode-backwards fade-in slide-in-from-bottom-6">
-                <ButtonLink data={slide.cta} size="lg" arrow="white" />
+                <ButtonLink
+                  data={{ label: slide.action_title, href: slide.action_url }}
+                  size="lg"
+                  arrow="white"
+                />
               </div>
             </div>
           </article>

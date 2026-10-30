@@ -1,13 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // Inner-page trail; the separator is the small Lincoln emblem from the design. The last item is the current page.
-export default function Breadcrumb({ items }) {
+export default async function Breadcrumb({ items }) {
+  const { ui } = await getCurrentDictionary();
   if (!items?.length) return null;
 
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label={ui.breadcrumb}
       className="container pt-5 sm:pt-6 xl:pt-[calc(33*var(--rr))]"
     >
       <ol className="flex flex-wrap items-center gap-x-[19px] gap-y-1 text-sm tracking-[0.8px] text-ink sm:text-base xl:text-fluid-16">

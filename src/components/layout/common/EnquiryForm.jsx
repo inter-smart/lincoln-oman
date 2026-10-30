@@ -1,22 +1,26 @@
 import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
-import { buttonVariants } from "@/components/ui/button";
+import FormShell from "@/components/layout/common/form/FormShell";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectField,
+  SubmitButton,
+  TextareaField,
+  TextField,
+} from "@/components/layout/common/form/FormFields";
 import { cn } from "@/lib/utils";
 
-const field =
-  "w-full rounded-sm bg-white px-4 text-sm text-ink placeholder:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid sm:text-base xl:text-fluid-16";
-
-// "How may I help you?" card: photo beside a short enquiry form. Native validation only;
-// labels are visually hidden because the design shows them as placeholders.
+// "How may I help you?" card: photo beside a short enquiry form. Fields, real-time zod validation and reCAPTCHA
+// live in the client leaves under form/ (data.formKey picks the schema); labels are visually hidden because the design shows them as placeholders.
 // Without data.image the left column is the emblem watermark + title (special-offers band).
 export default function EnquiryForm({ data }) {
+  // Content is either { title, image: { src, alt } } (local pages) or the CMS's { enquiry_title, enquiry_image: { path } }
+  const title = data?.title ?? data?.enquiry_title;
+  const image = data?.image?.src
+    ? data.image
+    : data?.enquiry_image?.path
+      ? { src: data.enquiry_image.path, alt: title }
+      : null;
+
   return (
     <section
       className={cn(
@@ -29,11 +33,11 @@ export default function EnquiryForm({ data }) {
           data-reveal
           className="grid items-center gap-6 rounded-[10px] bg-night p-4 text-white sm:rounded-[15px] sm:p-6 lg:grid-cols-[minmax(0,455fr)_minmax(0,1053fr)] lg:gap-8 xl:gap-[calc(45*var(--rr))] xl:py-[calc(45*var(--rr))] xl:ps-[calc(38*var(--rr))] xl:pe-[calc(50*var(--rr))] 2xl:rounded-[20px]"
         >
-          {data?.image ? (
+          {image ? (
             <div className="relative aspect-455/359 overflow-hidden rounded-[10px] max-lg:hidden">
               <Image
-                src={data.image.src}
-                alt={data.image.alt ?? ""}
+                src={image.src}
+                alt={image.alt ?? ""}
                 fill
                 sizes="(min-width: 992px) 30vw, 100vw"
                 className="object-cover"
@@ -42,80 +46,49 @@ export default function EnquiryForm({ data }) {
           ) : (
             <div className="flex items-center gap-5 xl:gap-[calc(35*var(--rr))]">
               <EmblemMark className="h-20 shrink-0 bg-white/10 sm:h-32 xl:h-[calc(270*var(--rr))]" />
-              <h2 className="title whitespace-pre-line">{data?.title}</h2>
+              <h2 className="title whitespace-pre-line">{title}</h2>
             </div>
           )}
-          <form action={data?.action} method="post">
-            {data?.image && <h2 className="title">{data.title}</h2>}
+          <FormShell formKey={data?.formKey ?? "contact"} tone="dark">
+            {image && <h2 className="title">{title}</h2>}
             <div
               className={cn(
                 "grid gap-3.5 sm:grid-cols-3",
-                data?.image && "mt-5 xl:mt-[calc(30*var(--rr))]",
+                image && "mt-5 xl:mt-[calc(30*var(--rr))]",
               )}
             >
               {data?.fields?.map((input) => (
-                <label key={input.name} className="block">
-                  <span className="sr-only">{input.label} (required)</span>
-                  <input
-                    type={input.type}
-                    name={input.name}
-                    autoComplete={input.autoComplete}
-                    placeholder={`${input.label}*`}
-                    required
-                    className={`${field} h-12`}
-                  />
-                </label>
+                <TextField
+                  key={input.name}
+                  name={input.name}
+                  label={input.label}
+                  type={input.type}
+                  autoComplete={input.autoComplete}
+                />
               ))}
             </div>
             {data?.selects && (
               <div className="mt-3.5 grid gap-3.5 sm:grid-cols-2">
                 {data.selects.map((select) => (
-                  <Select key={select.name} name={select.name} required>
-                    <SelectTrigger
-                      aria-label={`${select.label} (required)`}
-                      className={`${field} h-12 data-[placeholder]:text-ink data-[size=default]:h-12 [&_svg]:text-ember!`}
-                    >
-                      <SelectValue placeholder={`${select.label}*`} />
-                    </SelectTrigger>
-                    <SelectContent
-                      position="popper"
-                      className="bg-white text-ink"
-                    >
-                      {select.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SelectField
+                    key={select.name}
+                    name={select.name}
+                    label={select.label}
+                    options={select.options}
+                  />
                 ))}
               </div>
             )}
-            <label className="mt-4 block">
-              <span className="sr-only">{data?.message?.label}</span>
-              <textarea
-                name={data?.message?.name}
-                placeholder={data?.message?.label}
-                rows={4}
-                className={`${field} h-32.5 resize-none py-3`}
-              />
-            </label>
+            <TextareaField
+              name={data?.message?.name}
+              label={data?.message?.label}
+              optional={data?.message?.optional}
+              className="mt-4"
+            />
             <div className="mt-5 flex justify-end">
-              <button
-                type="submit"
-                className={cn(buttonVariants({ variant: "light" }), "px-7")}
-              >
-                {data?.submit}
-                <Image
-                  src="/icons/chevron-accent.svg"
-                  alt=""
-                  width={7}
-                  height={4}
-                  className="-rotate-90"
-                />
-              </button>
+              <SubmitButton>{data?.submit}</SubmitButton>
             </div>
-          </form>
+          </FormShell>
         </div>
       </div>
     </section>

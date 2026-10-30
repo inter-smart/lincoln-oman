@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
 import { cn } from "@/lib/utils";
 
 const initial = { selected: null, canPrev: false, canNext: false };
@@ -33,17 +34,20 @@ export function useCarouselState(api) {
 // Thin arrow from the design; position and colour come from className.
 export function ArrowButton({ direction, className, ...props }) {
   const Icon = direction === "prev" ? ArrowLeft : ArrowRight;
+  const labels = useLabels();
   return (
     <button
       type="button"
-      aria-label={direction === "prev" ? "Previous slide" : "Next slide"}
+      aria-label={
+        direction === "prev" ? labels.previousSlide : labels.nextSlide
+      }
       className={cn(
         "z-10 flex size-11 items-center justify-center transition-opacity duration-300 focus-visible:outline-2 focus-visible:outline-current focus-visible:outline-solid disabled:opacity-30",
         className,
       )}
       {...props}
     >
-      <Icon aria-hidden strokeWidth={1} className="size-6" />
+      <Icon aria-hidden strokeWidth={1} className="size-6 rtl:-scale-x-100" />
     </button>
   );
 }

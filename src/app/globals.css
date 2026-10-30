@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Classes that only appear inside CMS HTML (home_cms.section_five `description`), so Tailwind can't see them in the source. */
+@source inline(
+  "mt-[12px] mt-[9px] text-[15px] leading-[26px] xl:text-fluid-16"
+);
+
+/* Same for the Contact Us working-hours list (contact_cms.working_hours_description). */
+@source inline(
+  "mt-3 space-y-1.25 text-[13px] text-ink sm:text-sm xl:mt-3.75 2xl:space-y-2.5 2xl:text-base text-ember"
+);
+
 /* The site has no dark theme: shadcn's dark: classes apply only under a .dark class, never from the OS setting. */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -366,4 +376,57 @@ html::-webkit-scrollbar-thumb {
     scrollbar-width: thin;
     scrollbar-color: #e8634b rgb(232 99 75 / 0.15);
   }
+}
+
+/* Language switch overlay and navigation progress bar (the bar waits briefly so quick navigations never flash it). */
+@keyframes loader-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes loader-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(0.85);
+  }
+}
+.lang-overlay {
+  animation: loader-fade-in 0.25s ease both;
+}
+.nav-progress {
+  animation: loader-fade-in 0.1s ease 0.15s both;
+}
+.nav-progress-bar {
+  transform-origin: left;
+  animation: loader-bar 4s cubic-bezier(0.1, 0.6, 0.2, 1) 0.15s both;
+}
+[dir="rtl"] .nav-progress-bar {
+  transform-origin: right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lang-overlay,
+  .nav-progress,
+  .nav-progress-bar {
+    animation: none;
+  }
+}
+
+/* Arabic: one face for both roles (it also carries the Latin glyphs for English words). The Latin fonts are not loaded on /ar. */
+html[dir="rtl"] {
+  --font-lincoln-sans: var(--font-lincoln-arabic), sans-serif;
+  --font-lincoln-display: var(--font-lincoln-arabic), sans-serif;
+}
+/* Arabic letters must stay joined and have no case: no tracking, no uppercase, taller lines. */
+html[dir="rtl"] body {
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+html[dir="rtl"] * {
+  letter-spacing: 0 !important;
+  text-transform: none !important;
 }

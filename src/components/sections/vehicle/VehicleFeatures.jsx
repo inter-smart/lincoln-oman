@@ -1,12 +1,14 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function VehicleFeatures({ items }) {
+export default async function VehicleFeatures({ items }) {
+  const { ui } = await getCurrentDictionary();
   if (!items?.length) return null;
   return (
     <div className="container pt-8 sm:pt-10 xl:pt-[calc(70*var(--rr))]">
       <CardCarousel
-        label="Key features"
+        label={ui.keyFeatures}
         className="[--slide-gap:0px]"
         slideClassName="basis-[72%] sm:basis-1/2 lg:basis-1/4"
       >
@@ -23,15 +25,15 @@ export default function VehicleFeatures({ items }) {
           >
             <div className="flex aspect-62/57 h-auto w-11 shrink-0 items-center justify-center sm:w-12.5 xl:w-[calc(62*var(--rr))]">
               <Image
-                src={item?.icon?.src}
-                alt="Icon"
-                width={item?.icon?.width}
-                height={item?.icon?.height}
+                src={item.icon}
+                alt=""
+                width={62}
+                height={57}
                 className="size-full object-contain"
               />
             </div>
             <div className="font-display text-lg leading-[1.2] whitespace-pre-line text-ink sm:text-xl 2xl:text-fluid-30">
-              {item.label}
+              {item.title}
             </div>
           </div>
         ))}

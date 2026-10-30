@@ -3,7 +3,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Pause, Play } from "lucide-react";
-import { pickVideoSource, playMuted, videoAllowed } from "@/components/layout/common/video";
+import {
+  pickVideoSource,
+  playMuted,
+  videoAllowed,
+} from "@/components/layout/common/video";
 
 const StageContext = createContext(null);
 
@@ -60,7 +64,7 @@ export default function ShowcaseStage({ video, children }) {
 }
 
 // The "video box" card: poster frame + play/pause control; drives the stage above and plays its own clip.
-export function ShowcaseVideoCard({ item, label }) {
+export function ShowcaseVideoCard({ poster, video, label }) {
   const stage = useContext(StageContext);
   const ref = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -83,10 +87,18 @@ export function ShowcaseVideoCard({ item, label }) {
       onClick={() => stage?.toggle()}
       className="group absolute inset-0 size-full cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
     >
-      {item?.poster && <Image src={item.poster} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />}
+      {poster && (
+        <Image
+          src={poster}
+          alt=""
+          fill
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="object-cover"
+        />
+      )}
       <video
         ref={ref}
-        src={stage?.requested ? item?.video : undefined}
+        src={stage?.requested ? video : undefined}
         muted
         loop
         playsInline
@@ -97,7 +109,11 @@ export function ShowcaseVideoCard({ item, label }) {
         className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${active && playing ? "opacity-100" : "opacity-0"}`}
       />
       <span className="absolute top-1/2 left-1/2 grid size-[64px] -translate-1/2 place-items-center rounded-full border border-white/70 bg-black/30 text-white backdrop-blur-sm transition-[opacity,scale] duration-300 group-hover:scale-110 group-aria-pressed:opacity-0 group-aria-pressed:group-hover:opacity-100">
-        {stage?.pinned ? <Pause className="size-[22px]" aria-hidden /> : <Play className="ms-[3px] size-[22px]" aria-hidden />}
+        {stage?.pinned ? (
+          <Pause className="size-[22px]" aria-hidden />
+        ) : (
+          <Play className="ms-[3px] size-[22px]" aria-hidden />
+        )}
       </span>
     </button>
   );

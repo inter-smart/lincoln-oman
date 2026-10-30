@@ -1,17 +1,35 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import Composite, { creditLogo } from "@/components/layout/common/Composite";
 
 const linkHover =
   "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
-export default function Footer({ data }) {
+// `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email, vehicles), null if the request failed.
+export default function Footer({ data, settings, labels }) {
+  const vehicles = settings?.vehicles;
+  // The Vehicles column is filled from the API models and left out when there are none.
+  const columns = data?.columns
+    ?.map((column) =>
+      column.id === "vehicles"
+        ? {
+            ...column,
+            links: vehicles?.map((vehicle) => ({
+              id: vehicle.slug,
+              label: vehicle.name,
+              href: `/vehicles/${vehicle.slug}`,
+            })),
+          }
+        : column,
+    )
+    .filter((column) => column.links?.length);
+
   return (
     <footer className="relative bg-night text-[15px] text-white xl:text-fluid-16">
       <a
         href="#top"
-        aria-label="Back to top"
-        className="absolute top-[22px] right-[16px] grid size-[46px] place-items-center rounded-[5px] bg-slate transition-transform hover:-translate-y-1 xl:right-[27px]"
+        aria-label={labels.backToTop}
+        className="absolute end-[16px] top-[22px] grid size-[46px] place-items-center rounded-[5px] bg-slate transition-transform hover:-translate-y-1 xl:end-[27px]"
       >
         {/* Arrow is two Figma vectors drawn sideways and rotated, as in the design */}
         <span className="relative block h-[16.87px] w-[15px]">
@@ -36,7 +54,7 @@ export default function Footer({ data }) {
 
       <div className="container pt-10 sm:pt-[50px] lg:pt-[70px] xl:pt-[calc(113*var(--rr))] 2xl:pt-[90px]">
         <div className="grid grid-cols-2 gap-x-[24px] gap-y-[40px] md:grid-cols-3 xl:grid-cols-[repeat(4,1fr)_auto_auto] xl:gap-x-[32px] 4xl:grid-cols-[15.6%_15.06%_16.9%_17.8%_auto_1fr] 4xl:gap-x-0">
-          {data?.columns?.map((column) => (
+          {columns?.map((column) => (
             <nav key={column.id} aria-label={column.title}>
               <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
                 {column.title}
@@ -57,29 +75,34 @@ export default function Footer({ data }) {
             <h2 className="text-sm tracking-[0.8px] uppercase 2xl:text-base">
               {data?.address?.title}
             </h2>
-            <address className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base">
-              {data?.address?.lines?.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </address>
+            {settings?.address && (
+              <address
+                className="mt-[17px] text-sm leading-[24px] not-italic sm:text-base"
+                dangerouslySetInnerHTML={{ __html: settings.address }}
+              />
+            )}
           </div>
 
           <div className="col-span-2 flex flex-col items-start gap-[12px] xl:col-span-1 xl:items-end">
-            <Image
-              src="/images/logo.png"
-              alt="Lincoln"
-              width={600}
-              height={208}
-              className="mb-[47px] h-auto w-[165px]"
-            />
-            <a href={`tel:${data?.phone}`} className={linkHover}>
-              Phone: {data?.phone}
-            </a>
-            <a href={`mailto:${data?.email}`} className={linkHover}>
-              Email: {data?.email}
-            </a>
+            <Link href="/">
+              <Image
+                src="/images/logo.png"
+                alt="Lincoln"
+                width={600}
+                height={208}
+                className="mb-[47px] h-auto w-[165px]"
+              />
+            </Link>
+            {settings?.phone_number && (
+              <a href={`tel:${settings.phone_number}`} className={linkHover}>
+                Phone: {settings.phone_number}
+              </a>
+            )}
+            {settings?.email && (
+              <a href={`mailto:${settings.email}`} className={linkHover}>
+                Email: {settings.email}
+              </a>
+            )}
           </div>
         </div>
 
@@ -88,7 +111,7 @@ export default function Footer({ data }) {
             {data?.legal?.map((link, index) => (
               <span key={link.id}>
                 {index > 0 && " | "}
-                <Link href={link.href} className={linkHover}>
+                <Link href={link.href} target={link?.isExternal? "_blank": "_self"} className={linkHover}>
                   {link.label}
                 </Link>
               </span>

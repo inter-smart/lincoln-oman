@@ -1,14 +1,16 @@
 import Image from "next/image";
-import { Play } from "lucide-react";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
+
+// The CMS sends no tile size: two wide photos, then three tall ones, repeating.
+const pattern = ["half", "half", "third", "third", "third"];
 
 const spans = {
   half: "col-span-6 aspect-794/697 sm:col-span-3",
   third: "col-span-2 aspect-514/714",
 };
 
-// Photo grid (two wide, then three tall). Each tile opens the Fancybox lightbox: the full image, or `video` when set.
-export default function VehicleGallery({ data }) {
+// Photo grid (two wide, then three tall). Each tile opens the Fancybox lightbox with the full image.
+export default function VehicleGallery({ items }) {
   return (
     <section
       id="gallery"
@@ -16,40 +18,34 @@ export default function VehicleGallery({ data }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title text-ink">
-          {data?.title}
+          Gallery
         </h2>
         <GalleryLightbox className="mt-6 grid grid-cols-6 gap-2.5 sm:gap-5 xl:mt-[calc(50*var(--rr))] 2xl:gap-x-[calc(50*var(--rr))] 2xl:gap-y-[calc(45*var(--rr))]">
-          {data?.items?.map((item, index) => (
-            <a
-              key={item?.id}
-              href={item?.video ?? item?.image?.src}
-              data-fancybox="gallery"
-              data-type={item?.video ? "html5video" : undefined}
-              data-thumb-src={item?.image?.src}
-              aria-label={`${item?.video ? "Play video" : "View image"}: ${item?.image?.alt}`}
-              data-reveal
-              style={{ "--reveal-delay": `${(index % 3) * 0.1}s` }}
-              className={`group relative block overflow-hidden rounded-[10px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink focus-visible:outline-solid sm:rounded-[15px] 2xl:rounded-[20px] ${spans[item.span] ?? spans.third}`}
-            >
-              <Image
-                src={item.image.src}
-                alt="Gallery Box"
-                fill
-                sizes={
-                  item.span === "half"
-                    ? "(min-width: 576px) 50vw, 100vw"
-                    : "33vw"
-                }
-                className="object-cover transition-transform duration-700 group-hocus:scale-105"
-                style={{ objectPosition: item.image.position }}
-              />
-              {item.video && (
-                <span className="absolute top-1/2 left-1/2 flex size-14 -translate-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm">
-                  <Play aria-hidden strokeWidth={1.5} className="size-6" />
-                </span>
-              )}
-            </a>
-          ))}
+          {items.map((item, index) => {
+            const span = pattern[index % pattern.length];
+            return (
+              <a
+                key={item.id}
+                href={item.image}
+                data-fancybox="gallery"
+                data-thumb-src={item.image}
+                aria-label={`View image: ${item.image_alt_tag}`}
+                data-reveal
+                style={{ "--reveal-delay": `${(index % 3) * 0.1}s` }}
+                className={`group relative block overflow-hidden rounded-[10px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink focus-visible:outline-solid sm:rounded-[15px] 2xl:rounded-[20px] ${spans[span]}`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.image_alt_tag}
+                  fill
+                  sizes={
+                    span === "half" ? "(min-width: 576px) 50vw, 100vw" : "33vw"
+                  }
+                  className="object-cover transition-transform duration-700 group-hocus:scale-105"
+                />
+              </a>
+            );
+          })}
         </GalleryLightbox>
       </div>
     </section>

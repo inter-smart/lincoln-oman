@@ -27,7 +27,10 @@ export default function HoverVideo({ src }) {
       ["blur", leave],
     ];
     events.forEach(([name, handler]) => card.addEventListener(name, handler));
-    return () => events.forEach(([name, handler]) => card.removeEventListener(name, handler));
+    return () =>
+      events.forEach(([name, handler]) =>
+        card.removeEventListener(name, handler),
+      );
   }, []);
 
   useEffect(() => {
@@ -49,7 +52,9 @@ export default function HoverVideo({ src }) {
       onPlaying={() => setPlaying(true)}
       onPause={() => setPlaying(false)}
       // back to the first frame once the fade-out has finished, so the next hover starts fresh
-      onTransitionEnd={(event) => !active && (event.currentTarget.currentTime = 0)}
+      onTransitionEnd={(event) =>
+        !active && (event.currentTarget.currentTime = 0)
+      }
       className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${active && playing ? "opacity-100" : "opacity-0"}`}
     />
   );

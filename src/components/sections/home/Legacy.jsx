@@ -1,7 +1,9 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function Legacy({ data, variant = "default" }) {
+export default async function Legacy({ data, variant = "default" }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
@@ -16,27 +18,30 @@ export default function Legacy({ data, variant = "default" }) {
             alt="Lincoln"
             width={600}
             height={208}
-            className={`absolute top-0 left-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
+            className={`absolute start-0 top-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
           />
         </div>
         <h2
           data-reveal
           className="mt-7.5 title lg:mt-10 xl:mt-[calc(115*var(--rr))] 2xl:mt-12.5 3xl:mt-17.5"
         >
-          {data?.title}
+          {data.title}
         </h2>
-        <p
+        <div
           data-reveal
           className="mt-[18px] max-w-[836px] text-sm leading-[26px] sm:text-[15px] xl:max-w-[calc(836*var(--rr))] xl:text-fluid-16"
-        >
-          {data?.text}
-        </p>
+          dangerouslySetInnerHTML={{ __html: data.description }}
+        />
         <div
           data-reveal
           className={`mt-[32px] ${variant === "about" && "hidden"} `}
         >
           <ButtonLink
-            data={data?.cta}
+            data={
+              variant === "about"
+                ? { label: ui.hearStory, href: "" }
+                : { label: data.button_name, href: data.link }
+            }
             variant={variant === "about" ? "dark" : "light"}
           />
         </div>

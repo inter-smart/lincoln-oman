@@ -5,7 +5,11 @@ import Image from "next/image";
 // HTML width/height attributes must be integers, so exact sub-pixel sizes go in the style.
 export default function Composite({ parts, width, height, className = "" }) {
   return (
-    <span aria-hidden className={`relative block shrink-0 overflow-hidden ${className}`} style={{ width, height }}>
+    <span
+      aria-hidden
+      className={`relative block shrink-0 overflow-hidden ${className}`}
+      style={{ width, height }}
+    >
       {parts.map(([src, x, y, w, h, mask]) => (
         <Image
           key={src}
@@ -19,7 +23,11 @@ export default function Composite({ parts, width, height, className = "" }) {
             top: y,
             width: w,
             height: h,
-            ...(mask && { maskImage: `url(${mask})`, maskSize: "100% 100%", maskRepeat: "no-repeat" }),
+            ...(mask && {
+              maskImage: `url(${mask})`,
+              maskSize: "100% 100%",
+              maskRepeat: "no-repeat",
+            }),
           }}
         />
       ))}

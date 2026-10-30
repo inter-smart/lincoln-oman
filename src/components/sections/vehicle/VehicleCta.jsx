@@ -1,7 +1,24 @@
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // "Experience Lincoln" card: title and line on the left, the pill buttons on the right.
-export default function VehicleCta({ data }) {
+// `data` is the vehicle's section_ten (title, description); `brochure` is the vehicle's brochure URL.
+export default async function VehicleCta({ data, brochure }) {
+  const { ui } = await getCurrentDictionary();
+  const actions = [
+    { id: "test-drive", label: ui.testDrive, href: "/book-a-test-drive" },
+    { id: "enquire", label: ui.enquireNow, href: "/request-a-quote" },
+    ...(brochure
+      ? [
+          {
+            id: "brochure",
+            label: ui.downloadBrochure,
+            href: brochure,
+            isExternal: true,
+          },
+        ]
+      : []),
+  ];
   return (
     <section className="pt-(--section-space)">
       <div className="container">
@@ -12,16 +29,14 @@ export default function VehicleCta({ data }) {
           <div>
             <h2 className="title">{data?.title}</h2>
             <p className="mt-1 text-sm tracking-[0.05em] sm:text-base xl:text-fluid-22">
-              {data?.text}
+              {data?.description}
             </p>
           </div>
-          {data?.actions?.length > 0 && (
-            <div className="flex flex-wrap gap-3 xl:gap-[calc(16*var(--rr))]">
-              {data.actions.map((action) => (
-                <ButtonLink key={action.id} data={action} />
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-3 xl:gap-[calc(16*var(--rr))]">
+            {actions.map((action) => (
+              <ButtonLink key={action.id} data={action} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
 import { cn } from "@/lib/utils";
 import { XIcon } from "lucide-react";
 import { Dialog as SheetPrimitive } from "radix-ui";
@@ -42,6 +43,7 @@ function SheetContent({
   overlayClassName,
   ...props
 }) {
+  const labels = useLabels();
   return (
     <SheetPortal>
       <SheetOverlay className={overlayClassName} />
@@ -56,7 +58,7 @@ function SheetContent({
           side === "top" &&
             "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
           side === "top-lg-right" &&
-            "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top lg:inset-x-auto lg:inset-y-0 lg:right-0 lg:h-full lg:w-3/4 lg:max-w-sm lg:border-b-0 lg:border-l lg:data-[state=closed]:slide-out-to-top-0 lg:data-[state=closed]:slide-out-to-right lg:data-[state=open]:slide-in-from-top-0 lg:data-[state=open]:slide-in-from-right",
+            "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top lg:inset-x-auto lg:inset-y-0 lg:end-0 lg:h-full lg:w-3/4 lg:max-w-sm lg:border-s lg:border-b-0 lg:data-[state=closed]:slide-out-to-top-0 lg:data-[state=closed]:slide-out-to-right lg:data-[state=open]:slide-in-from-top-0 lg:data-[state=open]:slide-in-from-right lg:rtl:data-[state=closed]:slide-out-to-left lg:rtl:data-[state=open]:slide-in-from-left",
           side === "bottom" &&
             "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
           className,
@@ -65,9 +67,9 @@ function SheetContent({
       >
         {children}
         {showCloseButton && (
-          <SheetPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <SheetPrimitive.Close className="absolute end-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary">
             <XIcon className="size-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{labels.close}</span>
           </SheetPrimitive.Close>
         )}
       </SheetPrimitive.Content>

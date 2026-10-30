@@ -1,4 +1,10 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Lincoln — Project Notes for AI Sessions
+
+**Next.js here is not the Next.js you know** (`AGENTS.md`): read the relevant guide in `node_modules/next/dist/docs/` before writing Next-specific code.
 
 Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any work. It records how the project is built, what was decided with the client, and the mistakes not to repeat. The global handbook (`D:\wamp\www\AI_Build\Frontend-Engineering-Handbook\`) still applies; this file adds project specifics and wins where they differ.
 
@@ -21,20 +27,73 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 ## 2. Stack and commands
 
 - Next.js 16.4 App Router (Turbopack), React 19.3, plain JS/JSX, Tailwind v4 (no config file — tokens in `src/app/globals.css`), shadcn/ui on `radix-ui`, Embla 8, lucide-react.
-- `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` (`node --test src/lib`).
+- `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` was removed with the team's test cleanup (`8f89856`); run the remaining tests with `node --test "src/**/*.test.*"` (`src/i18n/*`, `validation/translate`, `slugify`).
+  - Tests only cover pure code (no `server-only`, no `@/` alias in the files under test): run one with `node --test src/i18n/config.test.js`. The older `src/lib` tests (meta-tags, format-date, validation, …) were deleted by the team.
+  - Env vars (`.env`): `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_API_TOKEN` (bearer token; only `src/lib/api/http.js`, which is `server-only`, reads it: never reference it in client code), `NEXT_PUBLIC_MEDIA_URL` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import. Forms also need `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` (reCAPTCHA v3; without the site key submit shows a "spam check" error).
 - Only **one** `next dev` per project is allowed. If it says "Another next dev server is already running", use the reported URL (the user often has one on **:3001**). Don't kill the user's server without asking. Port 3100 belongs to zelliny's server.
 - The dev server can be reaped when memory is low — report it and don't auto-restart. Use a production build (`next build && next start -p 3300`) for Lighthouse, and stop it afterwards.
 
 ## 3. Architecture (follow it, don't reinvent)
 
 ```
-src/app/page.js                 thin: composes sections with data from src/data/home.js
-src/app/layout.js               metadata, JSON-LD, Header/Footer/FloatingRail/RevealObserver
-src/data/{home,site,seo}.js     all content (CMS-shaped); site.js = header/footer/rail/menu
-src/components/sections/home/*  one server component per section — NEVER "use client"
-src/components/layout/common/*  shared pieces + the small client leaves
-src/components/ui/*             shadcn primitives (button cva, sheet, navigation-menu)
+src/app/[lang]/<route>/page.js  server page (every route lives under the [lang] segment: /en, /ar): fetch via apiGet, pass backend objects to section components
+src/app/[lang]/layout.js        JSON-LD, Header/Footer/FloatingRail/RevealObserver
+src/lib/api/{get,post,http}.js  apiGet / apiPost -> send (the only code that reads the token)
+src/lib/api/request.js          pure helpers (ApiError, buildUrl, unwrapEnvelope) — testable
+src/lib/meta-tags.js            metadataFromTags (-> Metadata fields, used by buildMetadata) + rawMetaTags (-> <MetaTags>) for banner.other_meta_tags
+src/lib/seo.js                  buildMetadata(): title/description/keywords + canonical
+src/lib/{owners-sections,split-media-html,list-items}.js   pure CMS-HTML parsers (unit-tested)
+src/data/{site,seo,owners,legal}.js   header/footer/rail/menu content, SEO defaults, static labels
+src/components/sections/<page>/*      one server component per section — NEVER "use client"
+src/components/layout/common/*        shared pieces (InnerBanner, Breadcrumb, EnquiryForm) + small client leaves
+src/components/ui/*                   shadcn primitives (button cva, sheet, navigation-menu)
 ```
+
+### Data layer (PHP CMS API)
+
+- **API-driven routes:** `/` (`/home`), `/about`, `/newsroom` and `/newsroom/[slug]` (`/news/${slug}`), `/lincoln-certified`, `/owners`, `/contact-us` (components take the backend blocks as-is: `ContactIntro data={contact_cms} form={…}`, `ContactLocations contact_addresses`, `DepartmentContact data={contact_cms} department_contacts`; `description` and `working_hours_description` are CMS HTML; `ContactIntro` is shared with request-a-quote / book-a-test-drive, whose local data uses the same `description` / `enquiry_title` names), `/gallery` (`/galleries`; one video item + image items, tile sizes repeat a fixed pattern in `GalleryGrid`), `/special-offers` (location filter: browser URL `?location=<slug>` where the slug is `slugify(location.name)` from `src/lib/slugify.js` since the CMS sends no slug; the page maps it back to the id for the API's `location_id`, and old `?location_id=<id>` links still work; "Load More" link `?page=N` = pages 1..N) and `/special-offers/[slug]` (`/special-offers/${slug}`; meta fields come in a top-level `meta_tags` block, title falls back to the offer title), `/privacy-policy` and `/terms-and-conditions` (`/policies/${slug}`; HTML in `policy.content`, meta fields sit on `policy` itself, banner in `policy.banner`; the breadcrumb is local in `src/data/legal.js`). `/vehicles/[slug]` (`/vehicles/${slug}`; no CMS meta block, so title/description come from `vehicle.banner`; every list can be empty and its section + tab are then hidden, only Navigator is filled; section titles are inline; "Explore More Models" is a local list in the page (the vehicle endpoint sends no related models); the intro `description` is HTML split by `textBeforeList`/`listItems`; the backend blocks go to the components as-is, and `InnerBanner` accepts both `banner_title/banner/banner_alt_text` and the vehicle's `title/image/alt_text/description`). The rest (request-a-quote, book-a-test-drive) still use static `metadata` and `src/data/*` content. To integrate one, copy the pattern below (`src/app/owners/page.js` is the most complete example).
+- **Layout data:** `layout.js` fetches `/site-settings` (`address` HTML, `phone_number`, `email`; `whatsapp_number` and `map_link` are placeholders and unused) with `revalidate: 3600`, so the static routes stay static. It never calls `notFound()`: on failure `settings` is `null` and the footer omits those details. The footer renders `address` as HTML; the JSON-LD uses `addressLines()` (`src/lib/address-lines.js`). Nav, rail, footer link columns and social links stay in `src/data/site.js`.
+- **Flow:** the page calls `apiGet("/endpoint")` (`src/lib/api/get.js`; paths are plain strings in the page) → `send` (`http.js`, `server-only`, the only code that reads the token; unwraps the `data` envelope) → the page hands the raw backend objects to the section components. **No mappers, no constants files:** components read the backend field names directly (`section.title`, `section.button_name`, `slide.media_type`, `news.published_on` …). To see the shape, `console.log` the page data or curl the endpoint with the bearer token. **Exception:** when the CMS sends one rich-text blob that must become several layout blocks (Owners), a pure parser in `src/lib` does the splitting (`ownersSections`, `splitMediaHtml`, `listItems`) and has a `*.test.js`. Keep such parsers free of `server-only` and `@/` imports so `node --test` can run them.
+- **Page pattern:** `const getX = cache(() => apiGet("/x"))` at the top of the page (so `generateMetadata` and the page share one fetch), then destructure the response and pass e.g. `<Legacy data={home_cms.section_two} />`. `apiGet` never throws: it returns `{ data, error }` (error is the `ApiError`, also logged with `console.error`). Every page starts with `if (error || !data) notFound()` (in both `generateMetadata` and the page), so any API failure shows the 404 page. A missing field inside a successful response is not guarded. `apiPost` still throws (form errors need `error.details`).
+- **Rich-text fields arrive as HTML** (`description`): render with `dangerouslySetInnerHTML` on the element that already carries the classes. Home `section_five` description carries Tailwind classes inside the CMS HTML, so those classes are safelisted with `@source inline(...)` in `globals.css` — keep them in sync with the CMS. `section_six` (Ownership) is different: `Ownership.jsx` keeps its own `<ul>/<li>` markup and takes only each `<li>`'s content from the CMS list (bullet `<img>`s are stripped; the component draws the bullet).
+- Values the API doesn't send (labels like "View More" / "Read More", `/vehicles/${slug}`, `/newsroom/${slug}` links) are written inline in the component. `REVALIDATE` is `0` (go-live values 3600/900/300 are noted in `get.js`).
+- Backend links come through untouched (the CMS sends `/contact`, absolute URLs …): fix them in the CMS, not in the code.
+
+### i18n (en / ar, sub-path routing)
+
+- `src/proxy.js` redirects unprefixed URLs to `/{locale}` (cookie `NEXT_LOCALE` → `Accept-Language` → `en`). `src/i18n/config.js` (pure, tested) holds `locales`, `dirOf`, `localizedHref`, `switchLocalePath`. `<html lang dir>` is set in `src/app/[lang]/layout.js`; Arabic loads only IBM Plex Sans Arabic (`html[dir=rtl]` remaps the two font variables in `globals.css`).
+- **Locale in server code:** `currentLocale()` (`src/lib/api/locale.js`, wraps `next/root-params`). `apiGet`/`apiPost` send it as the `lang` header; Server Actions can't read root params, so `submitForm(formKey, values, token, lang)` gets it explicitly. **The CMS did not honour `lang` yet when this was built** (same body for `en`/`ar`).
+- **Static text:** `src/dictionaries/{en,ar}.json` (`ar` must keep the same keys: tested; Arabic values are English placeholders until the client sends copy). Server: `getCurrentDictionary()`; `src/data/*.js` are `getX(dict)` functions (alias the import when a page already has a `getX` cache wrapper). Client leaves read `useLabels()` / `useLocale()` (`I18nProvider`, `locale-link.jsx`). Zod messages stay English in the schemas; `translateMessage(dict.validation, message)` translates at display (client) and in `submitForm` (server) — add new messages to `validation` in both JSON files.
+- **Links:** import `Link` from `@/components/ui/locale-link` (adds the `/en|/ar` prefix), never `next/link`; use `localizedHref` for `router.push`.
+- **RTL:** use logical utilities (`ms/me/ps/pe/start/end/text-start/border-s/rounded-s`), `rtl:` variants for rotations/translates, `dir`-aware Embla (`direction`). Pixel-composed icons (`Logo`, `Composite`, footer to-top arrow) stay physical. No Arabic Figma exists: mirrored by convention, flagged for the client.
+- **Switch + loading:** `LanguageSwitch` (cookie + `router.replace` + blur overlay; the root layout depends on `[lang]`, so Next does a full page load). `NavigationProgress` is the link-click progress bar. **Do not add `loading.js`** under `[lang]`: it streams a 200 shell first, so a failed API page would stop answering 404.
+- `buildMetadata` is async (reads the locale): canonical `/{lang}/…`, hreflang `en`/`ar`/`x-default`, `og:locale`.
+
+### Forms (react-hook-form + zod + reCAPTCHA v3)
+
+- Schemas: `src/lib/validation/{patterns,fields,forms}.js` (pure, tested). One schema per form key: `contact`, `offer`, `quote`, `testDrive`. Free text is **rejected** (not stripped) when it holds HTML, script URLs, template/SQL/shell syntax or control chars (`isPlainText`). Phone = E.164 style, normalised.
+- Client: `FormShell` (`useForm`, `mode: "onChange"`, loads the reCAPTCHA script lazily, shows status) + field leaves in `FormFields.jsx`. `EnquiryForm` (pill variant, `data.formKey`) and `ContactIntro` (underline variant, `data.form.formKey`) stay server components.
+- Server: `src/app/actions/forms.js` `submitForm(formKey, values, token)` re-validates, verifies the token (`src/lib/recaptcha.js`, score ≥ 0.5, action = form key), maps UI names to the Laravel payload and `apiPost`s. Per-endpoint field names differ (`phone_number`, `vehicle_id`, consent flags): change them only in that file. 422 `errors` are mapped back onto fields.
+- Vehicle dropdowns come from `GET /vehicle-models` (`withVehicleOptions`). Owners (`owners`) and Special Offers list (`offers`) forms post to `/page-enquiries` (name, email, subject, message + `type` `owners`/`offer`); the offer detail form posts to `/special-offer-enquiries`.
+- `src/app/book-a-test-drive/thank-you` exists but is not linked from the form yet.
+
+### Adding an API page (checklist)
+
+1. `const getX = cache(() => apiGet("/x"))` in `src/app/<route>/page.js`; start `generateMetadata` and the page with `if (error || !data) notFound()`.
+2. `generateMetadata` → `buildMetadata({ title, description, keywords, otherMetaTags }, "/route")` from the `banner` block (for detail pages the block is `news.meta_tags`).
+3. Render `<InnerBanner data={{ title: banner.banner_title, media: { url: banner.banner, alternativeText: banner.banner_alt_text } }} />`, `<Breadcrumb />`, then the section components.
+4. Hide a section when the CMS sends it empty (see `hasContent`/`textOf` in the Owners page) instead of rendering an empty shell.
+5. Static labels, breadcrumbs and form copy the API doesn't send go in `src/data/<page>.js`.
+
+### Page metadata
+
+- The `banner` block carries `meta_title`, `meta_description`, `meta_keywords`, `other_meta_tags`. Every head tag comes from `generateMetadata() → buildMetadata({ title, description, keywords, otherMetaTags }, "/path")` (`src/lib/seo.js`); pages render nothing for metadata in the body. `buildMetadata` also sets `alternates.canonical` (and `og:url`) to the absolute URL of the page (`siteUrl` + path).
+- `other_meta_tags` is a raw HTML string from the CMS, split two ways (`src/lib/meta-tags.js`; its tests were deleted in `8f89856`):
+  - `metadataFromTags()` → Next Metadata, via `buildMetadata`: plain `name=` metas → `other`, `og:image*` → `openGraph.images`, **`og:title/description/url/site_name/type/locale` → `openGraph.*` and `twitter:title/description/card/image/site/creator` → `twitter` (the CMS replaces the page's defaults, e.g. `en_OM`; a tag the CMS doesn't send keeps the default)**, `<link rel=alternate hreflang>` → `alternates.languages`.
+  - `rawMetaTags()` → `<MetaTags html={…} />` (`src/components/layout/common/MetaTags.jsx`, rendered by every page that reads `other_meta_tags`): the tags Next's `metadata.other` can't write, because it only writes `name=`. These are other `property=` (`fb:app_id`, `article:*`), `itemprop`, `name=` with `media` (`theme-color`) and `http-equiv`. `http-equiv` is allowlisted to `x-ua-compatible` and `content-language`; `refresh`, `set-cookie`, CSP etc. are dropped. React hoists the `<meta>` into `<head>`, except `itemprop` ones, which stay in the body. A new page must render `<MetaTags>` itself.
+  - **Still dropped:** JSON-LD, scripts and any other element. `title`, `description`, `keywords`, `robots` and canonical are ignored (page-owned), so the CMS can't override noindex or add a second canonical.
+  - **`theme-color` caveat:** `layout.js` sets an unconditional `viewport.themeColor` that renders before the CMS tag, and browsers use the first matching one, so a CMS `theme-color` with `media` has no effect until the layout value is changed.
+- **Known gap:** `layout.js` has no `export const metadata` since `e13d6d5` (`metadataBase`, title template, canonical, robots noindex meta are gone; `X-Robots-Tag` and `robots.txt` still enforce noindex). The unused `title`/`description`/`allowIndexing` imports there are leftovers. Don't assume the noindex *meta* tag exists.
 
 - **Client components are leaves only:** CardCarousel (Embla), HeaderShell (scroll flag), VehicleMenu, RevealObserver, HeroVideo, HoverVideo, ShowcaseStage. Server content goes in as `children`. Check: `grep -rl '"use client"' src/components/sections` must be empty.
 - **Carousels:** "Explore Lincoln Line" and "Lincoln Newsroom" use `CardCarousel` (Embla). Don't set overflow on the track yourself.
@@ -67,7 +126,7 @@ src/components/ui/*             shadcn primitives (button cva, sheet, navigation
 - **Model cards:** `HoverVideo` gets no `src` until the first hover/focus. On hover-out it pauses, fades out and rewinds to 0.
 - **Showcase (Continental / Navigator):** `ShowcaseStage` + `ShowcaseVideoCard`. Hover swaps the section background to the video; click/tap/Enter pins it (`aria-pressed`); a second activation returns to the photo.
 - All videos respect `prefers-reduced-motion` and Save-Data (`videoAllowed()`), are muted, use `playsInline`, and pause off-screen.
-- Every slot uses the one Navigator clip for now; swap per model in `src/data/home.js`.
+- Every slot uses the one Navigator clip for now; the home/about videos now come from the API (`video` fields).
 - **Images:** `next/image` everywhere, AVIF/WebP enabled. HTML `width`/`height` must be **integers** — put exact sub-pixel Figma sizes in `style`.
 - **Lighthouse baseline** (mobile, simulated): ~80–86, noisy on this machine. Desktop 99–100. Always run ≥ 3 mobile passes and report the median with conditions.
 
