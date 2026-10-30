@@ -5,7 +5,8 @@ import InnerBanner from "@/components/layout/common/inner-banner";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
 import ContactLocations from "@/components/sections/contact/ContactLocations";
 import DepartmentContact from "@/components/sections/contact/DepartmentContact";
-import { contact } from "@/data/contact";
+import { getContact as contactText } from "@/data/contact";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -29,6 +30,7 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
+  const contact = contactText(await getCurrentDictionary());
   const { data, error } = await getContact();
   if (error || !data) notFound();
   const { contact_cms, contact_addresses, department_contacts, banner } = data;

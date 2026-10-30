@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/ui/locale-link";
+import { localizedHref } from "@/i18n/config";
 import {
   Select,
   SelectContent,
@@ -21,15 +23,22 @@ export default function LocationFilter({
   basePath,
 }) {
   const router = useRouter();
+  const locale = useLocale();
 
   return (
     <Select
       name="location"
       value={value ?? ""}
       onValueChange={(id) =>
-        router.push(id === ALL ? basePath : `${basePath}?location_id=${id}`, {
-          scroll: false,
-        })
+        router.push(
+          localizedHref(
+            id === ALL ? basePath : `${basePath}?location_id=${id}`,
+            locale,
+          ),
+          {
+            scroll: false,
+          },
+        )
       }
     >
       <SelectTrigger

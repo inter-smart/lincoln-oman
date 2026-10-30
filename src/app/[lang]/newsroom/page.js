@@ -5,6 +5,7 @@ import InnerBanner from "@/components/layout/common/inner-banner";
 import NewsGrid from "@/components/sections/newsroom/NewsGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // GET /news -> { news: [{ id, slug, title, published_on, media, … }], banner, pagination }
 // cache() lets generateMetadata and the page share one request.
@@ -25,12 +26,12 @@ export async function generateMetadata() {
   );
 }
 
-const breadcrumb = [
-  { id: "home", label: "Home", href: "/" },
-  { id: "newsroom", label: "Newsroom" },
-];
-
 export default async function page() {
+  const { pages, ui } = await getCurrentDictionary();
+  const breadcrumb = [
+    { id: "home", label: pages.home, href: "/" },
+    { id: "newsroom", label: ui.newsroom },
+  ];
   const { data, error } = await getNews();
   if (error || !data) notFound();
   const { news, banner } = data;
@@ -39,7 +40,7 @@ export default async function page() {
     <>
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={breadcrumb} />
-      <NewsGrid title="Lincoln Newsroom" news={news} />
+      <NewsGrid title={ui.lincolnNewsroom} news={news} />
     </>
   );
 }

@@ -3,10 +3,12 @@ import ButtonLink from "@/components/layout/common/ButtonLink";
 import EmblemMark from "@/components/layout/common/EmblemMark";
 import LocationFilter from "@/components/layout/common/LocationFilter";
 import { formatExpiry } from "@/lib/format-date";
+import { currentLocale } from "@/lib/api/locale";
 
 // `data` is { items: API special_offers, locations: [{ id, name }], locationId, loadMore: { href } | null, basePath };
 // `labels` is the static copy from src/data/offers.js.
-export default function OfferList({ data, labels }) {
+export default async function OfferList({ data, labels }) {
+  const locale = await currentLocale();
   return (
     <section className="block h-auto w-full py-10 sm:py-[50px_40px] 2xl:py-(--section-space)">
       <div className="container">
@@ -42,7 +44,7 @@ export default function OfferList({ data, labels }) {
                         className="object-cover"
                       />
                     </div>
-                    <EmblemMark className="absolute start-[54%] top-1/2 hidden h-[80%] -translate-x-1/2 -translate-y-1/2 bg-[#2A2526] sm:block" />
+                    <EmblemMark className="absolute start-[54%] top-1/2 hidden h-[80%] -translate-x-1/2 -translate-y-1/2 bg-[#2A2526] sm:block rtl:translate-x-1/2" />
                   </>
                 )}
                 <div
@@ -56,7 +58,7 @@ export default function OfferList({ data, labels }) {
                       item.dealership,
                       item.service_center,
                       item.expires_at &&
-                        `${labels.expiresLabel} ${formatExpiry(item.expires_at).label}`,
+                        `${labels.expiresLabel} ${formatExpiry(item.expires_at, locale).label}`,
                     ]
                       .filter(Boolean)
                       .map((detail) => (

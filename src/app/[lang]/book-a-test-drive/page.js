@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
-import { testDrive } from "@/data/test-drive";
+import { getTestDrive as testDriveText } from "@/data/test-drive";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 import { withVehicleOptions } from "@/lib/vehicle-options";
@@ -17,6 +18,7 @@ export async function generateMetadata() {
   const { data, error } = await getTestDrive();
   if (error || !data) notFound();
   const { banner } = data;
+  const testDrive = testDriveText(await getCurrentDictionary());
   return buildMetadata(
     {
       title: banner?.meta_title ?? testDrive.fallback.meta.title,
@@ -30,6 +32,7 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
+  const testDrive = testDriveText(await getCurrentDictionary());
   const { data, error } = await getTestDrive();
   if (error || !data) notFound();
   const { cms, banner, vehicle_models } = data;
@@ -52,7 +55,8 @@ export default async function page() {
           banner_title: banner?.banner_title ?? testDrive.fallback.banner.title,
           banner: banner?.banner ?? testDrive.fallback.banner.url,
           banner_alt_text:
-            banner?.banner_alt_text ?? testDrive.fallback.banner.alternativeText,
+            banner?.banner_alt_text ??
+            testDrive.fallback.banner.alternativeText,
         }}
         as="div"
       />

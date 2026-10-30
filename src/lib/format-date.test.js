@@ -41,3 +41,11 @@ test("formatDate still handles the news format", () => {
     dateTime: "2026-10-27",
   });
 });
+
+test("formatExpiry formats in the requested language with Latin digits", () => {
+  assert.equal(formatExpiry("2027-01-07").label, "Jan 7, 2027");
+  const ar = formatExpiry("2027-01-07", "ar").label;
+  assert.match(ar, /2027/);
+  assert.match(ar, /7/);
+  assert.notEqual(ar, "Jan 7, 2027");
+});

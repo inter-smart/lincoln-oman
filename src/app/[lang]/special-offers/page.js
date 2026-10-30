@@ -4,7 +4,8 @@ import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import OfferList from "@/components/sections/offers/OfferList";
-import { offers } from "@/data/offers";
+import { getOffers as offersText } from "@/data/offers";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -50,6 +51,7 @@ const locationsOf = (items) => [
 ];
 
 export default async function page({ searchParams }) {
+  const offers = offersText(await getCurrentDictionary());
   const query = await searchParams;
   const locationId = positiveInt(query.location_id);
   const requestedPage = Number(positiveInt(query.page)) || 1;

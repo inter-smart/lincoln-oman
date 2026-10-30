@@ -1,5 +1,6 @@
 import Image from "next/image";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 const spans = {
   half: "col-span-6 aspect-794/697 sm:col-span-3",
@@ -21,7 +22,8 @@ const radius =
 
 // Gallery page: title, featured video, then the photo grid. Each photo opens in the Fancybox lightbox.
 // `galleries` is the raw /galleries list: one { media_type: "video", video } and many { media_type: "image", image }.
-export default function GalleryGrid({ title, galleries }) {
+export default async function GalleryGrid({ title, galleries }) {
+  const { ui } = await getCurrentDictionary();
   const film = galleries.find(
     (item) => item.media_type === "video" && item.video?.path,
   );
@@ -42,7 +44,7 @@ export default function GalleryGrid({ title, galleries }) {
             playsInline
             preload="none"
             poster={film.video.thumbnail ?? undefined}
-            aria-label="Lincoln gallery film"
+            aria-label={ui.galleryFilm}
             className={`mt-6 aspect-1624/705 w-full bg-black object-cover xl:mt-[calc(30*var(--rr))] ${radius}`}
           >
             <source src={film.video.path} type="video/mp4" />

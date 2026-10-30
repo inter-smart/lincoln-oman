@@ -2,15 +2,17 @@ import Image from "next/image";
 import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import HeroCarousel from "@/components/layout/common/HeroCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `slides` is the API's `sliders` list.
-export default function Hero({ slides }) {
+export default async function Hero({ slides }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="top"
       className="relative h-svh max-h-[1000px] min-h-[560px] overflow-hidden bg-night text-white"
     >
-      <HeroCarousel label="Featured vehicles">
+      <HeroCarousel label={ui.featuredVehicles}>
         {slides.map((slide, index) => (
           <article
             key={slide.id}

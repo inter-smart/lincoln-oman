@@ -5,6 +5,7 @@ import InnerBanner from "@/components/layout/common/inner-banner";
 import NewsDetail from "@/components/sections/newsroom/NewsDetail";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 const getNewsItem = cache((slug) =>
   apiGet(`/news/${encodeURIComponent(slug)}`),
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
+  const { pages, ui } = await getCurrentDictionary();
   const { slug } = await params;
   const { data, error } = await getNewsItem(slug);
   if (error || !data) notFound();
@@ -37,15 +39,15 @@ export default async function page({ params }) {
       <InnerBanner data={news.banner} />
       <Breadcrumb
         items={[
-          { id: "home", label: "Home", href: "/" },
-          { id: "newsroom", label: "Newsroom", href: "/newsroom" },
+          { id: "home", label: pages.home, href: "/" },
+          { id: "newsroom", label: ui.newsroom, href: "/newsroom" },
           { id: "article", label: news.title },
         ]}
       />
       <NewsDetail
         news={news}
         recent={recent_news}
-        recent_news_title="Recent Newsroom"
+        recent_news_title={ui.recentNewsroom}
       />
     </>
   );

@@ -11,6 +11,7 @@ import CertifiedIntro from "@/components/sections/certified/CertifiedIntro";
 import CertifiedStatement from "@/components/sections/certified/CertifiedStatement";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // GET /certified -> { certified_cms: { section_one, section_two: { tab_one … tab_seven }, section_three }, banner }
 // cache() lets generateMetadata and the page share one request.
@@ -31,11 +32,6 @@ export async function generateMetadata() {
   );
 }
 
-const breadcrumb = [
-  { id: "home", label: "Home", href: "/" },
-  { id: "certified", label: "Lincoln Certified" },
-];
-
 const divider = (
   <div className="container" aria-hidden>
     <hr className="border-black/10" />
@@ -46,6 +42,11 @@ const divider = (
 const hasTitle = (section) => Boolean(section?.title?.trim());
 
 export default async function page() {
+  const { pages, ui } = await getCurrentDictionary();
+  const breadcrumb = [
+    { id: "home", label: pages.home, href: "/" },
+    { id: "certified", label: ui.lincolnCertified },
+  ];
   const { data, error } = await getCertified();
   if (error || !data) notFound();
   const { banner, certified_cms } = data;

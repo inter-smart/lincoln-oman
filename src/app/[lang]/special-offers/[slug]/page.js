@@ -4,7 +4,8 @@ import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import OfferDetail from "@/components/sections/offers/OfferDetail";
-import { offers } from "@/data/offers";
+import { getOffers as offersText } from "@/data/offers";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -33,6 +34,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
+  const offers = offersText(await getCurrentDictionary());
   const { slug } = await params;
   const { data, error } = await getOffer(slug);
   if (error || !data) notFound();
@@ -53,7 +55,7 @@ export default async function page({ params }) {
       <Breadcrumb
         items={[
           { id: "home", label: "Home", href: "/" },
-          { id: "offers", label: "Special Offers", href: "/special-offers" },
+          { id: "offers", label: offers.title, href: "/special-offers" },
           { id: "offer", label: special_offer.title },
         ]}
       />

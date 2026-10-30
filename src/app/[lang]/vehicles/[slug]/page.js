@@ -16,6 +16,7 @@ import InteriorExperience from "@/components/sections/vehicle/InteriorExperience
 import PerformanceHighlights from "@/components/sections/vehicle/PerformanceHighlights";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // GET /vehicles/{slug} -> { vehicle: { name, slug, banner, brochure, section_one, section_two, section_nine, section_ten },
 //   features, model_variants, interior_experiences, exterior_designs, color_variants, media_connectivities,
@@ -76,6 +77,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
+  const { pages, ui } = await getCurrentDictionary();
   const { slug } = await params;
   const { data, error } = await getVehicle(slug);
   if (error || !data) notFound();
@@ -100,22 +102,22 @@ export default async function page({ params }) {
     section_ten,
   } = vehicle;
   const tabs = [
-    { id: "variants", label: "Model Variants", show: model_variants },
+    { id: "variants", label: ui.modelVariants, show: model_variants },
     {
       id: "interior",
-      label: "Interior Experience",
+      label: ui.interiorExperience,
       show: interior_experiences,
     },
-    { id: "colors", label: "Color variants", show: color_variants },
-    { id: "exterior", label: "Exterior Design", show: exterior_designs },
+    { id: "colors", label: ui.colorVariants, show: color_variants },
+    { id: "exterior", label: ui.exteriorDesign, show: exterior_designs },
     {
       id: "performance",
-      label: "Performance Highlights",
+      label: ui.performanceHighlights,
       show: performance_highlights,
     },
-    { id: "media", label: "Media connectivity", show: media_connectivities },
-    { id: "gallery", label: "Themes", show: galleries },
-    { id: "safety", label: "Luxury & Convenience", show: safeties },
+    { id: "media", label: ui.tabMedia, show: media_connectivities },
+    { id: "gallery", label: ui.themes, show: galleries },
+    { id: "safety", label: ui.luxuryConvenience, show: safeties },
   ]
     .filter((tab) => tab.show?.length > 0)
     .map(({ id, label }) => ({ id, label, href: `#${id}` }));
@@ -125,20 +127,20 @@ export default async function page({ params }) {
       <InnerBanner
         data={{
           ...banner,
-          link: brochure && { label: "Download Brochure", href: brochure },
+          link: brochure && { label: ui.downloadBrochure, href: brochure },
           actions: [
             {
               id: "test-drive",
-              label: "Test Drive",
+              label: ui.testDrive,
               href: "/book-a-test-drive",
             },
-            { id: "enquire", label: "Enquire Now", href: "/request-a-quote" },
+            { id: "enquire", label: ui.enquireNow, href: "/request-a-quote" },
           ],
         }}
       />
       <Breadcrumb
         items={[
-          { id: "home", label: "Home", href: "/" },
+          { id: "home", label: pages.home, href: "/" },
           { id: "vehicle", label: vehicle.name },
         ]}
       />
@@ -168,7 +170,7 @@ export default async function page({ params }) {
           {media_connectivities.length > 0 && (
             <CaptionCards
               id="media"
-              title="Media Connectivity"
+              title={ui.mediaConnectivity}
               items={media_connectivities}
               arrows
             />
@@ -177,7 +179,7 @@ export default async function page({ params }) {
           {safeties.length > 0 && (
             <CaptionCards
               id="safety"
-              title="Safety"
+              title={ui.safety}
               tagline={section_nine?.description}
               items={safeties}
               ratio="aspect-384/596"
@@ -190,7 +192,7 @@ export default async function page({ params }) {
         <VehicleCta data={section_ten} brochure={brochure} />
       )}
       <ExploreModels
-        title="Explore More Models"
+        title={ui.exploreMoreModels}
         models={models}
         variant="about"
       />

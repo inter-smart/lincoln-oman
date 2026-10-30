@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import LegalContent from "@/components/sections/legal/LegalContent";
-import { privacy } from "@/data/legal";
+import { getPrivacy } from "@/data/legal";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 
@@ -27,6 +28,7 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
+  const privacy = getPrivacy(await getCurrentDictionary());
   const { data, error } = await getPolicy();
   if (error || !data) notFound();
   const { policy } = data;

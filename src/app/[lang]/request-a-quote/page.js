@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
-import { quote } from "@/data/quote";
+import { getQuote as quoteText } from "@/data/quote";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 import { withVehicleOptions } from "@/lib/vehicle-options";
@@ -28,6 +29,7 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
+  const quote = quoteText(await getCurrentDictionary());
   const { data, error } = await getQuote();
   if (error || !data) notFound();
   const { cms, banner, vehicle_models } = data;

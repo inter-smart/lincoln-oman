@@ -1,13 +1,17 @@
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
-export const metadata = { title: "Page Not Found" };
+export async function generateMetadata() {
+  const { ui } = await getCurrentDictionary();
+  return { title: ui.pageNotFound };
+}
 
-const actions = [
-  { id: "home", label: "Back to Home", href: "/" },
-  { id: "contact", label: "Contact Us", href: "/contact-us" },
-];
-
-export default function NotFound() {
+export default async function NotFound() {
+  const { pages, ui } = await getCurrentDictionary();
+  const actions = [
+    { id: "home", label: ui.backToHome, href: "/" },
+    { id: "contact", label: pages.contactUs, href: "/contact-us" },
+  ];
   return (
     <section className="flex min-h-svh items-center bg-night py-40 text-center text-white">
       <div className="container">
@@ -21,16 +25,16 @@ export default function NotFound() {
         <h1
           data-reveal
           style={{ "--reveal-delay": "0.1s" }}
-          className="title mt-4 xl:mt-[calc(24*var(--rr))]"
+          className="mt-4 title xl:mt-[calc(24*var(--rr))]"
         >
-          Page not found
+          {ui.pageNotFound}
         </h1>
         <p
           data-reveal
           style={{ "--reveal-delay": "0.2s" }}
           className="mx-auto mt-3 max-w-[520px] text-sm leading-[26px] text-silver sm:text-[15px] xl:text-fluid-16"
         >
-          The page you are looking for may have moved or no longer exists.
+          {ui.notFoundText}
         </p>
         <div
           data-reveal

@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import CardCarousel from "@/components/layout/common/CardCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `contact_addresses` is the raw /contact-us list; `address` is CMS HTML (one block span per line).
-export default function ContactLocations({ contact_addresses }) {
+export default async function ContactLocations({ contact_addresses }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section className="h-auto w-full bg-[#231F20] py-10 text-white sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
       <div className="container">
@@ -20,9 +22,9 @@ export default function ContactLocations({ contact_addresses }) {
               data-reveal
               style={{ "--reveal-delay": `${index * 0.1}s` }}
               className={cn(
-                "h-full sm:pl-8 xl:pl-10 2xl:pl-12.5 3xl:pl-[calc(60*var(--rr))]",
+                "h-full sm:ps-8 xl:ps-10 2xl:ps-12.5 3xl:ps-[calc(60*var(--rr))]",
                 index === 0
-                  ? "ps-0 pl-0! sm:ps-0"
+                  ? "ps-0 ps-0! sm:ps-0"
                   : "border-white/15 sm:border-s",
               )}
             >
@@ -52,7 +54,7 @@ export default function ContactLocations({ contact_addresses }) {
               </address>
               <ButtonLink
                 isExternal={true}
-                data={{ label: "Get Direction", href: item.direction }}
+                data={{ label: ui.getDirection, href: item.direction }}
                 className="mt-3.75 2xl:mt-[calc(40*var(--rr))]"
               />
             </div>

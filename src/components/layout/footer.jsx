@@ -1,18 +1,18 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import Composite, { creditLogo } from "@/components/layout/common/Composite";
 
 const linkHover =
   "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
 // `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email), null if the request failed.
-export default function Footer({ data, settings }) {
+export default function Footer({ data, settings, labels }) {
   return (
     <footer className="relative bg-night text-[15px] text-white xl:text-fluid-16">
       <a
         href="#top"
-        aria-label="Back to top"
-        className="absolute top-[22px] right-[16px] grid size-[46px] place-items-center rounded-[5px] bg-slate transition-transform hover:-translate-y-1 xl:right-[27px]"
+        aria-label={labels.backToTop}
+        className="absolute end-[16px] top-[22px] grid size-[46px] place-items-center rounded-[5px] bg-slate transition-transform hover:-translate-y-1 xl:end-[27px]"
       >
         {/* Arrow is two Figma vectors drawn sideways and rotated, as in the design */}
         <span className="relative block h-[16.87px] w-[15px]">
@@ -87,7 +87,7 @@ export default function Footer({ data, settings }) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] 2xl:text-base xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px]">
+        <div className="mt-10 flex flex-col gap-[24px] border-t border-white/10 pt-[24px] pb-[40px] text-sm sm:mt-[60px] xl:mt-[calc(146*var(--rr))] xl:flex-row xl:items-center xl:justify-between xl:pt-[44px] xl:pb-[51px] 2xl:text-base">
           <p>
             {data?.legal?.map((link, index) => (
               <span key={link.id}>
@@ -105,7 +105,7 @@ export default function Footer({ data, settings }) {
               <span className="uppercase">{data?.followLabel}</span>
               <span className="relative block h-[19.42px] w-[213.11px]">
                 <Image
-                src="/icons/social.svg"
+                  src="/icons/social.svg"
                   alt=""
                   width={214}
                   height={20}

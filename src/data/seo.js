@@ -1,5 +1,6 @@
 // ponytail: set NEXT_PUBLIC_SITE_URL to the live domain before launch — canonical, OG, sitemap and robots read it.
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 // Crawling and indexing stay blocked (robots.txt, meta robots, X-Robots-Tag) unless the
 // deployment explicitly opts in with NEXT_PUBLIC_ALLOW_INDEXING=true — i.e. only on the live site.

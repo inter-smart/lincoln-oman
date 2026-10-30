@@ -1,14 +1,19 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import Composite, { wheelIcon } from "@/components/layout/common/Composite";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // Fixed quick-action rail (Figma "Group 51"): each tile slides its label out on hover/focus.
 // No mobile design exists: below md it becomes an icon bar along the bottom edge.
-export default function FloatingRail({ items }) {
+export default async function FloatingRail({ items }) {
+  const { ui } = await getCurrentDictionary();
   if (!items?.length) return null;
 
   return (
-    <nav aria-label="Quick actions" className="fixed inset-x-0 bottom-0 z-40 border-t border-silver bg-white/70 backdrop-blur-[14.7px] md:inset-x-auto md:right-[36px] md:bottom-[61px] md:border-0 md:bg-transparent md:backdrop-blur-none">
+    <nav
+      aria-label={ui.quickActions}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-silver bg-white/70 backdrop-blur-[14.7px] md:inset-x-auto md:end-[36px] md:bottom-[61px] md:border-0 md:bg-transparent md:backdrop-blur-none"
+    >
       <ul className="flex justify-around md:flex-col md:items-end md:gap-[17px]">
         {items.map((item) => (
           <li key={item.id}>
@@ -25,7 +30,13 @@ export default function FloatingRail({ items }) {
                 {item.icon === "wheel" ? (
                   <Composite {...wheelIcon} />
                 ) : (
-                  <Image src={item.icon.src} alt="" width={Math.ceil(item.icon.width)} height={Math.ceil(item.icon.height)} style={{ width: item.icon.width, height: item.icon.height }} />
+                  <Image
+                    src={item.icon.src}
+                    alt=""
+                    width={Math.ceil(item.icon.width)}
+                    height={Math.ceil(item.icon.height)}
+                    style={{ width: item.icon.width, height: item.icon.height }}
+                  />
                 )}
               </span>
             </Link>

@@ -5,6 +5,7 @@ import InnerBanner from "@/components/layout/common/inner-banner";
 import GalleryGrid from "@/components/sections/gallery/GalleryGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // GET /galleries -> { galleries: [{ id, media_type: "video" | "image", video?, image? }], banner }
 // cache() lets generateMetadata and the page share one request.
@@ -25,12 +26,12 @@ export async function generateMetadata() {
   );
 }
 
-const breadcrumb = [
-  { id: "home", label: "Home", href: "/" },
-  { id: "gallery", label: "Gallery" },
-];
-
 export default async function page() {
+  const { pages, ui } = await getCurrentDictionary();
+  const breadcrumb = [
+    { id: "home", label: pages.home, href: "/" },
+    { id: "gallery", label: ui.gallery },
+  ];
   const { data, error } = await getGalleries();
   if (error || !data) notFound();
   const { galleries, banner } = data;

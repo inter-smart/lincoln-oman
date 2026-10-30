@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { pickVideoSource, playMuted, videoAllowed } from "@/components/layout/common/video";
+import {
+  pickVideoSource,
+  playMuted,
+  videoAllowed,
+} from "@/components/layout/common/video";
 
 // Hero background video. The poster image (rendered by the server) stays the LCP element.
 // The video is only requested after load — on the visitor's first interaction or 4 s later,
@@ -15,14 +19,22 @@ export default function HeroVideo({ sources }) {
     const video = ref.current;
     if (!video || !sources || !videoAllowed()) return;
 
-    const triggers = ["pointermove", "pointerdown", "keydown", "scroll", "touchstart"];
+    const triggers = [
+      "pointermove",
+      "pointerdown",
+      "keydown",
+      "scroll",
+      "touchstart",
+    ];
     let observer;
     let timer;
     const start = () => {
       if (observer) return;
       cleanupTriggers();
       video.src = pickVideoSource(sources);
-      observer = new IntersectionObserver(([entry]) => (entry.isIntersecting ? playMuted(video) : video.pause()));
+      observer = new IntersectionObserver(([entry]) =>
+        entry.isIntersecting ? playMuted(video) : video.pause(),
+      );
       observer.observe(video);
     };
     const cleanupTriggers = () => {
@@ -30,7 +42,9 @@ export default function HeroVideo({ sources }) {
       triggers.forEach((name) => window.removeEventListener(name, start));
     };
     const arm = () => {
-      triggers.forEach((name) => window.addEventListener(name, start, { once: true, passive: true }));
+      triggers.forEach((name) =>
+        window.addEventListener(name, start, { once: true, passive: true }),
+      );
       timer = setTimeout(start, 4000);
     };
 

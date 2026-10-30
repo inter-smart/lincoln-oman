@@ -29,14 +29,14 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 - Next.js 16.4 App Router (Turbopack), React 19.3, plain JS/JSX, Tailwind v4 (no config file — tokens in `src/app/globals.css`), shadcn/ui on `radix-ui`, Embla 8, lucide-react.
 - `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` (`node --test src/lib`).
   - **On Node 22 `npm test` fails with `MODULE_NOT_FOUND`** (the directory is read as a file). Run all tests with `node --test "src/lib/**/*.test.*"` and one with `node --test src/lib/meta-tags.test.js`. Tests only cover pure `src/lib` code (no `server-only`, no `@/` alias in the files under test).
-  - Env vars (`.env.local`): `CMS_API_URL`, `CMS_API_TOKEN` (server-only bearer token), `CMS_MEDIA_HOST` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import. Forms also need `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` (reCAPTCHA v3; without the site key submit shows a "spam check" error).
+  - Env vars (`.env`): `CMS_API_URL`, `CMS_API_TOKEN` (server-only bearer token), `CMS_MEDIA_HOST` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import. Forms also need `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` (reCAPTCHA v3; without the site key submit shows a "spam check" error).
 - Only **one** `next dev` per project is allowed. If it says "Another next dev server is already running", use the reported URL (the user often has one on **:3001**). Don't kill the user's server without asking. Port 3100 belongs to zelliny's server.
 - The dev server can be reaped when memory is low — report it and don't auto-restart. Use a production build (`next build && next start -p 3300`) for Lighthouse, and stop it afterwards.
 
 ## 3. Architecture (follow it, don't reinvent)
 
 ```
-src/app/<route>/page.js         server page: fetch via apiGet, pass backend objects to section components
+src/app/[lang]/<route>/page.js  server page (every route lives under the [lang] segment: /en, /ar): fetch via apiGet, pass backend objects to section components
 src/app/layout.js               JSON-LD, Header/Footer/FloatingRail/RevealObserver
 src/lib/api/{get,post,http}.js  apiGet / apiPost -> send (the only code that reads the token)
 src/lib/api/request.js          pure helpers (ApiError, buildUrl, unwrapEnvelope) — testable
@@ -58,6 +58,16 @@ src/components/ui/*                   shadcn primitives (button cva, sheet, navi
 - **Rich-text fields arrive as HTML** (`description`): render with `dangerouslySetInnerHTML` on the element that already carries the classes. Home `section_five` description carries Tailwind classes inside the CMS HTML, so those classes are safelisted with `@source inline(...)` in `globals.css` — keep them in sync with the CMS. `section_six` (Ownership) is different: `Ownership.jsx` keeps its own `<ul>/<li>` markup and takes only each `<li>`'s content from the CMS list (bullet `<img>`s are stripped; the component draws the bullet).
 - Values the API doesn't send (labels like "View More" / "Read More", `/vehicles/${slug}`, `/newsroom/${slug}` links) are written inline in the component. `REVALIDATE` is `0` (go-live values 3600/900/300 are noted in `get.js`).
 - Backend links come through untouched (the CMS sends `/contact`, absolute URLs …): fix them in the CMS, not in the code.
+
+### i18n (en / ar, sub-path routing)
+
+- `src/proxy.js` redirects unprefixed URLs to `/{locale}` (cookie `NEXT_LOCALE` → `Accept-Language` → `en`). `src/i18n/config.js` (pure, tested) holds `locales`, `dirOf`, `localizedHref`, `switchLocalePath`. `<html lang dir>` is set in `src/app/[lang]/layout.js`; Arabic loads only IBM Plex Sans Arabic (`html[dir=rtl]` remaps the two font variables in `globals.css`).
+- **Locale in server code:** `currentLocale()` (`src/lib/api/locale.js`, wraps `next/root-params`). `apiGet`/`apiPost` send it as the `lang` header; Server Actions can't read root params, so `submitForm(formKey, values, token, lang)` gets it explicitly. **The CMS did not honour `lang` yet when this was built** (same body for `en`/`ar`).
+- **Static text:** `src/dictionaries/{en,ar}.json` (`ar` must keep the same keys: tested; Arabic values are English placeholders until the client sends copy). Server: `getCurrentDictionary()`; `src/data/*.js` are `getX(dict)` functions (alias the import when a page already has a `getX` cache wrapper). Client leaves read `useLabels()` / `useLocale()` (`I18nProvider`, `locale-link.jsx`). Zod messages stay English in the schemas; `translateMessage(dict.validation, message)` translates at display (client) and in `submitForm` (server) — add new messages to `validation` in both JSON files.
+- **Links:** import `Link` from `@/components/ui/locale-link` (adds the `/en|/ar` prefix), never `next/link`; use `localizedHref` for `router.push`.
+- **RTL:** use logical utilities (`ms/me/ps/pe/start/end/text-start/border-s/rounded-s`), `rtl:` variants for rotations/translates, `dir`-aware Embla (`direction`). Pixel-composed icons (`Logo`, `Composite`, footer to-top arrow) stay physical. No Arabic Figma exists: mirrored by convention, flagged for the client.
+- **Switch + loading:** `LanguageSwitch` (cookie + `router.replace` + blur overlay; the root layout depends on `[lang]`, so Next does a full page load). `NavigationProgress` is the link-click progress bar. **Do not add `loading.js`** under `[lang]`: it streams a 200 shell first, so a failed API page would stop answering 404.
+- `buildMetadata` is async (reads the locale): canonical `/{lang}/…`, hreflang `en`/`ar`/`x-default`, `og:locale`.
 
 ### Forms (react-hook-form + zod + reCAPTCHA v3)
 

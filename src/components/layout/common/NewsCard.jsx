@@ -1,11 +1,13 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `item` is one API news entry: { slug, title, published_on, media: { image } }; `position` (optional) sets the photo crop.
 // Newsroom card. On hover/focus the "Read More" text gives way to the pill over the photo (Figma card 2).
-export default function NewsCard({ item }) {
+export default async function NewsCard({ item }) {
+  const { ui } = await getCurrentDictionary();
   const { label, dateTime } = formatDate(item.published_on);
 
   return (
@@ -28,16 +30,16 @@ export default function NewsCard({ item }) {
           aria-hidden
           className={buttonVariants({
             className:
-              "pointer-events-none absolute right-[23px] bottom-[22px] translate-y-3 opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-y-0 group-hocus:opacity-100",
+              "pointer-events-none absolute end-[23px] bottom-[22px] translate-y-3 opacity-0 transition-[opacity,translate] duration-500 group-hocus:translate-y-0 group-hocus:opacity-100",
           })}
         >
-          Read More
+          {ui.readMore}
           <Image
             src="/icons/chevron-accent.svg"
             alt=""
             width={7}
             height={4}
-            className="-rotate-90"
+            className="-rotate-90 rtl:rotate-90"
           />
         </span>
       </span>
@@ -51,7 +53,7 @@ export default function NewsCard({ item }) {
         {item.title}
       </span>
       <span className="mt-2.5 block text-[13px] tracking-[0.7px] text-ink transition-opacity duration-300 sm:mt-[18px] sm:text-[14px] group-hocus:opacity-0">
-        Read More
+        {ui.readMore}
       </span>
     </Link>
   );

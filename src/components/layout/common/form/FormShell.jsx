@@ -6,6 +6,9 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { submitForm } from "@/app/actions/forms";
+import { useLabels } from "@/components/layout/common/I18nProvider";
+import { useLocale } from "@/components/ui/locale-link";
+import { localizedHref } from "@/i18n/config";
 import { schemas } from "@/lib/validation/forms";
 import { cn } from "@/lib/utils";
 
@@ -84,7 +87,6 @@ const DEFAULTS = {
 export default function FormShell({
   formKey,
   tone = "light",
-  successMessage = "Thank you! Your message has been sent. We'll be in touch soon.",
   successHref,
   className,
   children,
@@ -96,6 +98,8 @@ export default function FormShell({
     defaultValues: DEFAULTS[formKey],
   });
   const router = useRouter();
+  const lang = useLocale();
+  const labels = useLabels();
   const { handleSubmit, setError, reset, formState } = methods;
   const [status, setStatus] = useState(null); // { ok, message }
 
@@ -113,26 +117,25 @@ export default function FormShell({
     } catch {
       setStatus({
         ok: false,
-        message:
-          "We couldn't run the spam check. Please reload the page and try again.",
+        message: labels.spamCheck,
       });
       return;
     }
 
     let result;
     try {
-      result = await submitForm(formKey, values, token);
+      result = await submitForm(formKey, values, token, lang);
     } catch {
-      result = { ok: false, message: "Network error. Please try again." };
+      result = { ok: false, message: labels.network };
     }
 
     if (result.ok) {
       reset();
       if (successHref) {
-        router.push(successHref);
+        router.push(localizedHref(successHref, lang));
         return;
       }
-      setStatus({ ok: true, message: successMessage });
+      setStatus({ ok: true, message: labels.formSuccess });
       return;
     }
     for (const [field, message] of Object.entries(result.fieldErrors ?? {})) {

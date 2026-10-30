@@ -4,7 +4,8 @@ import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import OwnersContent from "@/components/sections/owners/OwnersContent";
-import { owners } from "@/data/owners";
+import { getOwners as ownersText } from "@/data/owners";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { ownersSections } from "@/lib/owners-sections";
 import { buildMetadata } from "@/lib/seo";
@@ -38,6 +39,7 @@ const hasContent = (service) =>
   );
 
 export default async function page() {
+  const owners = ownersText(await getCurrentDictionary());
   const { data, error } = await getOwners();
   if (error || !data) notFound();
   const { banner, owners_cms, owners_services } = data;

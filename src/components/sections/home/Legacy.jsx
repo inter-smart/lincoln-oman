@@ -1,7 +1,9 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function Legacy({ data, variant = "default" }) {
+export default async function Legacy({ data, variant = "default" }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
@@ -16,7 +18,7 @@ export default function Legacy({ data, variant = "default" }) {
             alt="Lincoln"
             width={600}
             height={208}
-            className={`absolute top-0 left-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
+            className={`absolute start-0 top-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}
           />
         </div>
         <h2
@@ -34,7 +36,7 @@ export default function Legacy({ data, variant = "default" }) {
           <ButtonLink
             data={
               variant === "about"
-                ? { label: "Hear The Story!", href: "" }
+                ? { label: ui.hearStory, href: "" }
                 : { label: data.button_name, href: data.link }
             }
             variant={variant === "about" ? "dark" : "light"}

@@ -1,8 +1,11 @@
 "use client";
 
 import { format, parse } from "date-fns";
+import { ar } from "date-fns/locale/ar";
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { useLocale } from "@/components/ui/locale-link";
+import { dirOf } from "@/i18n/config";
 import {
   Popover,
   PopoverContent,
@@ -21,6 +24,7 @@ export default function DatePicker({
   describedBy,
 }) {
   const [open, setOpen] = useState(false);
+  const locale = useLocale();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const date = value ? parse(value, "yyyy-MM-dd", new Date()) : undefined;
@@ -39,7 +43,7 @@ export default function DatePicker({
           type="button"
           aria-label={`${label} (required)`}
           aria-describedby={describedBy}
-          className={`${className} flex items-center justify-between text-left ${date ? "" : "text-ink"} ${invalid ? "border-[#b3261e] outline-2 outline-offset-2 outline-[#b3261e]/0" : ""}`}
+          className={`${className} flex items-center justify-between text-start ${date ? "" : "text-ink"} ${invalid ? "border-[#b3261e] outline-2 outline-offset-2 outline-[#b3261e]/0" : ""}`}
         >
           {date ? format(date, "dd-MM-yyyy") : `${label}*`}
           <svg
@@ -58,6 +62,8 @@ export default function DatePicker({
       <PopoverContent align="start" className="w-auto bg-white p-0 text-ink">
         <Calendar
           mode="single"
+          dir={dirOf(locale)}
+          locale={locale === "ar" ? ar : undefined}
           selected={date}
           disabled={{ before: today }}
           onSelect={(d) => {

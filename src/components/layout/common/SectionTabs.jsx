@@ -28,7 +28,7 @@ export default function SectionTabs({ items, label }) {
         {ready && (
           <li
             aria-hidden
-            className="pointer-events-none absolute top-0 left-0 rounded-full bg-ink transition-[translate,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="pointer-events-none absolute start-0 top-0 rounded-full bg-ink transition-[translate,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               translate: `${indicator.x}px ${indicator.y}px`,
               width: indicator.w,
