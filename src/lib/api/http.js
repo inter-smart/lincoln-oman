@@ -3,10 +3,10 @@ import { ApiError, buildUrl, parseBody, unwrapEnvelope } from "./request";
 
 // Read lazily: a missing value fails that request with an ApiError, not module import.
 function config() {
-  const baseUrl = process.env.CMS_API_URL;
-  const token = process.env.CMS_API_TOKEN;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
   if (!baseUrl || !token) {
-    throw new ApiError("CMS_API_URL / CMS_API_TOKEN are not set", {
+    throw new ApiError("NEXT_PUBLIC_API_URL / NEXT_PUBLIC_API_TOKEN are not set", {
       status: 500,
       endpoint: "",
     });

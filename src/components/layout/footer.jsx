@@ -111,7 +111,7 @@ export default function Footer({ data, settings }) {
             {data?.legal?.map((link, index) => (
               <span key={link.id}>
                 {index > 0 && " | "}
-                <Link href={link.href} className={linkHover}>
+                <Link href={link.href} target={link?.isExternal? "_blank": "_self"} className={linkHover}>
                   {link.label}
                 </Link>
               </span>

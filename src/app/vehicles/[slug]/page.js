@@ -19,49 +19,12 @@ import { buildMetadata } from "@/lib/seo";
 
 // GET /vehicles/{slug} -> { vehicle: { name, slug, banner, brochure, section_one, section_two, section_nine, section_ten },
 //   features, model_variants, interior_experiences, exterior_designs, color_variants, media_connectivities,
-//   performance_highlights, galleries, safeties }. Every list can be empty (only Navigator is filled so far).
+//   performance_highlights, galleries, safeties, explore_more_models: [{ name, slug, image, video, features }] }.
+//   Every list can be empty (only Navigator is filled so far).
 // cache() lets generateMetadata and the page share one request.
 const getVehicle = cache((slug) =>
   apiGet(`/vehicles/${encodeURIComponent(slug)}`),
 );
-
-// The vehicle endpoint has no related-models list, so "Explore More Models" stays local
-// (same fields as the API models list: name, slug, image, video, features).
-const modelFeatures = [
-  { title: "3.5L GTDI Engine", icon: "/icons/spec-engine.svg" },
-  { title: "Driver Assist Technology", icon: "/icons/spec-driver-assist.svg" },
-  { title: "Polished 22” Aluminum Wheel", icon: "/icons/spec-wheel.svg" },
-];
-const models = [
-  {
-    name: "L100 Concept",
-    slug: "l100",
-    image: "/images/vehicle/model-l100.jpg",
-    position: "67% 50%",
-  },
-  {
-    name: "Aviator",
-    slug: "aviator",
-    image: "/images/home/model-aviator.png",
-    position: "50% 50%",
-  },
-  {
-    name: "Corsair",
-    slug: "corsair",
-    image: "/images/home/model-corsair.png",
-    position: "52% 50%",
-  },
-  {
-    name: "Nautilus",
-    slug: "nautilus",
-    image: "/images/home/model-nautilus.png",
-    position: "75% 50%",
-  },
-].map((model) => ({
-  ...model,
-  video: "/videos/navigator-720.mp4",
-  features: modelFeatures,
-}));
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -90,6 +53,7 @@ export default async function page({ params }) {
     performance_highlights,
     galleries,
     safeties,
+    explore_more_models,
   } = data;
   const {
     banner,
@@ -189,11 +153,13 @@ export default async function page({ params }) {
       {section_ten?.title && (
         <VehicleCta data={section_ten} brochure={brochure} />
       )}
-      <ExploreModels
-        title="Explore More Models"
-        models={models}
-        variant="about"
-      />
+      {explore_more_models?.length > 0 && (
+        <ExploreModels
+          title="Explore More Models"
+          models={explore_more_models}
+          variant="about"
+        />
+      )}
     </>
   );
 }

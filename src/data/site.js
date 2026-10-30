@@ -1,4 +1,7 @@
 // Shared header / footer / floating-rail content (links and labels the API doesn't send).
+
+import { is } from "date-fns/locale";
+
 // Footer address, phone and email are not here: they come from GET /site-settings in layout.js.
 export const site = {
   nav: [
@@ -123,9 +126,9 @@ export const site = {
     // Figma repeats "Arabian Car Marketing Co. LLC" as a 4th line — dropped as a copy-paste leftover.
     address: { title: "Our Address" },
     legal: [
-      { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions" },
-      { id: "sitemap", label: "Sitemap", href: "/sitemap.xml" },
-      { id: "legal", label: "Legal notice", href: "/privacy-policy" },
+      { id: "terms", label: "Terms & Conditions", href: "/terms-and-conditions", isExternal: false },
+      { id: "sitemap", label: "Sitemap", href: "/sitemap.xml", isExternal: true },
+      { id: "legal", label: "Legal notice", href: "/privacy-policy", isExternal: false },
     ],
     copyright: "(© izmo Holdings UK Ltd 2010-2026)",
     followLabel: "Follow Us:",
