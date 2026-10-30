@@ -31,7 +31,10 @@ export default function Legacy({ data, variant = "default" }) {
         >
           {data?.text}
         </p>
-        <div data-reveal className="mt-[32px]">
+        <div
+          data-reveal
+          className={`mt-[32px] ${variant === "about" && "hidden"} `}
+        >
           <ButtonLink
             data={data?.cta}
             variant={variant === "about" ? "dark" : "light"}

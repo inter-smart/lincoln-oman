@@ -10,7 +10,7 @@ export default function ContactCta({ data }) {
           className="rounded-[10px] bg-night px-5 py-12 text-center text-white sm:rounded-[15px] sm:py-[60px] xl:pt-[calc(73*var(--rr))] xl:pb-[calc(93*var(--rr))] 2xl:rounded-[20px]"
         >
           <h2 className="title">{data?.title}</h2>
-          <p className="mx-auto mt-2 max-w-[720px] text-sm leading-[26px] sm:text-[15px] xl:max-w-[calc(720*var(--rr))] xl:text-fluid-16">
+          <p className="mx-auto mt-2 max-w-[720px] text-sm leading-[26px] sm:text-[15px] 2xl:max-w-[calc(720*var(--rr))] xl:text-fluid-16">
             {data?.text}
           </p>
           <ButtonLink

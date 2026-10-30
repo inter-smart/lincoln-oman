@@ -100,23 +100,26 @@ export default function Footer({ data }) {
             <div className="flex flex-wrap items-center gap-x-[30px] gap-y-[12px]">
               <span className="uppercase">{data?.followLabel}</span>
               <span className="relative block h-[19.42px] w-[213.11px]">
-                <Image
-                  src="/icons/social.svg"
-                  alt=""
-                  width={214}
-                  height={20}
-                  style={{ width: 213.107, height: 19.4186 }}
-                />
-                <span className="absolute inset-x-0 -inset-y-[3px] grid grid-cols-5">
-                  {data?.social?.map((item) => (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      aria-label={item.label}
-                      className="hover:bg-white/10"
+                {data?.social?.map((item) => (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    aria-label={item.label}
+                    className="absolute top-[-3px] grid h-[25px] content-start items-center justify-center rounded-[3px] transition-all duration-300 hover:scale-110"
+                    style={{
+                      left: `${item.left}px`,
+                      width: "24px",
+                    }}
+                  >
+                    <Image
+                      src={item.icon}
+                      alt=""
+                      width={item.width}
+                      height={item.height}
+                      style={{ width: item.width, height: item.height }}
                     />
-                  ))}
-                </span>
+                  </a>
+                ))}
               </span>
             </div>
             <a

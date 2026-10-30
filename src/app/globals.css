@@ -354,7 +354,7 @@ html::-webkit-scrollbar-button {
   display: none;
 }
 html::-webkit-scrollbar-track {
-  background: rgb(0, 0, 0);
+  background: #231f20;
 }
 html::-webkit-scrollbar-thumb {
   background: #e8634b;

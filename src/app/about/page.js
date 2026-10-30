@@ -4,6 +4,7 @@ import AboutInfo from "@/components/sections/about/about-info";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import AboutCommitment from "@/components/sections/about/about-commitment";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
 
 const videoCard = "/videos/navigator-720.mp4";
 const specs = [
@@ -35,6 +36,10 @@ const local_data = {
       alternativeText: "About Us",
     },
   },
+  breadcrumb: [
+    { id: "home", label: "Home", href: "/" },
+    { id: "contact", label: "About Us" },
+  ],
   legacy: {
     title: "The Lincoln Legacy",
     text: "At Arabian Car Marketing the satisfaction of our customers has always remained an inspiration for everything we do. Our expert staffs are dedicated to providing the highest possible standards of customer service alongside the latest automotive technology and industry best practices. Drive Lincoln with confidence thanks to the top quality after-sales service and customer support provided by our team.",
@@ -148,6 +153,7 @@ export default function page() {
   return (
     <>
       <InnerBanner data={local_data?.aboutBanner} />
+      <Breadcrumb items={local_data.breadcrumb} />
       <Legacy data={local_data?.legacy} variant="about" />
       <AboutInfo data={local_data?.about} />
       <ExploreModels data={local_data?.models} variant="about" />

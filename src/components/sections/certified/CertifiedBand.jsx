@@ -22,7 +22,7 @@ export default function CertifiedBand({
         <div
           data-reveal
           className={
-            emblem ? "lg:pe-10 xl:ps-[calc(272*var(--rr))]" : "lg:pe-10"
+            emblem ? "lg:pe-10 xl:ps-[calc(240*var(--rr))] 2xl:ps-[calc(272*var(--rr))]" : "lg:pe-10"
           }
         >
           <h2 className="title">{data?.title}</h2>
@@ -39,7 +39,7 @@ export default function CertifiedBand({
               ))}
             </ul>
           ) : (
-            <p className="mt-4 text-sm leading-[26px] sm:text-[15px] xl:mt-[calc(20*var(--rr))] xl:max-w-[calc(560*var(--rr))] xl:text-fluid-16">
+            <p className="mt-4 text-sm leading-[26px] sm:text-xs xl:mt-[calc(20*var(--rr))] xl:max-w-[calc(560*var(--rr))] 2xl:text-fluid-16">
               {data?.text}
             </p>
           )}

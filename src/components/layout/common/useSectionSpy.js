@@ -17,6 +17,8 @@ export default function useSectionSpy(items, isStacked = () => true) {
   const linkRefs = useRef([]);
   const jumping = useRef(false);
   const stackedRef = useRef(isStacked);
+  const lastScrollY = useRef(0);
+  const scrollDir = useRef("down");
   const [active, setActive] = useState(0);
   const [indicator, setIndicator] = useState(null);
   const [stuck, setStuck] = useState(false);
@@ -64,18 +66,37 @@ export default function useSectionSpy(items, isStacked = () => true) {
       frame = 0;
       const nav = navRef.current;
       if (!nav) return;
+
+      const scrollY = window.scrollY;
+      if (scrollY < lastScrollY.current) {
+        scrollDir.current = "up";
+      } else if (scrollY > lastScrollY.current) {
+        scrollDir.current = "down";
+      }
+      lastScrollY.current = scrollY;
+
       const line =
         parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue(
             "--spy-offset",
           ),
         ) + 1 || nav.getBoundingClientRect().bottom + 1;
+
+      // On reverse (upward) scroll, add an offset buffer so a section stays active
+      // while its header and content are in the upper reading view, rather than
+      // prematurely jumping to the section above the moment its top passes the nav.
+      const isUp = scrollDir.current === "up";
+      const offsetBuffer = Math.min(
+        220,
+        Math.max(100, (window.innerHeight - line) * 0.3),
+      );
+      const effectiveLine = isUp ? line + offsetBuffer : line;
+
       let current = 0;
       targets.forEach((target, index) => {
-        if (target && target.getBoundingClientRect().top <= line)
+        if (target && target.getBoundingClientRect().top <= effectiveLine)
           current = index;
       });
-      // At the very bottom the last section may never reach the line
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2

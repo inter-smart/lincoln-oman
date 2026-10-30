@@ -13,7 +13,7 @@ export const titleClass =
 export function RoundedImage({ image, sizes }) {
   return (
     <div
-      className="relative overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
+      className="relative z-0 h-full w-full overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
       style={{ aspectRatio: image.ratio }}
     >
       <Image

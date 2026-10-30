@@ -10,7 +10,7 @@ export default function CertifiedBenefits({ data }) {
         <h2 data-reveal className="title text-ink">
           {data?.title}
         </h2>
-        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2 sm:gap-[19px] lg:grid-cols-3 xl:mt-[calc(38*var(--rr))] 2xl:grid-cols-5 2xl:gap-[calc(21*var(--rr))]">
+        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2 sm:gap-[19px] lg:grid-cols-3 xl:mt-[calc(38*var(--rr))] xl:grid-cols-5 2xl:gap-[calc(21*var(--rr))]">
           {data?.items?.map((item, index) => (
             <li
               key={item.id}
