@@ -1,9 +1,11 @@
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import CardCarousel from "@/components/layout/common/CardCarousel";
 import NewsCard from "@/components/layout/common/NewsCard";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `news` is the API news list; `title` comes from the page's cms block.
-export default function Newsroom({ title, news }) {
+export default async function Newsroom({ title, news }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section className="py-(--section-space)">
       <div className="container">
@@ -13,7 +15,7 @@ export default function Newsroom({ title, news }) {
         >
           <h2 className="title text-ink">{title}</h2>
           <ButtonLink
-            data={{ label: "View More", href: "/newsroom" }}
+            data={{ label: ui.viewMore, href: "/newsroom" }}
             variant="dark"
           />
         </div>

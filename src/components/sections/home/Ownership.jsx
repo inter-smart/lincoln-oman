@@ -10,7 +10,7 @@ export default function Ownership({ data }) {
   return (
     <section className="relative overflow-hidden bg-night text-white">
       {data.image && (
-        <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[66.2%]">
+        <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:end-0 lg:aspect-auto lg:w-[66.2%]">
           <Image
             src={data.image}
             alt={data.alt_tag ?? ""}
@@ -26,7 +26,7 @@ export default function Ownership({ data }) {
         alt=""
         width={275}
         height={796}
-        className="absolute top-[10.2%] left-[26.41%] hidden h-auto w-[14.34%] rotate-180 lg:block"
+        className="absolute start-[26.41%] top-[10.2%] hidden h-auto w-[14.34%] rotate-180 lg:block"
       />
 
       <div className="relative container flex flex-col justify-center py-(--band-space) lg:min-h-[clamp(640px,52vw,1000px)]">

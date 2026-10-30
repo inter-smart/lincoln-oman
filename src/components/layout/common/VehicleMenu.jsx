@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 
@@ -30,7 +30,7 @@ export default function VehicleMenu({ menu, vehicles }) {
                   width={9}
                   height={8}
                   style={{ width: 8.13195, height: 7.14222 }}
-                  className={`-rotate-90 transition-opacity duration-300 ${vehicle.id === activeId ? "opacity-100" : "opacity-0"}`}
+                  className={`-rotate-90 transition-opacity duration-300 rtl:rotate-90 ${vehicle.id === activeId ? "opacity-100" : "opacity-0"}`}
                 />
               </Link>
             </NavigationMenuLink>
@@ -54,7 +54,7 @@ export default function VehicleMenu({ menu, vehicles }) {
               alt=""
               width={690}
               height={254}
-              className="absolute top-0 left-[-9.33%] h-full w-[115%] max-w-none"
+              className="absolute start-[-9.33%] top-0 h-full w-[115%] max-w-none"
             />
           </div>
         )}

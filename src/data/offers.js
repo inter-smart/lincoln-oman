@@ -1,45 +1,58 @@
 // Special Offers page content the API does not send: breadcrumb, labels and the enquiry form.
 // Banner, meta and the offers come from GET /special-offers (see src/app/special-offers/page.js).
-export const offers = {
-  breadcrumb: [
-    { id: "home", label: "Home", href: "/" },
-    { id: "offers", label: "Special Offers" },
-  ],
-  title: "Special Offers",
-  locationLabel: "Choose location",
-  allLocationsLabel: "All locations",
-  learnMoreLabel: "Learn More",
-  loadMoreLabel: "Load More",
-  expiresLabel: "Expires",
-  emptyText: "There are no offers available at the moment.",
-  // Listing-page form: POST /page-enquiries with type "offer" (formKey "offers"), see src/app/actions/forms.js.
-  enquiry: {
-    title: "Thank you for\nyour Interest\nEnquire our offer",
-    formKey: "offers",
-    fields: [
-      { name: "name", label: "Name", type: "text", autoComplete: "name" },
-      { name: "email", label: "Email", type: "email", autoComplete: "email" },
-      { name: "subject", label: "Subject", type: "text" },
+export function getOffers(dict) {
+  const { form, pages, offers: t } = dict;
+  return {
+    breadcrumb: [
+      { id: "home", label: pages.home, href: "/" },
+      { id: "offers", label: pages.specialOffers },
     ],
-    message: { name: "message", label: "Message", optional: true },
-    submit: "Submit",
-  },
-  // Enquiry form on a single offer (/special-offers/[slug]): POST /special-offer-enquiries (formKey "offer").
-  detailEnquiry: {
-    title: "Thank you for\nyour Interest\nEnquire our offer",
-    spaced: true,
-    formKey: "offer",
-    fields: [
-      { name: "name", label: "Name", type: "text", autoComplete: "name" },
-      { name: "email", label: "Email", type: "email", autoComplete: "email" },
-      { name: "phone", label: "Phone", type: "tel", autoComplete: "tel" },
-    ],
-    selects: [
-      // Options come from vehicle_models / interested_in of GET /special-offers/{slug} (filled in by the page).
-      { name: "model", label: "Model", options: [] },
-      { name: "interested", label: "Interested", options: [] },
-    ],
-    message: { name: "message", label: "Message", optional: true },
-    submit: "Submit",
-  },
-};
+    title: pages.specialOffers,
+    locationLabel: t.chooseLocation,
+    allLocationsLabel: t.allLocations,
+    learnMoreLabel: t.learnMore,
+    loadMoreLabel: t.loadMore,
+    expiresLabel: t.expires,
+    emptyText: t.empty,
+    // Listing-page form: POST /page-enquiries with type "offer" (formKey "offers"), see src/app/actions/forms.js.
+    enquiry: {
+      title: t.enquiryTitle,
+      formKey: "offers",
+      fields: [
+        { name: "name", label: form.name, type: "text", autoComplete: "name" },
+        {
+          name: "email",
+          label: form.email,
+          type: "email",
+          autoComplete: "email",
+        },
+        { name: "subject", label: form.subject, type: "text" },
+      ],
+      message: { name: "message", label: form.message, optional: true },
+      submit: form.submit,
+    },
+    // Enquiry form on a single offer (/special-offers/[slug]): POST /special-offer-enquiries (formKey "offer").
+    detailEnquiry: {
+      title: t.enquiryTitle,
+      spaced: true,
+      formKey: "offer",
+      fields: [
+        { name: "name", label: form.name, type: "text", autoComplete: "name" },
+        {
+          name: "email",
+          label: form.email,
+          type: "email",
+          autoComplete: "email",
+        },
+        { name: "phone", label: form.phone, type: "tel", autoComplete: "tel" },
+      ],
+      selects: [
+        // Options come from vehicle_models / interested_in of GET /special-offers/{slug} (filled in by the page).
+        { name: "model", label: form.model, options: [] },
+        { name: "interested", label: form.interested, options: [] },
+      ],
+      message: { name: "message", label: form.message, optional: true },
+      submit: form.submit,
+    },
+  };
+}

@@ -1,9 +1,11 @@
 "use server";
 
+import { getDictionary } from "@/i18n/get-dictionary";
 import { apiPost } from "@/lib/api/post";
 import { ApiError } from "@/lib/api/request";
 import { verifyRecaptcha } from "@/lib/recaptcha";
 import { schemas } from "@/lib/validation/forms";
+import { translateMessage } from "@/lib/validation/translate";
 
 // One entry per form: the Laravel endpoint and how validated UI values become its payload (lincoln-api.md).
 // Field names differ per endpoint on purpose (phone_number, vehicle_id, consent flags): map them here only.
@@ -93,8 +95,6 @@ const forms = {
   },
 };
 
-const GENERIC = "Something went wrong. Please try again in a moment.";
-
 // Laravel 422 body: { message, errors: { field: ["..."] } } -> { uiField: "first message" }
 function fieldErrors(details, fromApi) {
   const out = {};
@@ -110,23 +110,27 @@ function fieldErrors(details, fromApi) {
  * verifies the reCAPTCHA v3 token, then forwards to the PHP API (with the token as "g-recaptcha-response") with the server-only bearer token.
  * Returns { ok: true } or { ok: false, message, fieldErrors? }; never throws.
  */
-export async function submitForm(formKey, values, token) {
+export async function submitForm(formKey, values, token, lang) {
+  const { ui, validation } = await getDictionary(lang);
   const form = forms[formKey];
   const schema = schemas[formKey];
-  if (!form || !schema) return { ok: false, message: GENERIC };
+  if (!form || !schema) return { ok: false, message: ui.generic };
 
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
     const errors = {};
     for (const issue of parsed.error.issues) {
-      errors[issue.path.join(".")] ??= issue.message;
+      errors[issue.path.join(".")] ??= translateMessage(
+        validation,
+        issue.message,
+      );
     }
 
     console.log(`submitForm ${formKey} validation failed:`, errors);
 
     return {
       ok: false,
-      message: "Please correct the highlighted fields.",
+      message: ui.fixFields,
       fieldErrors: errors,
     };
   }
@@ -137,15 +141,19 @@ export async function submitForm(formKey, values, token) {
   if (!token || (verifyHere && !(await verifyRecaptcha(token, formKey)))) {
     return {
       ok: false,
-      message: "We couldn't verify you're human. Please refresh and try again.",
+      message: ui.notHuman,
     };
   }
 
   try {
-    await apiPost(form.endpoint, {
-      ...form.toPayload(parsed.data),
-      "g-recaptcha-response": token,
-    });
+    await apiPost(
+      form.endpoint,
+      {
+        ...form.toPayload(parsed.data),
+        "g-recaptcha-response": token,
+      },
+      { lang },
+    );
     return { ok: true };
   } catch (error) {
     if (error instanceof ApiError && error.status === 422) {
@@ -166,13 +174,12 @@ export async function submitForm(formKey, values, token) {
         message: unmatched.length
           ? unmatched.join(" ")
           : Object.keys(shown).length
-            ? "Please correct the highlighted fields."
-            : (error.details?.message ??
-              "Please correct the highlighted fields."),
+            ? ui.fixFields
+            : (error.details?.message ?? ui.fixFields),
         ...(Object.keys(shown).length && { fieldErrors: shown }),
       };
     }
     console.error(`submitForm ${formKey} failed:`, error.message);
-    return { ok: false, message: GENERIC };
+    return { ok: false, message: ui.generic };
   }
 }

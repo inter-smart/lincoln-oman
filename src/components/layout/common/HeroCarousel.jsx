@@ -2,13 +2,19 @@
 
 import { Children } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
+import { useLocale } from "@/components/ui/locale-link";
+import { dirOf } from "@/i18n/config";
+import { format } from "@/i18n/format";
 import { useCarouselState } from "@/components/layout/common/carousel-controls";
 
-export default function HeroCarousel({
-  children,
-  label = "Featured vehicles",
-}) {
-  const [carouselRef, api] = useEmblaCarousel({ align: "start", loop: false });
+export default function HeroCarousel({ children, label }) {
+  const labels = useLabels();
+  const [carouselRef, api] = useEmblaCarousel({
+    align: "start",
+    loop: false,
+    direction: dirOf(useLocale()),
+  });
   const { selected } = useCarouselState(api);
   const slides = Children.toArray(children);
 
@@ -27,7 +33,10 @@ export default function HeroCarousel({
             key={slide.key ?? index}
             role="group"
             aria-roledescription="slide"
-            aria-label={`${index + 1} of ${slides.length}`}
+            aria-label={format(labels.slideOf, {
+              n: index + 1,
+              total: slides.length,
+            })}
             className="relative min-w-0 shrink-0 grow-0 basis-full"
           >
             {slide}
@@ -40,7 +49,7 @@ export default function HeroCarousel({
             <button
               key={slide.key ?? index}
               type="button"
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={format(labels.goToSlide, { n: index + 1 })}
               aria-current={selected === index ? "true" : undefined}
               onClick={() => scrollTo(index)}
               className="flex size-6 items-center justify-center focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-solid"

@@ -8,7 +8,7 @@ export default function ExploreModels({ title, models, variant = "default" }) {
       <div className="container">
         <h2
           data-reveal
-          className={`title text-ink ${variant === "about" ? "text-left" : "text-center"}`}
+          className={`title text-ink ${variant === "about" ? "text-start" : "text-center"}`}
         >
           {title}
         </h2>

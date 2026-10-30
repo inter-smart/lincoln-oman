@@ -1,10 +1,14 @@
 import Image from "next/image";
 import { formatExpiry } from "@/lib/format-date";
+import { currentLocale } from "@/lib/api/locale";
 
 // Single offer: title, expiry, copy and eligibility list beside the offer photo.
 // `offer` is the API special_offer; `labels` is the static copy from src/data/offers.js.
-export default function OfferDetail({ offer, labels }) {
-  const expiry = offer?.expires_at ? formatExpiry(offer.expires_at) : null;
+export default async function OfferDetail({ offer, labels }) {
+  const locale = await currentLocale();
+  const expiry = offer?.expires_at
+    ? formatExpiry(offer.expires_at, locale)
+    : null;
   const details = [offer?.dealership, offer?.service_center].filter(Boolean);
 
   return (

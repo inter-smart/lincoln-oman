@@ -1,8 +1,9 @@
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import Image from "next/image";
 import { XIcon } from "lucide-react";
 import Logo from "@/components/layout/common/Logo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import LanguageSwitch from "@/components/layout/common/LanguageSwitch";
 import HeaderShell from "@/components/layout/common/HeaderShell";
 import VehicleMenu from "@/components/layout/common/VehicleMenu";
 import {
@@ -32,7 +33,7 @@ export default function Header({ data, vehicles }) {
         <NavigationMenu
           viewport={false}
           className="pointer-events-auto static hidden max-w-none flex-none justify-start lg:flex"
-          aria-label="Main"
+          aria-label={data.labels.mainNav}
         >
           <NavigationMenuList className="mt-[20px] gap-[36px] text-[14px] tracking-[0.8px] xl:gap-[calc(52*var(--rr))] xl:text-fluid-16">
             {nav?.map((item) =>
@@ -40,11 +41,11 @@ export default function Header({ data, vehicles }) {
                 <NavigationMenuItem key={item.id} className="static">
                   <NavigationMenuTrigger
                     type="button"
-                    className="relative h-auto rounded-none bg-transparent p-0 text-[length:inherit] font-normal after:absolute after:-bottom-[6px] after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:outline-solid data-[state=open]:bg-transparent data-[state=open]:text-white data-[state=open]:after:scale-x-100 data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent [&>svg]:hidden"
+                    className="relative h-auto rounded-none bg-transparent p-0 text-[length:inherit] font-normal after:absolute after:start-0 after:-bottom-[6px] after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:outline-solid data-[state=open]:bg-transparent data-[state=open]:text-white data-[state=open]:after:scale-x-100 data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent [&>svg]:hidden"
                   >
                     {item.label}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="inset-x-0 -z-10 p-0 pr-0 group-data-[viewport=false]/navigation-menu:top-0 group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:border-0 group-data-[viewport=false]/navigation-menu:bg-night group-data-[viewport=false]/navigation-menu:text-white group-data-[viewport=false]/navigation-menu:shadow-none group-data-[viewport=false]/navigation-menu:duration-300 group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-100 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-100 md:fixed md:w-full">
+                  <NavigationMenuContent className="inset-x-0 -z-10 p-0 pe-0 group-data-[viewport=false]/navigation-menu:top-0 group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:border-0 group-data-[viewport=false]/navigation-menu:bg-night group-data-[viewport=false]/navigation-menu:text-white group-data-[viewport=false]/navigation-menu:shadow-none group-data-[viewport=false]/navigation-menu:duration-300 group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-100 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-100 md:fixed md:w-full">
                     <VehicleMenu menu={item.menu} vehicles={vehicles} />
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -61,7 +62,7 @@ export default function Header({ data, vehicles }) {
 
         <Link
           href="/"
-          aria-label="Lincoln home"
+          aria-label={data.labels.lincolnHome}
           className="pointer-events-auto col-start-2 origin-top scale-[0.7] lg:scale-100"
         >
           <Logo />
@@ -72,18 +73,11 @@ export default function Header({ data, vehicles }) {
             data={data?.testDrive}
             className="me-[13px] hidden lg:inline-flex"
           />
-          <Link
-            href={data?.language?.href ?? "#"}
-            aria-label={data?.language?.label}
-            className="flex h-[24px] items-center gap-[5px] transition-opacity hover:opacity-70"
-          >
-            <Image src="/icons/globe.svg" alt="" width={15} height={15} />
-            <Image src="/icons/caret-down.svg" alt="" width={8} height={5} />
-          </Link>
+          <LanguageSwitch labels={data.language} />
 
           <Sheet>
             <SheetTrigger className="flex h-[24px] items-center gap-[13px] text-[14px] tracking-[0.7px] uppercase transition-opacity hover:opacity-70">
-              <span className="max-sm:sr-only">Menu</span>
+              <span className="max-sm:sr-only">{data.labels.menu}</span>
               <Image src="/icons/menu.svg" alt="" width={31} height={7} />
             </SheetTrigger>
             <SheetContent
@@ -94,46 +88,29 @@ export default function Header({ data, vehicles }) {
               aria-describedby={undefined}
               className="z-1001 max-h-dvh gap-0 overflow-y-auto border-none bg-night/80 pb-9 text-white backdrop-blur-md"
             >
-              <SheetTitle className="sr-only">Menu</SheetTitle>
+              <SheetTitle className="sr-only">{data.labels.menu}</SheetTitle>
               <div className="mx-auto w-full max-w-[720px] px-9">
                 <div className="grid grid-cols-[1fr_auto_1fr] items-start pt-[20px]">
                   <Link
                     href="/"
-                    aria-label="Lincoln home"
+                    aria-label={data.labels.lincolnHome}
                     className="col-start-2 origin-top scale-[0.7]"
                   >
                     <Logo />
                   </Link>
                   <div className="col-start-3 mt-[8px] flex items-center justify-end gap-[20px]">
-                    <Link
-                      href={data?.language?.href ?? "#"}
-                      aria-label={data?.language?.label}
-                      className="flex h-[24px] items-center gap-[5px] transition-opacity hover:opacity-70"
-                    >
-                      <Image
-                        src="/icons/globe.svg"
-                        alt=""
-                        width={15}
-                        height={15}
-                      />
-                      <Image
-                        src="/icons/caret-down.svg"
-                        alt=""
-                        width={8}
-                        height={5}
-                      />
-                    </Link>
+                    <LanguageSwitch labels={data.language} />
                     <SheetClose className="grid size-[24px] place-items-center transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-solid">
                       <XIcon
                         className="size-[22px]"
                         strokeWidth={1.25}
                         aria-hidden="true"
                       />
-                      <span className="sr-only">Close menu</span>
+                      <span className="sr-only">{data.labels.closeMenu}</span>
                     </SheetClose>
                   </div>
                 </div>
-                <nav aria-label="Menu" className="-mt-4">
+                <nav aria-label={data.labels.menu} className="-mt-4">
                   <ul className="text-[18px] tracking-[0.9px]">
                     {nav?.map((item) => (
                       <li

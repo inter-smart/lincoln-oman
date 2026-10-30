@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLabels } from "@/components/layout/common/I18nProvider";
+import { translateMessage } from "@/lib/validation/translate";
 import { cn } from "@/lib/utils";
 
 // "pill": white inputs on the dark enquiry card. "underline": bottom-border inputs on white (contact pages).
@@ -57,7 +59,11 @@ function FieldError({ id, message, variant }) {
 
 function useField(name) {
   const { register, control, formState, watch } = useFormContext();
-  const error = formState.errors[name]?.message;
+  const labels = useLabels();
+  const error = translateMessage(
+    labels.validation,
+    formState.errors[name]?.message,
+  );
   return {
     register,
     control,
@@ -225,7 +231,11 @@ export function DateField({ name, label, variant = "underline", className }) {
 // Marketing yes/no radios + the required "agree" checkbox (request-a-quote, book-a-test-drive).
 export function TermsFields({ terms, variant = "underline" }) {
   const { register, formState } = useFormContext();
-  const error = formState.errors.agree?.message;
+  const labels = useLabels();
+  const error = translateMessage(
+    labels.validation,
+    formState.errors.agree?.message,
+  );
   return (
     <div className="space-y-2.5 text-[13px] text-ink sm:text-sm 2xl:text-base">
       <p>{terms.text}</p>
@@ -262,6 +272,7 @@ export function TermsFields({ terms, variant = "underline" }) {
 
 export function SubmitButton({ children, variant = "light", className }) {
   const { formState } = useFormContext();
+  const labels = useLabels();
   const busy = formState.isSubmitting;
   return (
     <button
@@ -274,13 +285,13 @@ export function SubmitButton({ children, variant = "light", className }) {
         className,
       )}
     >
-      {busy ? "Sending…" : children}
+      {busy ? labels.sending : children}
       <Image
         src="/icons/chevron-accent.svg"
         alt=""
         width={7}
         height={4}
-        className="-rotate-90"
+        className="-rotate-90 rtl:rotate-90"
       />
     </button>
   );

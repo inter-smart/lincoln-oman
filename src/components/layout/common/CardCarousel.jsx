@@ -2,6 +2,8 @@
 
 import { Children, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLocale } from "@/components/ui/locale-link";
+import { dirOf } from "@/i18n/config";
 import {
   ArrowButton,
   useCarouselState,
@@ -24,6 +26,7 @@ export default function CardCarousel({
 }) {
   // keepSnaps: one snap per slide while the track overflows (when every slide fits, Embla keeps a single snap)
   const [carouselRef, api] = useEmblaCarousel({
+    direction: dirOf(useLocale()),
     align: "start",
     containScroll: activeSlideClassName ? "keepSnaps" : "trimSnaps",
   });

@@ -1,4 +1,5 @@
 import { allowIndexing, siteUrl } from "@/data/seo";
+import { locales } from "@/i18n/config";
 import { apiGet } from "@/lib/api/get";
 
 const REVALIDATE = 3600;
@@ -19,6 +20,22 @@ const staticRoutes = [
 ];
 
 const absolute = (path) => new URL(path, siteUrl).href;
+
+// One entry per language for a language-less path ("/about"), each pointing at the other language as its hreflang alternate.
+// ponytail: detail slugs are assumed to be the same in every language: confirm with the backend.
+const localized = (path, entry) => {
+  const urls = Object.fromEntries(
+    locales.map((locale) => [
+      locale,
+      absolute(`/${locale}${path === "/" ? "" : path}`),
+    ]),
+  );
+  return locales.map((locale) => ({
+    url: urls[locale],
+    ...entry,
+    alternates: { languages: urls },
+  }));
+};
 
 // Every item of a paginated list endpoint ({ [key]: [...], pagination: { last_page } }).
 // A failed request (already logged by apiGet) ends the list instead of failing the sitemap.
@@ -45,34 +62,37 @@ export default async function sitemap() {
     allPages("/special-offers", "special_offers"),
   ]);
 
-  const pageUrl = (base, item) =>
-    absolute(`${base}/${encodeURIComponent(item.slug)}`);
+  const pagePath = (base, item) => `${base}/${encodeURIComponent(item.slug)}`;
   const published = (value) => {
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? undefined : date;
   };
 
   return [
-    ...staticRoutes.map(({ path, priority }) => ({
-      url: absolute(path),
-      changeFrequency: path === "/" ? "weekly" : "monthly",
-      priority,
-    })),
-    ...(models.data ?? []).map((model) => ({
-      url: pageUrl("/vehicles", model),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    })),
-    ...news.map((item) => ({
-      url: pageUrl("/newsroom", item),
-      lastModified: published(item.published_on),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    })),
-    ...offers.map((item) => ({
-      url: pageUrl("/special-offers", item),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    })),
+    ...staticRoutes.flatMap(({ path, priority }) =>
+      localized(path, {
+        changeFrequency: path === "/" ? "weekly" : "monthly",
+        priority,
+      }),
+    ),
+    ...(models.data ?? []).flatMap((model) =>
+      localized(pagePath("/vehicles", model), {
+        changeFrequency: "monthly",
+        priority: 0.9,
+      }),
+    ),
+    ...news.flatMap((item) =>
+      localized(pagePath("/newsroom", item), {
+        lastModified: published(item.published_on),
+        changeFrequency: "yearly",
+        priority: 0.5,
+      }),
+    ),
+    ...offers.flatMap((item) =>
+      localized(pagePath("/special-offers", item), {
+        changeFrequency: "weekly",
+        priority: 0.6,
+      }),
+    ),
   ];
 }

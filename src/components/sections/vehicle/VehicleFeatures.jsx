@@ -1,12 +1,14 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function VehicleFeatures({ items }) {
+export default async function VehicleFeatures({ items }) {
+  const { ui } = await getCurrentDictionary();
   if (!items?.length) return null;
   return (
     <div className="container pt-8 sm:pt-10 xl:pt-[calc(70*var(--rr))]">
       <CardCarousel
-        label="Key features"
+        label={ui.keyFeatures}
         className="[--slide-gap:0px]"
         slideClassName="basis-[72%] sm:basis-1/2 lg:basis-1/4"
       >

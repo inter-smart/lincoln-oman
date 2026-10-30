@@ -1,10 +1,10 @@
-// "Abu Dhabi" -> "abu-dhabi". The CMS sends no slug for locations, so the URL slug is derived from the name.
+// "Abu Dhabi" -> "abu-dhabi"; Arabic names keep their letters ("مسقط" -> "مسقط") so every location still gets its own slug. The CMS sends no slug for locations, so the URL slug is derived from the name.
 export function slugify(name) {
   return String(name ?? "")
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
 }
 

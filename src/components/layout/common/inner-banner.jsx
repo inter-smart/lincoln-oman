@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/locale-link";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
 export default function InnerBanner({ data, as: Title = "h1" }) {
@@ -48,7 +48,7 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
                 alt=""
                 width={7}
                 height={4}
-                className="-rotate-90"
+                className="-rotate-90 rtl:rotate-90"
               />
             </Link>
           )}

@@ -22,7 +22,7 @@ export default function CertifiedBand({
         className={`relative container grid items-center gap-7.5 lg:gap-[28px] ${emblem ? "lg:grid-cols-[minmax(0,878fr)_minmax(0,762fr)]" : "lg:grid-cols-2"}`}
       >
         {emblem && (
-          <EmblemMark className="absolute top-1/2 left-[calc(34*var(--rr)+16px)] hidden w-[calc(92*var(--rr))] -translate-y-1/2 bg-[#2c2628] xl:block" />
+          <EmblemMark className="absolute start-[calc(34*var(--rr)+16px)] top-1/2 hidden w-[calc(92*var(--rr))] -translate-y-1/2 bg-[#2c2628] xl:block" />
         )}
         <div
           data-reveal

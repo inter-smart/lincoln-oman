@@ -1,20 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import Link, { useLinkStatus } from "next/link";
+import { useLinkStatus } from "next/link";
+import { useLabels } from "@/components/layout/common/I18nProvider";
+import Link from "@/components/ui/locale-link";
 import { buttonVariants } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 // Must sit inside the <Link> to read its status. The box keeps the chevron's width, so the button doesn't shift.
 function Pending() {
   const { pending } = useLinkStatus();
+  const labels = useLabels();
   return (
     <span className="relative flex h-3 w-3 items-center justify-center">
       {pending ? (
         <>
           <Spinner className="size-3 border-[1.5px]" />
           <span role="status" className="sr-only">
-            Loading…
+            {labels.loading}
           </span>
         </>
       ) : (

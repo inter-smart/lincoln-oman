@@ -1,6 +1,8 @@
 "use client";
 import { Children } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLocale } from "@/components/ui/locale-link";
+import { dirOf } from "@/i18n/config";
 import {
   ArrowButton,
   useCarouselState,
@@ -20,6 +22,7 @@ export default function CenterCarousel({
   dots = false,
 }) {
   const [carouselRef, api] = useEmblaCarousel({
+    direction: dirOf(useLocale()),
     loop: true,
     align: "center",
     containScroll: false,

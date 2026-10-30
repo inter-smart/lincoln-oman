@@ -36,7 +36,7 @@ export default function CertifiedInspection({ data, id }) {
             dangerouslySetInnerHTML={{ __html: data.description }}
           />
         </div>
-        <EmblemMark className="absolute top-1/2 right-4 hidden w-[calc(94*var(--rr))] -translate-y-1/2 bg-[#e8e8e8] xl:block" />
+        <EmblemMark className="absolute end-4 top-1/2 hidden w-[calc(94*var(--rr))] -translate-y-1/2 bg-[#e8e8e8] xl:block" />
       </div>
     </section>
   );

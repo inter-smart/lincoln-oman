@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useOffersLoading } from "@/components/layout/common/OffersLoading";
+import { useLocale } from "@/components/ui/locale-link";
+import { localizedHref } from "@/i18n/config";
 import {
   Select,
   SelectContent,
@@ -24,6 +26,7 @@ export default function LocationFilter({
   basePath,
 }) {
   const router = useRouter();
+  const locale = useLocale();
   // Shares the transition with the offer list (spinner overlay); falls back to a local one without the provider.
   const shared = useOffersLoading();
   const [localPending, startLocalTransition] = useTransition();
@@ -47,7 +50,10 @@ export default function LocationFilter({
         setSelected(slug === ALL ? "" : slug);
         startTransition(() =>
           router.push(
-            slug === ALL ? basePath : `${basePath}?location=${slug}`,
+            localizedHref(
+              slug === ALL ? basePath : `${basePath}?location=${slug}`,
+              locale,
+            ),
             {
               scroll: false,
             },

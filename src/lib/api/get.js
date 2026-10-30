@@ -1,5 +1,6 @@
 import { unstable_rethrow } from "next/navigation";
 import { send } from "./http";
+import { currentLocale } from "./locale";
 
 /**
  * Read from the PHP API with a GET, e.g. apiGet("/home") or apiGet(`/newsroom/${slug}`).
@@ -8,11 +9,12 @@ import { send } from "./http";
  * The page decides what to do, e.g. `if (error) notFound()`.
  * Refreshed every `revalidate` seconds (0 = always fresh; go-live values: 3600 site, 900 content, 300 listings).
  */
-export async function apiGet(endpoint, { params, revalidate = 0 } = {}) {
+export async function apiGet(endpoint, { params, revalidate = 0, lang } = {}) {
   try {
     const data = await send(endpoint, {
       method: "GET",
       params,
+      lang: lang ?? (await currentLocale()),
       fetchOptions: { next: { revalidate } },
     });
     return { data, error: null };

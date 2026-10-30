@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useTransition } from "react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
 import { Spinner } from "@/components/ui/spinner";
 
 const OffersLoadingContext = createContext(null);
@@ -22,6 +23,7 @@ export function useOffersLoading() {
 // Dims the list and shows a centred spinner while a new filter result is loading.
 export function OffersLoadingArea({ children }) {
   const isPending = useOffersLoading()?.isPending ?? false;
+  const labels = useLabels();
   return (
     <div className="relative" aria-busy={isPending}>
       <div
@@ -39,7 +41,7 @@ export function OffersLoadingArea({ children }) {
           className="absolute inset-x-0 top-24 flex justify-center text-slate"
         >
           <Spinner className="size-10 border-[3px]" />
-          <span className="sr-only">Loading offers…</span>
+          <span className="sr-only">{labels.loadingOffers}</span>
         </div>
       )}
     </div>

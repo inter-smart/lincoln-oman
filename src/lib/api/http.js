@@ -19,7 +19,10 @@ function config() {
  * talks to the PHP API and the only place the token is read.
  * Returns API data only: a failure throws ApiError and never substitutes static data.
  */
-export async function send(endpoint, { method, params, body, fetchOptions }) {
+export async function send(
+  endpoint,
+  { method, params, body, fetchOptions, lang },
+) {
   const { baseUrl, token } = config();
 
   const res = await fetch(buildUrl(baseUrl, endpoint, params), {
@@ -27,6 +30,7 @@ export async function send(endpoint, { method, params, body, fetchOptions }) {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
+      ...(lang && { lang }),
       ...(body && { "Content-Type": "application/json" }),
     },
     body: body ? JSON.stringify(body) : undefined,

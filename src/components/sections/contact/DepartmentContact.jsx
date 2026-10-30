@@ -22,7 +22,7 @@ export default function DepartmentContact({ data, department_contacts }) {
                   index < department_contacts.length - 1 && "max-sm:border-b",
                   index > 0 &&
                     index < 3 &&
-                    "lg:relative lg:after:absolute lg:after:-bottom-[6px] lg:after:-left-[6px] lg:after:z-10 lg:after:size-3 lg:after:scale-[400%] lg:after:rounded-full lg:after:bg-white lg:after:content-[''] 2xl:after:scale-[700%]",
+                    "lg:relative lg:after:absolute lg:after:-start-[6px] lg:after:-bottom-[6px] lg:after:z-10 lg:after:size-3 lg:after:scale-[400%] lg:after:rounded-full lg:after:bg-white lg:after:content-[''] 2xl:after:scale-[700%]",
                 )}
               >
                 <div className="mb-2.5 font-display text-base 2xl:mb-3.75 2xl:text-lg 3xl:text-xl">
