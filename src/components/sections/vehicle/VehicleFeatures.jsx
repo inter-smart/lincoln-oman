@@ -19,7 +19,7 @@ export default async function VehicleFeatures({ items }) {
             style={{ "--reveal-delay": `${index * 0.1}s` }}
             className={`flex h-full items-center gap-4 xl:gap-[calc(24*var(--rr))] ${
               index > 0
-                ? "border-s border-black/10 ps-5 lg:justify-center lg:ps-0"
+                ? "border-s border-black/10 ps-5 lg:justify-center lg:px-5"
                 : "pe-5"
             } ${index === items.length - 1 ? "lg:justify-end" : ""}`}
           >

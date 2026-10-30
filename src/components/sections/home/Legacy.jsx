@@ -9,10 +9,7 @@ export default async function Legacy({ data, variant = "default" }) {
       className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
     >
       <div className="container flex flex-col items-center">
-        <div
-          data-observe
-          className="legacy-logo relative h-(--logo-h) overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]"
-        >
+        <div className="relative h-(--logo-h) overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] w-[calc(var(--logo-h)*2.884)] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]">
           <Image
             src="/images/logo.png"
             alt="Lincoln"

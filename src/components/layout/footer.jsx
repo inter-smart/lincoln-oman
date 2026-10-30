@@ -111,7 +111,11 @@ export default function Footer({ data, settings, labels }) {
             {data?.legal?.map((link, index) => (
               <span key={link.id}>
                 {index > 0 && " | "}
-                <Link href={link.href} target={link?.isExternal? "_blank": "_self"} className={linkHover}>
+                <Link
+                  href={link.href}
+                  target={link?.isExternal ? "_blank" : "_self"}
+                  className={linkHover}
+                >
                   {link.label}
                 </Link>
               </span>
@@ -136,7 +140,7 @@ export default function Footer({ data, settings, labels }) {
                   >
                     <Image
                       src={item.icon}
-                      alt=""
+                      alt="Social Icons"
                       width={item.width}
                       height={item.height}
                       style={{ width: item.width, height: item.height }}

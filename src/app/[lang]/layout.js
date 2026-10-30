@@ -12,6 +12,7 @@ import { addressLines } from "@/lib/address-lines";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { dirOf, hasLocale, locales } from "@/i18n/config";
 import I18nProvider from "@/components/layout/common/I18nProvider";
+import SiteLoader from "@/components/layout/common/SiteLoader";
 import FloatingRail from "@/components/layout/common/FloatingRail";
 import SmoothScroll from "@/components/layout/common/SmoothScroll";
 import RevealObserver from "@/components/layout/common/RevealObserver";
@@ -80,6 +81,7 @@ export default async function RootLayout({ children }) {
             }}
           />
         )}
+        <SiteLoader />
         <I18nProvider
           dir={dirOf(locale)}
           labels={{ ...dict.common, ...dict.ui, validation: dict.validation }}

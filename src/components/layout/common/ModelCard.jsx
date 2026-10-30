@@ -38,7 +38,7 @@ export default function ModelCard({ model }) {
                 alt=""
                 width={28}
                 height={28}
-                className="h-[24px] w-auto"
+                className="h-[24px] w-auto invert"
               />
             )}
             {feature.title}
@@ -48,7 +48,7 @@ export default function ModelCard({ model }) {
       <span className="absolute start-5 bottom-[20px] text-lg leading-[normal] xl:text-fluid-25 2xl:start-[25px] 2xl:text-[19px]">
         {model.name}
       </span>
-      <div className="absolute end-5 bottom-6.25 flex aspect-35/15 h-auto w-7.5 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 2xl:end-6.25 2xl:w-8.75 group-hocus:translate-x-0 group-hocus:opacity-100">
+      <div className="absolute end-5 bottom-6.25 flex aspect-35/15 h-auto w-7.5 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 2xl:end-6.25 2xl:w-8.75 rtl:translate-x-3 group-hocus:translate-x-0 group-hocus:opacity-100 rtl:group-hocus:translate-x-0">
         <Image
           src="/icons/card-plus-hover.svg"
           alt=""
