@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { useOffersLoading } from "@/components/layout/common/OffersLoading";
 import {
   Select,
   SelectContent,
@@ -9,11 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { slugify } from "@/lib/slugify";
 
 const ALL = "all";
 
-// "Choose location" dropdown. Picking a location reloads the server page with ?location_id=<id>
-// (the API filters on it); "All locations" goes back to the plain URL.
+// "Choose location" dropdown. Picking a location reloads the server page with ?location=<slug>
+// (the page maps the slug back to the id for the API); "All locations" goes back to the plain URL.
 export default function LocationFilter({
   locations,
   value,
@@ -22,7 +24,11 @@ export default function LocationFilter({
   basePath,
 }) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  // Shares the transition with the offer list (spinner overlay); falls back to a local one without the provider.
+  const shared = useOffersLoading();
+  const [localPending, startLocalTransition] = useTransition();
+  const isPending = shared?.isPending ?? localPending;
+  const startTransition = shared?.startTransition ?? startLocalTransition;
   // The choice is kept locally so it shows at once; the server page can take a while to re-render.
   const [selected, setSelected] = useState(value ?? "");
   const [prevValue, setPrevValue] = useState(value);
@@ -37,12 +43,15 @@ export default function LocationFilter({
     <Select
       name="location"
       value={selected}
-      onValueChange={(id) => {
-        setSelected(id === ALL ? "" : id);
+      onValueChange={(slug) => {
+        setSelected(slug === ALL ? "" : slug);
         startTransition(() =>
-          router.push(id === ALL ? basePath : `${basePath}?location_id=${id}`, {
-            scroll: false,
-          }),
+          router.push(
+            slug === ALL ? basePath : `${basePath}?location=${slug}`,
+            {
+              scroll: false,
+            },
+          ),
         );
       }}
     >
@@ -67,7 +76,7 @@ export default function LocationFilter({
         {locations.map((location) => (
           <SelectItem
             key={location.id}
-            value={String(location.id)}
+            value={slugify(location.name)}
             className="text-sm focus:bg-silver/20 focus:text-ink sm:text-[15px] lg:text-sm xl:text-fluid-16"
           >
             {location.name}

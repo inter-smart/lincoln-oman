@@ -7,9 +7,11 @@ import OfferList from "@/components/sections/offers/OfferList";
 import { offers } from "@/data/offers";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { locationBySlug, slugify } from "@/lib/slugify";
 
 const PATH = "/special-offers";
 
+// Browser URL: /special-offers[?location=<slug>][&page=<n>]  (slug = slugified location name)
 // GET /special-offers[?location_id=<id>][&page=<n>]
 //   -> { special_offers: [{ id, slug, title, dealership, service_center, expires_at, image, location }], locations: [{ id, name }], banner, pagination }
 // cache() lets generateMetadata and the page share one request.
@@ -42,13 +44,21 @@ const positiveInt = (value) => (/^[1-9]\d*$/.test(value ?? "") ? value : "");
 
 export default async function page({ searchParams }) {
   const query = await searchParams;
-  const locationId = positiveInt(query.location_id);
   const requestedPage = Number(positiveInt(query.page)) || 1;
 
   // The unfiltered list gives the banner and the location choices.
   const all = await getOffers();
   if (all.error || !all.data) notFound();
   const { banner, locations } = all.data;
+
+  // The URL carries the location slug; the API is still asked by id. An unknown slug is ignored.
+  // Old ?location_id=<id> links keep working.
+  const legacyId = positiveInt(query.location_id);
+  const location =
+    locationBySlug(locations, query.location) ??
+    locations.find(({ id }) => String(id) === legacyId);
+  const locationId = location ? String(location.id) : "";
+  const locationSlug = location ? slugify(location.name) : "";
 
   const first = locationId ? await getOffers(locationId) : all;
   if (first.error || !first.data) notFound();
@@ -65,7 +75,7 @@ export default async function page({ searchParams }) {
 
   const items = [first, ...more].flatMap(({ data }) => data.special_offers);
   const nextQuery = new URLSearchParams({
-    ...(locationId && { location_id: locationId }),
+    ...(locationSlug && { location: locationSlug }),
     page: shownPages + 1,
   });
 
@@ -78,7 +88,7 @@ export default async function page({ searchParams }) {
         data={{
           items,
           locations,
-          locationId,
+          locationSlug,
           basePath: PATH,
           loadMore:
             shownPages < lastPage ? { href: `${PATH}?${nextQuery}` } : null,
