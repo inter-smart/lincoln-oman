@@ -19,7 +19,8 @@ export default function SectionTabs({ items, label }) {
       ref={navRef}
       aria-label={label}
       data-stuck={stuck || undefined}
-      className="sticky top-(--header-h,0px) z-20 container mt-10 sm:mt-12.5 lg:mt-15 xl:mt-[calc(82*var(--rr))]"
+      style={{ top: "var(--header-visible-h, var(--header-h, 0px))" }}
+      className="sticky z-20 container mt-10 sm:mt-12.5 lg:mt-15 xl:mt-[calc(82*var(--rr))]"
     >
       <ul
         ref={listRef}

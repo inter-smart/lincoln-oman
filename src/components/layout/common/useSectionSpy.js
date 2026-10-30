@@ -33,13 +33,23 @@ export default function useSectionSpy(items, isStacked = () => true) {
     const nav = navRef.current;
     if (!header || !nav) return;
 
-    const update = () => {
-      const headerH = header.offsetHeight;
+    const updateOffset = () => {
+      const visibleHeaderH =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--header-visible-h",
+          ),
+        ) || header.offsetHeight;
+      const headerH = visibleHeaderH;
       nav.style.setProperty("--header-h", `${headerH}px`);
       document.documentElement.style.setProperty(
         "--spy-offset",
         `${headerH + (stackedRef.current() ? nav.offsetHeight : GAP)}px`,
       );
+    };
+
+    const update = () => {
+      updateOffset();
       // The header compacts mid-jump, so re-aim with the new offset or the jump stops short
       const jump = jumping.current;
       if (jump) jump.target.scrollIntoView({ behavior: jump.behavior });
@@ -48,10 +58,12 @@ export default function useSectionSpy(items, isStacked = () => true) {
     observer.observe(header);
     observer.observe(nav);
     window.addEventListener("resize", update);
+    window.addEventListener("scroll", updateOffset, { passive: true });
     update();
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", updateOffset);
       document.documentElement.style.removeProperty("--spy-offset");
     };
   }, []);
@@ -107,7 +119,7 @@ export default function useSectionSpy(items, isStacked = () => true) {
       setStuck(
         Math.abs(
           nav.getBoundingClientRect().top -
-            parseFloat(getComputedStyle(nav).top),
+          parseFloat(getComputedStyle(nav).top),
         ) < 1,
       );
     };

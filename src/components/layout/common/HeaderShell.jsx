@@ -25,6 +25,14 @@ export default function HeaderShell({ children }) {
 
       header.style.transform = `translate3d(0, ${-currentHide}px, 0)`;
       header.style.willChange = "transform";
+      const visibleHeaderHeight = Math.max(
+        0,
+        (header.offsetHeight ?? 0) - currentHide,
+      );
+      document.documentElement.style.setProperty(
+        "--header-visible-h",
+        `${visibleHeaderHeight}px`,
+      );
     };
 
     const update = () => {
@@ -67,6 +75,7 @@ export default function HeaderShell({ children }) {
         header.style.removeProperty("will-change");
       }
       document.documentElement.style.removeProperty("--header-h");
+      document.documentElement.style.removeProperty("--header-visible-h");
     };
   }, []);
 
