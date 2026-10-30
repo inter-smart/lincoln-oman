@@ -1,16 +1,14 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { getTerms } from "@/data/legal";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
 import LegalContent from "@/components/sections/legal/LegalContent";
-import { getTerms } from "@/data/legal";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
-import { apiGet } from "@/lib/api/get";
-import { buildMetadata } from "@/lib/seo";
 
-// GET /policies/terms-and-conditions -> { policy: { title, slug, content (HTML), meta_title, meta_description, meta_keywords, other_meta_tags, banner } }
-// cache() lets generateMetadata and the page share one request.
 const getPolicy = cache(() => apiGet("/policies/terms-and-conditions"));
 
 export async function generateMetadata() {

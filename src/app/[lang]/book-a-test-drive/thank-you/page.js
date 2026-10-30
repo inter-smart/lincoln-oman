@@ -1,8 +1,8 @@
+import { buildMetadata } from "@/lib/seo";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import CertifiedStatement from "@/components/sections/certified/CertifiedStatement";
-import { buildMetadata } from "@/lib/seo";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 export async function generateMetadata() {
   const { ui } = await getCurrentDictionary();

@@ -1,21 +1,19 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import ContactCta from "@/components/layout/common/ContactCta";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import SectionTabs from "@/components/layout/common/SectionTabs";
-import CertifiedBand from "@/components/sections/certified/CertifiedBand";
-import CertifiedBenefits from "@/components/sections/certified/CertifiedBenefits";
-import CertifiedInspection from "@/components/sections/certified/CertifiedInspection";
-import CertifiedIntro from "@/components/sections/certified/CertifiedIntro";
-import CertifiedStatement from "@/components/sections/certified/CertifiedStatement";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import ContactCta from "@/components/layout/common/ContactCta";
+import SectionTabs from "@/components/layout/common/SectionTabs";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import CertifiedBand from "@/components/sections/certified/CertifiedBand";
+import CertifiedIntro from "@/components/sections/certified/CertifiedIntro";
+import CertifiedBenefits from "@/components/sections/certified/CertifiedBenefits";
+import CertifiedStatement from "@/components/sections/certified/CertifiedStatement";
+import CertifiedInspection from "@/components/sections/certified/CertifiedInspection";
 
-// GET /certified -> { certified_cms: { section_one, section_two: { tab_one … tab_seven }, section_three }, banner }
-// cache() lets generateMetadata and the page share one request.
 const getCertified = cache(() => apiGet("/certified"));
 
 export async function generateMetadata() {
@@ -39,7 +37,6 @@ const divider = (
   </div>
 );
 
-// A section (and its tab) is shown only when the CMS gave it a title.
 const hasTitle = (section) => Boolean(section?.title?.trim());
 
 export default async function page() {
@@ -52,7 +49,6 @@ export default async function page() {
   if (error || !data) notFound();
   const { banner, certified_cms } = data;
 
-  // Give the CMS fields the names the page uses.
   const { section_one: intro, section_three: cta } = certified_cms;
   const {
     tab_one: benefits,
@@ -64,7 +60,6 @@ export default async function page() {
     tab_seven: finance,
   } = certified_cms.section_two;
 
-  // Tab bar: one tab per section, in page order. Each key is also the section's anchor id.
   const tabs = Object.entries({
     benefits,
     maintenance,

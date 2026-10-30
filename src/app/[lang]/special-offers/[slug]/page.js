@@ -1,18 +1,15 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import { getOffers as offersText } from "@/data/offers";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
 import OfferDetail from "@/components/sections/offers/OfferDetail";
-import { getOffers as offersText } from "@/data/offers";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
-import { apiGet } from "@/lib/api/get";
-import { buildMetadata } from "@/lib/seo";
 
-// GET /special-offers/{slug} -> { special_offer: { title, slug, description (HTML), image, … }, banner, meta_tags,
-//   vehicle_models: [{ name }], interested_in: [{ name }] } (the last two fill the enquiry form's dropdowns)
-// cache() lets generateMetadata and the page share one request.
 const getOffer = cache((slug) =>
   apiGet(`/special-offers/${encodeURIComponent(slug)}`),
 );
@@ -24,7 +21,6 @@ export async function generateMetadata({ params }) {
   const { special_offer, meta_tags } = data;
   return buildMetadata(
     {
-      // The CMS can send no meta title; fall back to the offer's own title so the page is never untitled.
       title: meta_tags.meta_title ?? special_offer.title,
       description: meta_tags.meta_description,
       keywords: meta_tags.meta_keywords,

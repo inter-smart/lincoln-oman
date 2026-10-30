@@ -1,15 +1,13 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import GalleryGrid from "@/components/sections/gallery/GalleryGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import GalleryGrid from "@/components/sections/gallery/GalleryGrid";
 
-// GET /galleries -> { galleries: [{ id, media_type: "video" | "image", video?, image? }], banner }
-// cache() lets generateMetadata and the page share one request.
 const getGalleries = cache(() => apiGet("/galleries"));
 
 export async function generateMetadata() {

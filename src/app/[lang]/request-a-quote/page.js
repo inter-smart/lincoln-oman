@@ -1,17 +1,15 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import ContactIntro from "@/components/sections/contact/ContactIntro";
-import { getQuote as quoteText } from "@/data/quote";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import { getQuote as quoteText } from "@/data/quote";
 import { withVehicleOptions } from "@/lib/vehicle-options";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import ContactIntro from "@/components/sections/contact/ContactIntro";
 
-// GET /request-quote -> { cms: { title, sub_title, description, enquiry_title, enquiry_description }, banner, vehicle_models: [{ id, name }] }
-// cache() lets generateMetadata and the page share one request.
 const getQuote = cache(() => apiGet("/request-quote"));
 
 export async function generateMetadata() {

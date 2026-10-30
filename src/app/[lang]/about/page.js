@@ -1,17 +1,15 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import Legacy from "@/components/sections/home/Legacy";
 import Newsroom from "@/components/sections/home/Newsroom";
+import MetaTags from "@/components/layout/common/MetaTags";
 import AboutInfo from "@/components/sections/about/about-info";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import AboutCommitment from "@/components/sections/about/about-commitment";
-import { apiGet } from "@/lib/api/get";
-import { buildMetadata } from "@/lib/seo";
 
-// GET /about-us -> { about_cms: { section_one … section_five }, banner, featured_models, news }
-// cache() lets generateMetadata and the page share one request.
 const getAbout = cache(() => apiGet("/about-us"));
 
 export async function generateMetadata() {

@@ -1,5 +1,8 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import SectionTabs from "@/components/layout/common/SectionTabs";
 import VehicleCta from "@/components/sections/vehicle/VehicleCta";
@@ -14,15 +17,7 @@ import ExteriorDesign from "@/components/sections/vehicle/ExteriorDesign";
 import VehicleFeatures from "@/components/sections/vehicle/VehicleFeatures";
 import InteriorExperience from "@/components/sections/vehicle/InteriorExperience";
 import PerformanceHighlights from "@/components/sections/vehicle/PerformanceHighlights";
-import { apiGet } from "@/lib/api/get";
-import { buildMetadata } from "@/lib/seo";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-// GET /vehicles/{slug} -> { vehicle: { name, slug, banner, brochure, section_one, section_two, section_nine, section_ten },
-//   features, model_variants, interior_experiences, exterior_designs, color_variants, media_connectivities,
-//   performance_highlights, galleries, safeties, explore_more_models: [{ name, slug, image, video, features }] }.
-//   Every list can be empty (only Navigator is filled so far).
-// cache() lets generateMetadata and the page share one request.
 const getVehicle = cache((slug) =>
   apiGet(`/vehicles/${encodeURIComponent(slug)}`),
 );
@@ -32,7 +27,6 @@ export async function generateMetadata({ params }) {
   const { data, error } = await getVehicle(slug);
   if (error || !data) notFound();
   const { vehicle } = data;
-  // The vehicle endpoint sends no meta fields, so the banner copy stands in.
   return buildMetadata(
     { title: vehicle.banner.title, description: vehicle.banner.description },
     `/vehicles/${vehicle.slug}`,

@@ -1,16 +1,14 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import LegalContent from "@/components/sections/legal/LegalContent";
-import { getPrivacy } from "@/data/legal";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { getPrivacy } from "@/data/legal";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import LegalContent from "@/components/sections/legal/LegalContent";
 
-// GET /policies/privacy-policy -> { policy: { title, slug, content (HTML), meta_title, meta_description, meta_keywords, other_meta_tags, banner } }
-// cache() lets generateMetadata and the page share one request.
 const getPolicy = cache(() => apiGet("/policies/privacy-policy"));
 
 export async function generateMetadata() {

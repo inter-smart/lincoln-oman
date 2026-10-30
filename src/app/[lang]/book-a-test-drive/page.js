@@ -1,18 +1,15 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import ContactIntro from "@/components/sections/contact/ContactIntro";
-import { getTestDrive as testDriveText } from "@/data/test-drive";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { withVehicleOptions } from "@/lib/vehicle-options";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import { getTestDrive as testDriveText } from "@/data/test-drive";
+import ContactIntro from "@/components/sections/contact/ContactIntro";
 
-// GET /test-drive -> { cms: { title, sub_title, description, enquiry_title, enquiry_description }, banner, vehicle_models: [{ id, name }] }
-// `banner` is null until the CMS adds one for this page: banner and meta then fall back to src/data/test-drive.js.
-// cache() lets generateMetadata and the page share one request.
 const getTestDrive = cache(() => apiGet("/test-drive"));
 
 export async function generateMetadata() {
@@ -44,7 +41,7 @@ export default async function page() {
     textHtml: cms.description,
     form: {
       ...testDrive.form,
-    title: cms.enquiry_title,
+      title: cms.enquiry_title,
       introHtml: cms.enquiry_description,
     },
   };

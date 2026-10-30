@@ -1,18 +1,16 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import MetaTags from "@/components/layout/common/MetaTags";
-import ExploreModels from "@/components/sections/home/ExploreModels";
-import Hero from "@/components/sections/home/Hero";
-import Legacy from "@/components/sections/home/Legacy";
-import ModelShowcase from "@/components/sections/home/ModelShowcase";
-import Newsroom from "@/components/sections/home/Newsroom";
-import Offer from "@/components/sections/home/Offer";
-import Ownership from "@/components/sections/home/Ownership";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import Hero from "@/components/sections/home/Hero";
+import Offer from "@/components/sections/home/Offer";
+import Legacy from "@/components/sections/home/Legacy";
+import MetaTags from "@/components/layout/common/MetaTags";
+import Newsroom from "@/components/sections/home/Newsroom";
+import Ownership from "@/components/sections/home/Ownership";
+import ExploreModels from "@/components/sections/home/ExploreModels";
+import ModelShowcase from "@/components/sections/home/ModelShowcase";
 
-// GET /home -> { sliders, home_cms: { section_one … section_seven }, explore_lincoln_line, news, banner }
-// cache() lets generateMetadata and the page share one request.
 const getHome = cache(() => apiGet("/home"));
 
 export async function generateMetadata() {

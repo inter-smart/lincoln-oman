@@ -1,18 +1,16 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import { ownersSections } from "@/lib/owners-sections";
+import { getOwners as ownersText } from "@/data/owners";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import EnquiryForm from "@/components/layout/common/EnquiryForm";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
 import OwnersContent from "@/components/sections/owners/OwnersContent";
-import { getOwners as ownersText } from "@/data/owners";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
-import { apiGet } from "@/lib/api/get";
-import { ownersSections } from "@/lib/owners-sections";
-import { buildMetadata } from "@/lib/seo";
 
-// GET /owners -> { owners_cms: { top_image }, owners_services: [{ title, description_one, description_two, image }], banner }
-// cache() lets generateMetadata and the page share one request.
 const getOwners = cache(() => apiGet("/owners"));
 
 export async function generateMetadata() {
@@ -30,10 +28,8 @@ export async function generateMetadata() {
   );
 }
 
-// Text left once tags and non-breaking spaces are removed
 const textOf = (html) => (html ?? "").replace(/<[^>]*>|&nbsp;/gi, "").trim();
 
-// A service is shown when the CMS gave it any text (a title or either description).
 const hasContent = (service) =>
   [service?.title, service?.description_one, service?.description_two].some(
     (value) => textOf(value),

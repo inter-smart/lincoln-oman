@@ -1,18 +1,16 @@
 import { cache } from "react";
+import { apiGet } from "@/lib/api/get";
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import { getContact as contactText } from "@/data/contact";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
 import ContactIntro from "@/components/sections/contact/ContactIntro";
 import ContactLocations from "@/components/sections/contact/ContactLocations";
 import DepartmentContact from "@/components/sections/contact/DepartmentContact";
-import { getContact as contactText } from "@/data/contact";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
-import { apiGet } from "@/lib/api/get";
-import { buildMetadata } from "@/lib/seo";
 
-// GET /contact-us -> { contact_cms, contact_addresses: [...], department_contacts: [...], banner }
-// cache() lets generateMetadata and the page share one request.
 const getContact = cache(() => apiGet("/contact-us"));
 
 export async function generateMetadata() {

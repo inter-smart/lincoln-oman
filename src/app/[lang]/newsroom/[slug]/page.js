@@ -1,12 +1,12 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import NewsDetail from "@/components/sections/newsroom/NewsDetail";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import InnerBanner from "@/components/layout/common/inner-banner";
+import NewsDetail from "@/components/sections/newsroom/NewsDetail";
 
 const getNewsItem = cache((slug) =>
   apiGet(`/news/${encodeURIComponent(slug)}`),

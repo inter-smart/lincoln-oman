@@ -1,22 +1,18 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import EnquiryForm from "@/components/layout/common/EnquiryForm";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import OfferList from "@/components/sections/offers/OfferList";
-import { getOffers as offersText } from "@/data/offers";
-import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import { getOffers as offersText } from "@/data/offers";
 import { locationBySlug, slugify } from "@/lib/slugify";
+import MetaTags from "@/components/layout/common/MetaTags";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import OfferList from "@/components/sections/offers/OfferList";
+import EnquiryForm from "@/components/layout/common/EnquiryForm";
+import InnerBanner from "@/components/layout/common/inner-banner";
 
 const PATH = "/special-offers";
 
-// Browser URL: /special-offers[?location=<slug>][&page=<n>]  (slug = slugified location name)
-// GET /special-offers[?location_id=<id>][&page=<n>]
-//   -> { special_offers: [{ id, slug, title, dealership, service_center, expires_at, image, location }], locations: [{ id, name }], banner, pagination }
-// cache() lets generateMetadata and the page share one request.
 const getOffers = cache((locationId = "", page = 1) =>
   apiGet("/special-offers", {
     params: {
@@ -41,7 +37,6 @@ export async function generateMetadata() {
   );
 }
 
-// A query value is used only when it is a positive whole number ("2"), otherwise it is ignored.
 const positiveInt = (value) => (/^[1-9]\d*$/.test(value ?? "") ? value : "");
 
 export default async function page({ searchParams }) {
@@ -49,13 +44,10 @@ export default async function page({ searchParams }) {
   const query = await searchParams;
   const requestedPage = Number(positiveInt(query.page)) || 1;
 
-  // The unfiltered list gives the banner and the location choices.
   const all = await getOffers();
   if (all.error || !all.data) notFound();
   const { banner, locations } = all.data;
 
-  // The URL carries the location slug; the API is still asked by id. An unknown slug is ignored.
-  // Old ?location_id=<id> links keep working.
   const legacyId = positiveInt(query.location_id);
   const location =
     locationBySlug(locations, query.location) ??
@@ -66,7 +58,6 @@ export default async function page({ searchParams }) {
   const first = locationId ? await getOffers(locationId) : all;
   if (first.error || !first.data) notFound();
 
-  // "Load more" is a link to ?page=N, which shows pages 1..N. Pages past the last one are ignored.
   const lastPage = first.data.pagination?.last_page ?? 1;
   const shownPages = Math.min(requestedPage, lastPage);
   const more = await Promise.all(

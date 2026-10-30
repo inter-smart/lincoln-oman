@@ -1,15 +1,13 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/layout/common/Breadcrumb";
-import InnerBanner from "@/components/layout/common/inner-banner";
-import MetaTags from "@/components/layout/common/MetaTags";
-import NewsGrid from "@/components/sections/newsroom/NewsGrid";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import Breadcrumb from "@/components/layout/common/Breadcrumb";
+import NewsGrid from "@/components/sections/newsroom/NewsGrid";
+import InnerBanner from "@/components/layout/common/inner-banner";
 
-// GET /news -> { news: [{ id, slug, title, published_on, media, … }], banner, pagination }
-// cache() lets generateMetadata and the page share one request.
 const getNews = cache(() => apiGet("/news"));
 
 export async function generateMetadata() {
