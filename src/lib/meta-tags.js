@@ -27,22 +27,10 @@ function decode(text) {
   });
 }
 
-// Tags the page already sets itself (or must not let the CMS override, like robots).
-// og:locale is the one exception: the CMS value replaces the page's (see metadataFromTags).
-const OWNED_META = new Set([
-  "title",
-  "description",
-  "keywords",
-  "robots",
-  "og:title",
-  "og:description",
-  "og:url",
-  "og:site_name",
-  "og:type",
-  "twitter:title",
-  "twitter:description",
-  "twitter:card",
-]);
+// Tags the page owns: title/description/keywords come from the dedicated meta_* fields,
+// and robots must not be overridden by the CMS (noindex). The CMS's og:* and twitter:*
+// replace the page's defaults (see metadataFromTags).
+const OWNED_META = new Set(["title", "description", "keywords", "robots"]);
 // http-equiv can redirect (refresh) or change security (set-cookie, CSP), so only these two pass.
 const HTTP_EQUIV = new Set(["x-ua-compatible", "content-language"]);
 const META_ATTRS = [
@@ -102,9 +90,17 @@ const IMAGE_FIELDS = {
   "og:image:height": "height",
 };
 // `property=` tags metadataFromTags turns into Metadata fields; every other one goes to rawMetaTags.
+const OPEN_GRAPH_FIELDS = {
+  "og:title": "title",
+  "og:description": "description",
+  "og:url": "url",
+  "og:site_name": "siteName",
+  "og:type": "type",
+  "og:locale": "locale",
+};
 const METADATA_PROPERTIES = new Set([
   "og:image",
-  "og:locale",
+  ...Object.keys(OPEN_GRAPH_FIELDS),
   ...Object.keys(IMAGE_FIELDS),
 ]);
 
@@ -114,8 +110,9 @@ const METADATA_PROPERTIES = new Set([
  * so everything else (other `property=`, itemprop, http-equiv, `name=` with media) is left to rawMetaTags.
  *   <meta name=X>                 -> other[X] (identical repeats collapsed)
  *   og:image, og:image:alt/w/h    -> openGraph.images
- *   og:locale                     -> openGraph.locale (replaces the page default)
- *   twitter:image/site/creator    -> twitter.images / site / creator
+ *   og:title/description/url/site_name/type/locale -> openGraph.* (replace the page defaults)
+ *   twitter:title/description/card/site/creator    -> twitter.* (replace the page defaults)
+ *   twitter:image                 -> twitter.images
  *   <link rel=alternate hreflang> -> languages
  */
 export function metadataFromTags(html) {
@@ -123,8 +120,8 @@ export function metadataFromTags(html) {
   const other = {};
   const images = [];
   const twitter = {};
+  const openGraph = {};
   const languages = {};
-  let locale;
 
   for (const attrs of meta) {
     const { name, property, content, media } = attrs;
@@ -133,7 +130,8 @@ export function metadataFromTags(html) {
     if (name === undefined) {
       const key = property.toLowerCase();
       if (key === "og:image") images.push({ url: content });
-      else if (key === "og:locale") locale = content;
+      else if (OPEN_GRAPH_FIELDS[key])
+        openGraph[OPEN_GRAPH_FIELDS[key]] = content;
       else if (IMAGE_FIELDS[key] && images.length)
         images[images.length - 1][IMAGE_FIELDS[key]] = content;
       continue;
@@ -141,6 +139,15 @@ export function metadataFromTags(html) {
     if (media !== undefined) continue;
 
     switch (name.toLowerCase()) {
+      case "twitter:title":
+        twitter.title = content;
+        break;
+      case "twitter:description":
+        twitter.description = content;
+        break;
+      case "twitter:card":
+        twitter.card = content;
+        break;
       case "twitter:image":
         (twitter.images ??= []).push(content);
         break;
@@ -171,12 +178,8 @@ export function metadataFromTags(html) {
       ]),
     );
   }
-  if (images.length || locale) {
-    fields.openGraph = {
-      ...(images.length && { images }),
-      ...(locale && { locale }),
-    };
-  }
+  if (images.length) openGraph.images = images;
+  if (Object.keys(openGraph).length) fields.openGraph = openGraph;
   if (Object.keys(twitter).length) fields.twitter = twitter;
   if (Object.keys(languages).length) fields.languages = languages;
   return fields;
