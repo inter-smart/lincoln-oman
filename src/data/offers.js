@@ -1,4 +1,5 @@
 // Special Offers page content the API does not send: breadcrumb, labels and the enquiry form.
+// The form title is the CMS enquiry_title (this dictionary text is the fallback).
 // Banner, meta and the offers come from GET /special-offers (see src/app/special-offers/page.js).
 export function getOffers(dict) {
   const { form, pages, offers: t } = dict;

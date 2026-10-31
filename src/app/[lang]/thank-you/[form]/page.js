@@ -33,7 +33,7 @@ export default async function page({ params }) {
   const { pages, ui, testDrive, thankYouForms } = await getCurrentDictionary();
   const copy = thankYouForms[key];
   const banner = {
-    banner_title: copy.title,
+    banner_title: ui.thankYou,
     banner: "/images/test-drive/banner.png",
     banner_alt_text: testDrive.bannerAlt,
   };

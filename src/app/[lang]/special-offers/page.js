@@ -46,7 +46,7 @@ export default async function page({ searchParams }) {
 
   const all = await getOffers();
   if (all.error || !all.data) notFound();
-  const { banner, locations } = all.data;
+  const { banner, locations, enquiry_title } = all.data;
 
   const legacyId = positiveInt(query.location_id);
   const location =
@@ -89,7 +89,12 @@ export default async function page({ searchParams }) {
             shownPages < lastPage ? { href: `${PATH}?${nextQuery}` } : null,
         }}
       />
-      <EnquiryForm data={offers.enquiry} />
+      <EnquiryForm
+        data={{
+          ...offers.enquiry,
+          title: enquiry_title || offers.enquiry.title,
+        }}
+      />
     </>
   );
 }

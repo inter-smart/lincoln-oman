@@ -36,12 +36,19 @@ export default async function page({ params }) {
   const { slug } = await params;
   const { data, error } = await getOffer(slug);
   if (error || !data) notFound();
-  const { special_offer, meta_tags, banner, vehicle_models, interested_in } =
-    data;
+  const {
+    special_offer,
+    enquiry_title,
+    meta_tags,
+    banner,
+    vehicle_models,
+    interested_in,
+  } = data;
 
   const optionNames = { model: vehicle_models, interested: interested_in };
   const enquiry = {
     ...offers.detailEnquiry,
+    title: enquiry_title || offers.detailEnquiry.title,
     selects: offers.detailEnquiry.selects.map((select) => ({
       ...select,
       options: optionNames[select.name].map((option) => option.name),
