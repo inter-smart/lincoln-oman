@@ -19,6 +19,10 @@ const nextConfig = {
   experimental: {
     agentUpgrade: "security",
     optimizePackageImports: ["lucide-react", "radix-ui", "date-fns"],
+    // The CMS host answers 508 (resource limit) under parallel requests, so prerender one page at a time.
+    staticGenerationMaxConcurrency: 1,
+    staticGenerationMinPagesPerWorker: 100,
+    staticGenerationRetryCount: 2,
   },
   images: {
     formats: ["image/avif", "image/webp"],

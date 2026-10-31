@@ -1,12 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
 import { useLabels } from "@/components/layout/common/I18nProvider";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import { buttonVariants } from "@/components/ui/button";
 
 // Shown when an API page could not load data (503, timeout, network). A real API 404 still gets not-found.js.
-export default function ErrorPage({ retry }) {
+// This boundary catches any render error, so the cause is logged (production hides the message; use the digest to find it in the server log).
+export default function ErrorPage({ error, retry }) {
   const ui = useLabels();
+  useEffect(() => {
+    console.error("Page error:", error?.message, error?.digest);
+  }, [error]);
   return (
     <section className="flex min-h-svh items-center bg-night py-40 text-center text-white">
       <div className="container">

@@ -17,6 +17,15 @@ function config() {
   return { baseUrl, token };
 }
 
+// The CMS answers in 2-6 s and slows down sharply under concurrent requests, so 8 s was timing out healthy responses.
+const TIMEOUT_MS = 20000;
+
+// Only GETs are retried (idempotent): on a timeout, a network error or a 5xx, after a short pause.
+// The CMS host answers 508 (resource limit) when it gets too many parallel requests; retrying at once would hit the same limit.
+const GET_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 1000;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
  * Shared core behind apiGet and apiPost — not used directly. It is the only place that
  * talks to the PHP API and the only place the token is read.
@@ -27,20 +36,35 @@ export async function send(
   { method, params, body, fetchOptions, lang },
 ) {
   const { baseUrl, token } = config();
+  const attempts = method === "GET" ? GET_ATTEMPTS : 1;
 
   // The CMS picks the language from the `?lang=` query param (it ignores the header).
-  const res = await fetch(buildUrl(baseUrl, endpoint, { ...params, lang }), {
-    method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      ...(lang && { lang }),
-      ...(body && { "Content-Type": "application/json" }),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(8000),
-    ...fetchOptions,
-  });
+  const request = () =>
+    fetch(buildUrl(baseUrl, endpoint, { ...params, lang }), {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        ...(lang && { lang }),
+        ...(body && { "Content-Type": "application/json" }),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      ...fetchOptions,
+    });
+
+  let res;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      res = await request();
+    } catch (error) {
+      if (attempt >= attempts) throw error; // timeout / network error
+      await wait(RETRY_DELAY_MS * attempt);
+      continue;
+    }
+    if (res.status < 500 || attempt >= attempts) break;
+    await wait(RETRY_DELAY_MS * attempt);
+  }
 
   const json = parseBody(await res.text());
 

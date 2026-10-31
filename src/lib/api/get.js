@@ -8,9 +8,11 @@ import { currentLocale } from "./locale";
  * timeout, bad config) `data` is null and `error` is the ApiError (see error.status / error.details).
  * Pages pass the result to `ensureData` (ensure.js): 404 -> notFound(), other errors -> error.js.
  * The locale (from the [lang] route, or the `lang` option) is sent as the `?lang=` query param, which the CMS uses to pick the language.
- * Refreshed every `revalidate` seconds (0 = always fresh; go-live values: 3600 site, 900 content, 300 listings).
+ * Cached and refreshed every `revalidate` seconds (default 60; 0 = always fresh).
+ * A positive value makes the route prerender at build time, and the CMS host answers 508 (resource limit) when
+ * the build's parallel workers hit it; next.config.mjs serialises static generation for that reason.
  */
-export async function apiGet(endpoint, { params, revalidate = 0, lang } = {}) {
+export async function apiGet(endpoint, { params, revalidate = 60, lang } = {}) {
   try {
     const data = await send(endpoint, {
       method: "GET",
