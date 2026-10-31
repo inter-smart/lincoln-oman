@@ -1,18 +1,21 @@
 import Image from "next/image";
 import Link from "@/components/ui/locale-link";
+import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 
-export default function InnerBanner({ data, as: Title = "h1" }) {
-  const getImageUrl = (value) =>
-    typeof value === "string"
-      ? value
-      : (value?.url ?? value?.src ?? value?.image ?? null);
+// Black fades over the photo; without media the banner stays the plain header colour (bg-night).
+const shade =
+  "before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-['']";
 
+export default function InnerBanner({ data, as: Title = "h1" }) {
   const title = data.banner_title ?? data.title;
   const text = data.text ?? data.description;
+  const hasMedia = Boolean(data.banner || data.banner_mobile || data.video);
   return (
-    <section className="relative z-0 block w-full before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-[''] max-sm:h-95 sm:h-auto">
-      <div className="block aspect-1920/760 h-full w-full overflow-hidden bg-night sm:h-auto">
+    <section
+      className={`relative z-0 block w-full max-sm:h-95 sm:h-auto ${hasMedia ? shade : ""}`}
+    >
+      <div className="relative block aspect-1920/760 h-full w-full overflow-hidden bg-night sm:h-auto">
         {(data?.banner || data?.banner_mobile) && (
           <picture className="block size-full">
             {data?.banner_mobile && data?.banner_mobile !== data?.banner && (
@@ -32,11 +35,14 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
             />
           </picture>
         )}
+        {data.video && <HeroVideo sources={data.video} />}
       </div>
-      <span
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/50 to-transparent"
-      />
+      {hasMedia && (
+        <span
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/50 to-transparent"
+        />
+      )}
       <div className="container">
         <div className="absolute inset-[auto_0_0_0] z-3 my-5 block h-auto w-full px-4 text-center text-white sm:my-7.5 lg:my-10 2xl:my-17.5 3xl:my-20">
           <Title className="font-display text-xl leading-[1.1] font-light sm:text-[25px] 2xl:text-[32px] 3xl:text-[40px]">

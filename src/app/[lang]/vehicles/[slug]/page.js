@@ -2,6 +2,7 @@ import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
 import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
+import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import SectionTabs from "@/components/layout/common/SectionTabs";
@@ -27,8 +28,14 @@ export async function generateMetadata({ params }) {
   const { data, error } = await getVehicle(slug);
   if (error || !data) notFound();
   const { vehicle } = data;
+  const { meta_tags } = vehicle;
   return buildMetadata(
-    { title: vehicle.banner.title, description: vehicle.banner.description },
+    {
+      title: meta_tags.title,
+      description: meta_tags.description,
+      keywords: meta_tags.keywords,
+      otherMetaTags: meta_tags.other_meta_tags,
+    },
     `/vehicles/${vehicle.slug}`,
   );
 }
@@ -82,9 +89,15 @@ export default async function page({ params }) {
 
   return (
     <>
+      <MetaTags html={vehicle.meta_tags.other_meta_tags} />
       <InnerBanner
         data={{
-          ...banner,
+          banner_title: banner.title,
+          text: banner.description,
+          banner_alt_text: banner.alt_text,
+          banner: banner.image ?? banner.mobile_image,
+          banner_mobile: banner?.mobile_image,
+          video: banner.type === "video" ? banner.video : undefined,
           link: brochure && { label: ui.downloadBrochure, href: brochure },
           actions: [
             {
