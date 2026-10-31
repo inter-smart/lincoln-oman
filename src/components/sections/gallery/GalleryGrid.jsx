@@ -1,6 +1,7 @@
 import Image from "next/image";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import { format } from "@/i18n/format";
 
 const spans = {
   half: "col-span-6 aspect-794/697 sm:col-span-3",
@@ -59,7 +60,7 @@ export default async function GalleryGrid({ title, galleries }) {
                 href={item.image.path}
                 data-fancybox="gallery"
                 data-thumb-src={item.image.path}
-                aria-label={`View image: ${item.image.alt}`}
+                aria-label={format(ui.viewImage, { alt: item.image.alt })}
                 data-reveal
                 style={{ "--reveal-delay": `${(index % 3) * 0.1}s` }}
                 className={`group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink focus-visible:outline-solid ${radius} ${spans[span]}`}

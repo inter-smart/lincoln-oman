@@ -31,7 +31,7 @@ export default function Logo({ className = "" }) {
       </span> */}
       <Image
         src={"/images/lincoln-logo.svg"}
-        alt="Lincoln Logo"
+        alt=""
         width={135}
         height={120}
         className="size-full object-contain"

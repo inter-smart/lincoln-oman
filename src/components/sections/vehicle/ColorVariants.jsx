@@ -1,6 +1,8 @@
 import ColorPicker from "@/components/layout/common/ColorPicker";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function ColorVariants({ items }) {
+export default async function ColorVariants({ items }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="colors"
@@ -8,7 +10,7 @@ export default function ColorVariants({ items }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title text-ink">
-          Color Variants
+          {ui.colorVariants}
         </h2>
         <div
           data-reveal

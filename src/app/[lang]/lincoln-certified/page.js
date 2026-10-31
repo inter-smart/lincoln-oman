@@ -90,7 +90,7 @@ export default async function page() {
 
       <div>
         {tabs.length > 0 && (
-          <SectionTabs items={tabs} label="Lincoln Certified sections" />
+          <SectionTabs items={tabs} label={ui.certifiedSections} />
         )}
         {hasTitle(benefits) && <CertifiedBenefits data={benefits} />}
         {hasTitle(maintenance) && (

@@ -3,16 +3,16 @@ import ButtonLink from "@/components/layout/common/ButtonLink";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 export default async function Legacy({ data, variant = "default" }) {
-  const { ui } = await getCurrentDictionary();
+  const { common, ui } = await getCurrentDictionary();
   return (
     <section
       className={`${variant === "about" ? "bg-white text-[#1B1B1B]" : "bg-night text-white"} py-(--band-space) text-center`}
     >
       <div className="container flex flex-col items-center">
-        <div className="relative h-(--logo-h) overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] w-[calc(var(--logo-h)*2.884)] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]">
+        <div className="relative h-(--logo-h) w-[calc(var(--logo-h)*2.884)] overflow-hidden [--logo-h:min(110px,calc((100vw-100px)/2.884))] md:[--logo-h:130px] xl:[--logo-h:calc(164*var(--rr))]">
           <Image
             src="/images/logo.png"
-            alt="Lincoln"
+            alt={common.logoAlt}
             width={600}
             height={208}
             className={`absolute start-0 top-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}

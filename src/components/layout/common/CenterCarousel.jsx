@@ -1,8 +1,10 @@
 "use client";
 import { Children } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
 import { useLocale } from "@/components/ui/locale-link";
 import { dirOf } from "@/i18n/config";
+import { format } from "@/i18n/format";
 import {
   ArrowButton,
   useCarouselState,
@@ -21,6 +23,7 @@ export default function CenterCarousel({
   arrowClassName,
   dots = false,
 }) {
+  const labels = useLabels();
   const [carouselRef, api] = useEmblaCarousel({
     direction: dirOf(useLocale()),
     loop: true,
@@ -77,7 +80,7 @@ export default function CenterCarousel({
             <button
               key={slide.key ?? index}
               type="button"
-              aria-label={`Show slide ${index + 1}`}
+              aria-label={format(labels.goToSlide, { n: index + 1 })}
               aria-current={index === active || undefined}
               onClick={() => api?.scrollTo(index)}
               className="group flex size-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-ink focus-visible:outline-solid"

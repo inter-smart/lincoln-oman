@@ -87,7 +87,7 @@ export default function Footer({ data, settings, labels }) {
             <Link href="/">
               <Image
                 src="/images/logo.png"
-                alt="Lincoln"
+                alt={labels.lincolnHome}
                 width={600}
                 height={208}
                 className="mb-[47px] h-auto w-[165px]"
@@ -140,7 +140,7 @@ export default function Footer({ data, settings, labels }) {
                   >
                     <Image
                       src={item.icon}
-                      alt="Social Icons"
+                      alt=""
                       width={item.width}
                       height={item.height}
                       style={{ width: item.width, height: item.height }}

@@ -1,17 +1,19 @@
 import Image from "next/image";
 import CenterCarousel from "@/components/layout/common/CenterCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function ExteriorDesign({ items }) {
+export default async function ExteriorDesign({ items }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="exterior"
       className="scroll-mt-(--spy-offset,96px) pt-(--section-space)"
     >
       <h2 data-reveal className="container text-center title text-ink">
-        Exterior Design
+        {ui.exteriorDesign}
       </h2>
       <CenterCarousel
-        label="Exterior Design"
+        label={ui.exteriorDesign}
         startIndex={Math.min(1, items.length - 1)}
         dots
         className="mt-6 [--arrow-inset:calc((100%-var(--slide-w))/2+12px)] [--slide-w:88%] xl:mt-[calc(60*var(--rr))] xl:[--arrow-inset:calc((100%-var(--slide-w))/2+49*var(--rr))] xl:[--slide-w:81.67%]"

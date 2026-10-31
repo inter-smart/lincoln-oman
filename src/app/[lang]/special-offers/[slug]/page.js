@@ -31,7 +31,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
-  const offers = offersText(await getCurrentDictionary());
+  const dict = await getCurrentDictionary();
+  const offers = offersText(dict);
   const { slug } = await params;
   const { data, error } = await getOffer(slug);
   if (error || !data) notFound();
@@ -53,7 +54,7 @@ export default async function page({ params }) {
       <InnerBanner data={banner} />
       <Breadcrumb
         items={[
-          { id: "home", label: "Home", href: "/" },
+          { id: "home", label: dict.pages.home, href: "/" },
           { id: "offers", label: offers.title, href: "/special-offers" },
           { id: "offer", label: special_offer.title },
         ]}

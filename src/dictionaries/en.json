@@ -8,7 +8,9 @@
     "mainNav": "Main",
     "previousSlide": "Previous slide",
     "nextSlide": "Next slide",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "logoAlt": "Lincoln logo",
+    "siteName": "Lincoln Oman"
   },
   "language": {
     "label": "Select language",
@@ -138,7 +140,7 @@
     "recentNewsroom": "Recent Newsroom",
     "modelVariants": "Model Variants",
     "interiorExperience": "Interior Experience",
-    "colorVariants": "Color variants",
+    "colorVariants": "Color Variants",
     "exteriorDesign": "Exterior Design",
     "performanceHighlights": "Performance Highlights",
     "tabMedia": "Media connectivity",
@@ -161,7 +163,12 @@
     "notHuman": "We couldn't verify you're human. Please refresh and try again.",
     "slideOf": "{n} of {total}",
     "goToSlide": "Go to slide {n}",
-    "sending": "Sending…"
+    "sending": "Sending…",
+    "required": "required",
+    "certifiedSections": "Lincoln Certified sections",
+    "showrooms": "Lincoln Oman showrooms",
+    "playVideo": "Play {label} video",
+    "viewImage": "View image: {alt}"
   },
   "validation": {
     "Only plain text is allowed — remove HTML tags, code or special syntax.": "Only plain text is allowed — remove HTML tags, code or special syntax.",

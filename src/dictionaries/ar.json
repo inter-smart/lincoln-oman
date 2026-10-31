@@ -8,7 +8,9 @@
     "mainNav": "التنقل الرئيسي",
     "previousSlide": "الشريحة السابقة",
     "nextSlide": "الشريحة التالية",
-    "backToTop": "العودة إلى الأعلى"
+    "backToTop": "العودة إلى الأعلى",
+    "logoAlt": "شعار لينكولن",
+    "siteName": "لينكولن عُمان"
   },
   "language": {
     "label": "اختر اللغة",
@@ -161,7 +163,12 @@
     "notHuman": "تعذر التحقق من أنك شخص حقيقي. يُرجى تحديث الصفحة والمحاولة مرة أخرى.",
     "slideOf": "{n} من {total}",
     "goToSlide": "الانتقال إلى الشريحة {n}",
-    "sending": "جارٍ الإرسال…"
+    "sending": "جارٍ الإرسال…",
+    "required": "مطلوب",
+    "certifiedSections": "أقسام لينكولن المعتمدة",
+    "showrooms": "صالات عرض لينكولن عُمان",
+    "playVideo": "تشغيل فيديو {label}",
+    "viewImage": "عرض الصورة: {alt}"
   },
   "validation": {
     "Only plain text is allowed — remove HTML tags, code or special syntax.": "يُسمح بالنص العادي فقط — يُرجى إزالة وسوم HTML أو الأكواد أو الرموز الخاصة.",

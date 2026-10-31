@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Pause, Play } from "lucide-react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
+import { format } from "@/i18n/format";
 import {
   pickVideoSource,
   playMuted,
@@ -65,6 +67,7 @@ export default function ShowcaseStage({ video, children }) {
 
 // The "video box" card: poster frame + play/pause control; drives the stage above and plays its own clip.
 export function ShowcaseVideoCard({ poster, video, label }) {
+  const labels = useLabels();
   const stage = useContext(StageContext);
   const ref = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -81,7 +84,7 @@ export function ShowcaseVideoCard({ poster, video, label }) {
     <button
       type="button"
       aria-pressed={stage?.pinned}
-      aria-label={`Play ${label} video`}
+      aria-label={format(labels.playVideo, { label })}
       onPointerEnter={() => stage?.hover(true)}
       onPointerLeave={() => stage?.hover(false)}
       onClick={() => stage?.toggle()}

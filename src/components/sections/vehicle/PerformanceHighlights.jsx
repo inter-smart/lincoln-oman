@@ -1,5 +1,8 @@
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+
 // Spec table: label/value rows in two columns from lg, hairline under each row.
-export default function PerformanceHighlights({ items }) {
+export default async function PerformanceHighlights({ items }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="performance"
@@ -7,7 +10,7 @@ export default function PerformanceHighlights({ items }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title text-ink">
-          Performance Highlights
+          {ui.performanceHighlights}
         </h2>
         {/* Fills the left column first, as in the design */}
         <dl

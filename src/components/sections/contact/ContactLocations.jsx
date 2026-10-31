@@ -10,7 +10,7 @@ export default async function ContactLocations({ contact_addresses }) {
     <section className="h-auto w-full bg-[#231F20] py-10 text-white sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
       <div className="container">
         <CardCarousel
-          label="Lincoln Oman showrooms"
+          label={ui.showrooms}
           arrows
           arrowClassName="top-1/2 -translate-y-1/2 rounded-full bg-night/80 hidden"
           className="[--arrow-inset:-12px] [--slide-gap:0px]"

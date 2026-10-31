@@ -1,5 +1,7 @@
 import Image from "next/image";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import { format } from "@/i18n/format";
 
 // The CMS sends no tile size: two wide photos, then three tall ones, repeating.
 const pattern = ["half", "half", "third", "third", "third"];
@@ -10,7 +12,8 @@ const spans = {
 };
 
 // Photo grid (two wide, then three tall). Each tile opens the Fancybox lightbox with the full image.
-export default function VehicleGallery({ items }) {
+export default async function VehicleGallery({ items }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="gallery"
@@ -29,7 +32,7 @@ export default function VehicleGallery({ items }) {
                 href={item.image}
                 data-fancybox="gallery"
                 data-thumb-src={item.image}
-                aria-label={`View image: ${item.image_alt_tag}`}
+                aria-label={format(ui.viewImage, { alt: item.image_alt_tag })}
                 data-reveal
                 style={{ "--reveal-delay": `${(index % 3) * 0.1}s` }}
                 className={`group relative block overflow-hidden rounded-[10px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink focus-visible:outline-solid sm:rounded-[15px] 2xl:rounded-[20px] ${spans[span]}`}

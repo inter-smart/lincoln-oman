@@ -1,5 +1,6 @@
 import { siteUrl } from "@/data/seo";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { currentLocale } from "./api/locale";
 import { metadataFromTags } from "./meta-tags";
 
@@ -19,6 +20,7 @@ export async function buildMetadata(
   path,
 ) {
   const locale = await currentLocale();
+  const { common } = await getDictionary(locale);
   const url = urlFor(path, locale);
   const { other, openGraph, twitter, languages } =
     metadataFromTags(otherMetaTags);
@@ -37,7 +39,7 @@ export async function buildMetadata(
     },
     openGraph: {
       type: "website",
-      siteName: "Lincoln Oman",
+      siteName: common.siteName,
       locale: ogLocale[locale],
       url,
       title,

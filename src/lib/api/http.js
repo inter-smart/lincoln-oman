@@ -6,10 +6,13 @@ function config() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
   if (!baseUrl || !token) {
-    throw new ApiError("NEXT_PUBLIC_API_URL / NEXT_PUBLIC_API_TOKEN are not set", {
-      status: 500,
-      endpoint: "",
-    });
+    throw new ApiError(
+      "NEXT_PUBLIC_API_URL / NEXT_PUBLIC_API_TOKEN are not set",
+      {
+        status: 500,
+        endpoint: "",
+      },
+    );
   }
   return { baseUrl, token };
 }
@@ -25,7 +28,8 @@ export async function send(
 ) {
   const { baseUrl, token } = config();
 
-  const res = await fetch(buildUrl(baseUrl, endpoint, params), {
+  // The CMS picks the language from the `?lang=` query param (it ignores the header).
+  const res = await fetch(buildUrl(baseUrl, endpoint, { ...params, lang }), {
     method,
     headers: {
       Authorization: `Bearer ${token}`,

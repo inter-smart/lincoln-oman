@@ -1,17 +1,19 @@
 import Image from "next/image";
 import CenterCarousel from "@/components/layout/common/CenterCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function ModelVariants({ items, word }) {
+export default async function ModelVariants({ items, word }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="variants"
       className="scroll-mt-(--spy-offset,96px) overflow-hidden py-(--section-space)"
     >
       <h2 data-reveal className="container text-center title text-ink">
-        Model Variants
+        {ui.modelVariants}
       </h2>
       <CenterCarousel
-        label="Model Variants"
+        label={ui.modelVariants}
         startIndex={Math.min(1, items.length - 1)}
         className="mt-6 [--arrow-inset:16px] xl:mt-[calc(50*var(--rr))]"
         slideClassName="basis-[70%] sm:basis-[55%] lg:basis-[46.2%]"

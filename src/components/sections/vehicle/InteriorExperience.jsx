@@ -1,7 +1,9 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default function InteriorExperience({ items }) {
+export default async function InteriorExperience({ items }) {
+  const { ui } = await getCurrentDictionary();
   return (
     <section
       id="interior"
@@ -9,10 +11,10 @@ export default function InteriorExperience({ items }) {
     >
       <div className="container">
         <h2 data-reveal className="text-center title">
-          Interior Experience
+          {ui.interiorExperience}
         </h2>
         <CardCarousel
-          label="Interior Experience"
+          label={ui.interiorExperience}
           arrows
           className="mt-[30px] [--arrow-inset:calc(-80*var(--rr))] [--slide-gap:16px] xl:mt-[calc(45*var(--rr))] xl:[--slide-gap:calc(22*var(--rr))]"
           slideClassName="basis-[85%] sm:basis-[45%] lg:basis-1/4"

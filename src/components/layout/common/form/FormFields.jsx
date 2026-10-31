@@ -82,12 +82,15 @@ export function TextField({
   variant = "pill",
   className,
 }) {
+  const labels = useLabels();
   const { register, error, errorId, describedBy } = useField(name);
   const v = VARIANT[variant];
   return (
     <div className={cn("relative", className)}>
       <label className="block">
-        <span className="sr-only">{label} (required)</span>
+        <span className="sr-only">
+          {label} ({labels.required})
+        </span>
         <input
           type={type}
           autoComplete={autoComplete}
@@ -114,6 +117,7 @@ export function TextareaField({
   variant = "pill",
   className,
 }) {
+  const labels = useLabels();
   const { register, error, errorId, describedBy, watch } = useField(name);
   const v = VARIANT[variant];
   const length = (watch(name) ?? "").length;
@@ -122,7 +126,7 @@ export function TextareaField({
       <label className="block">
         <span className="sr-only">
           {label}
-          {!optional && " (required)"}
+          {!optional && ` (${labels.required})`}
         </span>
         <textarea
           rows={v.rows}
@@ -158,6 +162,7 @@ export function SelectField({
   variant = "pill",
   className,
 }) {
+  const labels = useLabels();
   const { control, error, errorId, describedBy } = useField(name);
   const v = VARIANT[variant];
   return (
@@ -174,7 +179,7 @@ export function SelectField({
           >
             <SelectTrigger
               type="button"
-              aria-label={optional ? label : `${label} (required)`}
+              aria-label={optional ? label : `${label} (${labels.required})`}
               aria-invalid={error ? true : undefined}
               aria-describedby={describedBy}
               className={`${v.field} ${v.select}`}

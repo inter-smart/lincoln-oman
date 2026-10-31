@@ -7,6 +7,7 @@ import { currentLocale } from "./locale";
  * Never throws: returns { data, error }. On success `error` is null; on any failure (HTTP error,
  * timeout, bad config) `data` is null and `error` is the ApiError (see error.status / error.details).
  * The page decides what to do, e.g. `if (error) notFound()`.
+ * The locale (from the [lang] route, or the `lang` option) is sent as the `?lang=` query param, which the CMS uses to pick the language.
  * Refreshed every `revalidate` seconds (0 = always fresh; go-live values: 3600 site, 900 content, 300 listings).
  */
 export async function apiGet(endpoint, { params, revalidate = 0, lang } = {}) {
