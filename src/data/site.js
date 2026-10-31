@@ -156,14 +156,6 @@ export function getSite(dict) {
       ],
       copyright: footer.copyright,
       followLabel: footer.followUs,
-      // ponytail: the five network icons are one Figma SVG, so each link is an equal-width hit area over it.
-      social: [
-        { id: "facebook", label: "Facebook", href: "#" },
-        { id: "youtube", label: "YouTube", href: "#" },
-        { id: "instagram", label: "Instagram", href: "#" },
-        { id: "linkedin", label: "LinkedIn", href: "#" },
-        { id: "x", label: "X", href: "#" },
-      ],
       credit: { label: footer.craftedBy, name: "Intersmart", href: "#" },
     },
   };

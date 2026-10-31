@@ -3,6 +3,7 @@
 import { format, parse } from "date-fns";
 import { ar } from "date-fns/locale/ar";
 import { useState } from "react";
+import { useLabels } from "@/components/layout/common/I18nProvider";
 import { Calendar } from "@/components/ui/calendar";
 import { useLocale } from "@/components/ui/locale-link";
 import { dirOf } from "@/i18n/config";
@@ -23,6 +24,7 @@ export default function DatePicker({
   invalid,
   describedBy,
 }) {
+  const labels = useLabels();
   const [open, setOpen] = useState(false);
   const locale = useLocale();
   const today = new Date();
@@ -41,7 +43,7 @@ export default function DatePicker({
         <button
           id={id}
           type="button"
-          aria-label={`${label} (required)`}
+          aria-label={`${label} (${labels.required})`}
           aria-describedby={describedBy}
           className={`${className} flex items-center justify-between text-start ${date ? "" : "text-ink"} ${invalid ? "border-[#b3261e] outline-2 outline-offset-2 outline-[#b3261e]/0" : ""}`}
         >

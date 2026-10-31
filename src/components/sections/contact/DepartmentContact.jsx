@@ -1,9 +1,11 @@
 import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
 import { cn } from "@/lib/utils";
+import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `data` is the /contact-us `contact_cms` block (bottom_section_title, bottom_section_image); `department_contacts` is the raw list.
-export default function DepartmentContact({ data, department_contacts }) {
+export default async function DepartmentContact({ data, department_contacts }) {
+  const { common } = await getCurrentDictionary();
   return (
     <section className="block h-auto w-full py-10 sm:py-15 lg:py-17.5 2xl:py-22.5 3xl:py-30">
       <div className="container grid items-center gap-8 xl:grid-cols-[calc(120*var(--rr))_minmax(0,1fr)_calc(483*var(--rr))] xl:gap-x-[calc(50*var(--rr))]">
@@ -30,21 +32,21 @@ export default function DepartmentContact({ data, department_contacts }) {
                 </div>
                 <p className="text-xs leading-[1.7] 3xl:text-base">
                   <span className="block">
-                    Email:{" "}
+                    {common.email}:{" "}
                     <a
                       href={`mailto:${item?.email}`}
                       className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
                     >
-                      {item.email}
+                      <bdi>{item.email}</bdi>
                     </a>
                   </span>
                   <span className="block">
-                    Telephone:{" "}
+                    {common.telephone}:{" "}
                     <a
                       href={`tel:${item?.phone}`}
                       className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
                     >
-                      {item?.phone}
+                      <bdi>{item?.phone}</bdi>
                     </a>
                   </span>
                 </p>

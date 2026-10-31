@@ -2,11 +2,22 @@ import Image from "next/image";
 import Link from "@/components/ui/locale-link";
 import Composite, { creditLogo } from "@/components/layout/common/Composite";
 
+// The CMS sends no usable icon (`icon` is null), so the known networks map to local SVGs by name.
+const socialIcons = {
+  facebook: { src: "/icons/social-facebook.svg", width: 10, height: 18 },
+  youtube: { src: "/icons/social-youtube.svg", width: 19, height: 18 },
+  instagram: { src: "/icons/social-instagram.svg", width: 18, height: 20 },
+  linkedin: { src: "/icons/social-linkedin.svg", width: 18, height: 17 },
+  x: { src: "/icons/social-x.svg", width: 14, height: 15 },
+};
+
 const linkHover =
   "text-[14px] 2xl:text-[16px] leading-[1.2] font-normal text-white transition-opacity hover:opacity-70";
 
 // `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email, vehicles), null if the request failed.
-export default function Footer({ data, settings, labels }) {
+// `socials` is the API's /social-links list (name, url, sort_order), null if the request failed.
+export default function Footer({ data, settings, socials, labels }) {
+  
   const vehicles = settings?.vehicles;
   // The Vehicles column is filled from the API models and left out when there are none.
   const columns = data?.columns
@@ -95,12 +106,12 @@ export default function Footer({ data, settings, labels }) {
             </Link>
             {settings?.phone_number && (
               <a href={`tel:${settings.phone_number}`} className={linkHover}>
-                Phone: {settings.phone_number}
+                {labels.phone}: <bdi>{settings.phone_number}</bdi>
               </a>
             )}
             {settings?.email && (
               <a href={`mailto:${settings.email}`} className={linkHover}>
-                Email: {settings.email}
+                {labels.email}: <bdi>{settings.email}</bdi>
               </a>
             )}
           </div>
@@ -124,31 +135,37 @@ export default function Footer({ data, settings, labels }) {
           </p>
 
           <div className="flex flex-wrap items-center gap-x-[62px] gap-y-[24px]">
-            <div className="flex flex-wrap items-center gap-x-[30px] gap-y-[12px]">
-              <span className="uppercase">{data?.followLabel}</span>
-              <span className="relative block h-[19.42px] w-[213.11px]">
-                {data?.social?.map((item) => (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    aria-label={item.label}
-                    className="absolute top-[-3px] grid h-[25px] content-start items-center justify-center rounded-[3px] transition-all duration-300 hover:scale-110"
-                    style={{
-                      left: `${item.left}px`,
-                      width: "24px",
-                    }}
-                  >
-                    <Image
-                      src={item.icon}
-                      alt=""
-                      width={item.width}
-                      height={item.height}
-                      style={{ width: item.width, height: item.height }}
-                    />
-                  </a>
-                ))}
-              </span>
-            </div>
+            {socials?.length > 0 && (
+              <div className="flex flex-wrap items-center gap-x-[30px] gap-y-[12px]">
+                <span className="uppercase">{data?.followLabel}</span>
+                <ul className="flex items-center gap-x-[6px]">
+                  {socials.map((item) => (
+                    <li key={item.id}>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={item.name}
+                        className="grid h-[25px] min-w-[24px] place-items-center rounded-[3px] transition-transform duration-300 hover:scale-110"
+                      >
+                        {item.icon && (
+                          <Image
+                            src={item.icon}
+                            alt=""
+                            width={25}
+                            height={25}
+                            style={{
+                              width: 25,
+                              height: 25,
+                            }}
+                          />
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <a
               href={data?.credit?.href}
               aria-label={`${data?.credit?.label} ${data?.credit?.name}`}
@@ -160,6 +177,6 @@ export default function Footer({ data, settings, labels }) {
           </div>
         </div>
       </div>
-    </footer>
+  </footer>
   );
 }

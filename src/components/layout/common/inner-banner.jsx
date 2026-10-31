@@ -8,49 +8,27 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
       ? value
       : (value?.url ?? value?.src ?? value?.image ?? null);
 
-  const desktopSrc = getImageUrl(
-    data.banner_desktop ??
-      data.desktop_banner ??
-      data.desktop_image ??
-      data.banner_image_desktop ??
-      data.banner ??
-      data.image,
-  );
-  const mobileSrc = getImageUrl(
-    data.banner_mobile ??
-      data.mobile_banner ??
-      data.mobile_image ??
-      data.banner_mobile_image ??
-      data.banner_image_mobile ??
-      data.mobile ??
-      desktopSrc,
-  );
   const title = data.banner_title ?? data.title;
   const text = data.text ?? data.description;
   return (
     <section className="relative z-0 block w-full before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-[''] max-sm:h-95 sm:h-auto">
       <div className="block aspect-1920/760 h-full w-full overflow-hidden bg-night sm:h-auto">
-        {(desktopSrc || mobileSrc) && (
+        {(data?.banner || data?.banner_mobile) && (
           <picture className="block size-full">
-            {mobileSrc && mobileSrc !== desktopSrc && (
-              <source media="(max-width: 639px)" srcSet={mobileSrc} />
+            {data?.banner_mobile && data?.banner_mobile !== data?.banner && (
+              <source media="(max-width: 639px)" srcSet={data?.banner_mobile} />
             )}
             <Image
-              src={desktopSrc || mobileSrc}
-              alt={
-                data.banner_alt_text ??
-                data.banner_desktop_alt_text ??
-                data.alt_text ??
-                ""
-              }
+              src={data?.banner || data?.banner_mobile}
+              alt={data?.banner_title ?? ""}
               width={1920}
               height={760}
               priority
               sizes="100vw"
               className="size-full object-cover"
-              style={{
-                objectPosition: data.position_desktop ?? data.position,
-              }}
+              // style={{
+              //   objectPosition: "center",
+              // }}
             />
           </picture>
         )}

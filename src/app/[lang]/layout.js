@@ -49,9 +49,10 @@ export default async function RootLayout({ children }) {
   const dict = await getDictionary(locale);
   const site = getSite(dict);
 
-  const { data: settings } = await apiGet("/site-settings", {
-    revalidate: 3600,
-  });
+  const [{ data: settings }, { data: socials }] = await Promise.all([
+    apiGet("/site-settings", { revalidate: 3600 }),
+    apiGet("/social-links", { revalidate: 3600 }),
+  ]);
 
   return (
     <html
@@ -88,7 +89,12 @@ export default async function RootLayout({ children }) {
         >
           <Header data={site} vehicles={settings?.vehicles} />
           <main id="main">{children}</main>
-          <Footer data={site.footer} settings={settings} labels={site.labels} />
+          <Footer
+            data={site.footer}
+            settings={settings}
+            socials={socials}
+            labels={site.labels}
+          />
           <FloatingRail
             phone={settings?.phone_number}
             email={settings?.email}

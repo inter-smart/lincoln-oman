@@ -5,7 +5,7 @@ import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // `contact_addresses` is the raw /contact-us list; `address` is CMS HTML (one block span per line).
 export default async function ContactLocations({ contact_addresses }) {
-  const { ui } = await getCurrentDictionary();
+  const { common, ui } = await getCurrentDictionary();
   return (
     <section className="h-auto w-full bg-[#231F20] py-10 text-white sm:py-15 lg:py-17.5 2xl:py-21.25 3xl:py-25">
       <div className="container">
@@ -34,21 +34,21 @@ export default async function ContactLocations({ contact_addresses }) {
               <address className="mt-4 text-sm leading-[1.7] not-italic sm:text-sm 2xl:mt-5 2xl:text-base">
                 <div dangerouslySetInnerHTML={{ __html: item.address }} />
                 <span className="mt-3 block xl:mt-[calc(14*var(--rr))]">
-                  Phone:{" "}
+                  {common.phone}:{" "}
                   <a
                     href={`tel:${item.phone}`}
                     className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid"
                   >
-                    {item.phone}
+                    <bdi>{item.phone}</bdi>
                   </a>
                 </span>
                 <span className="block">
-                  Email:{" "}
+                  {common.email}:{" "}
                   <a
                     href={`mailto:${item.email}`}
                     className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid"
                   >
-                    {item.email}
+                    <bdi>{item.email}</bdi>
                   </a>
                 </span>
               </address>
