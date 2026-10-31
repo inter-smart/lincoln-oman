@@ -1,4 +1,5 @@
 import Image from "next/image";
+import LoadMoreLink from "@/components/layout/common/LoadMoreLink";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { format } from "@/i18n/format";
@@ -22,8 +23,9 @@ const radius =
   "overflow-hidden rounded-[10px] md:rounded-[15px] 2xl:rounded-[20px]";
 
 // Gallery page: title, featured video, then the photo grid. Each photo opens in the Fancybox lightbox.
+// `loadMore` is { href } while more pages exist, else null.
 // `galleries` is the raw /galleries list: one { media_type: "video", video } and many { media_type: "image", image }.
-export default async function GalleryGrid({ title, galleries }) {
+export default async function GalleryGrid({ title, galleries, loadMore }) {
   const { ui } = await getCurrentDictionary();
   const film = galleries.find(
     (item) => item.media_type === "video" && item.video?.path,
@@ -76,6 +78,14 @@ export default async function GalleryGrid({ title, galleries }) {
             );
           })}
         </GalleryLightbox>
+        {loadMore && (
+          <div className="mt-8 flex justify-center xl:mt-[calc(50*var(--rr))]">
+            <LoadMoreLink
+              data={{ label: ui.loadMore, href: loadMore.href }}
+              variant="dark"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

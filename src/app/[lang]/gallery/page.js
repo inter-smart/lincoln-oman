@@ -8,7 +8,11 @@ import Breadcrumb from "@/components/layout/common/Breadcrumb";
 import InnerBanner from "@/components/layout/common/inner-banner";
 import GalleryGrid from "@/components/sections/gallery/GalleryGrid";
 
-const getGalleries = cache(() => apiGet("/galleries"));
+const PATH = "/gallery";
+
+const getGalleries = cache((page = 1) =>
+  apiGet("/galleries", { params: page > 1 ? { page } : {} }),
+);
 
 export async function generateMetadata() {
   const { data, error } = await getGalleries();
@@ -21,26 +25,51 @@ export async function generateMetadata() {
       keywords: banner.meta_keywords,
       otherMetaTags: banner.other_meta_tags,
     },
-    "/gallery",
+    PATH,
   );
 }
 
-export default async function page() {
+const positiveInt = (value) => (/^[1-9]\d*$/.test(value ?? "") ? value : "");
+
+export default async function page({ searchParams }) {
   const { pages, ui } = await getCurrentDictionary();
   const breadcrumb = [
     { id: "home", label: pages.home, href: "/" },
     { id: "gallery", label: ui.gallery },
   ];
-  const { data, error } = await getGalleries();
-  if (error || !data) notFound();
-  const { galleries, banner } = data;
+  const query = await searchParams;
+  const requestedPage = Number(positiveInt(query.page)) || 1;
+
+  const first = await getGalleries();
+  if (first.error || !first.data) notFound();
+  const { banner } = first.data;
+
+  // The API paginates like /special-offers; ?page=N shows pages 1..N. Without a `pagination` block there is one page.
+  const lastPage = first.data.pagination?.last_page ?? 1;
+  const shownPages = Math.min(requestedPage, lastPage);
+  const more = await Promise.all(
+    Array.from({ length: shownPages - 1 }, (_, index) =>
+      getGalleries(index + 2),
+    ),
+  );
+  if (more.some(({ error, data }) => error || !data)) notFound();
+
+  const galleries = [first, ...more].flatMap(({ data }) => data.galleries);
 
   return (
     <>
       <MetaTags html={banner.other_meta_tags} />
       <InnerBanner as="div" data={banner} />
       <Breadcrumb items={breadcrumb} />
-      <GalleryGrid title={banner.banner_title} galleries={galleries} />
+      <GalleryGrid
+        title={banner.banner_title}
+        galleries={galleries}
+        loadMore={
+          shownPages < lastPage
+            ? { href: `${PATH}?page=${shownPages + 1}` }
+            : null
+        }
+      />
     </>
   );
 }
