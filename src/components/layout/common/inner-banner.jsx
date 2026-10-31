@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "@/components/ui/locale-link";
 import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
@@ -9,6 +9,21 @@ const shade =
 
 export default function InnerBanner({ data, as: Title = "h1" }) {
   const title = data.banner_title ?? data.title;
+  const alt = data.banner_alt_text ?? data.alt_text;
+  const desktopSrc = data.banner || data.banner_mobile;
+  const image = { alt, sizes: "100vw", priority: true };
+  const desktop = desktopSrc
+    ? getImageProps({ ...image, src: desktopSrc, width: 1920, height: 760 })
+    : null;
+  const mobile =
+    data.banner_mobile && data.banner_mobile !== desktopSrc
+      ? getImageProps({
+          ...image,
+          src: data.banner_mobile,
+          width: 828,
+          height: 760,
+        })
+      : null;
   const text = data.text ?? data.description;
   const hasMedia = Boolean(data.banner || data.banner_mobile || data.video);
   return (
@@ -18,20 +33,13 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
       <div className="relative block aspect-1920/760 h-full w-full overflow-hidden bg-night sm:h-auto">
         {(data?.banner || data?.banner_mobile) && (
           <picture className="block size-full">
-            {data?.banner_mobile && data?.banner_mobile !== data?.banner && (
-              <source media="(max-width: 639px)" srcSet={data?.banner_mobile} />
+            {mobile && (
+              <source media="(max-width: 639px)" srcSet={mobile.props.srcSet} />
             )}
-            <Image
-              src={data?.banner || data?.banner_mobile}
-              alt={data?.banner_title ?? ""}
-              width={1920}
-              height={760}
-              priority
-              sizes="100vw"
+            <img
+              {...desktop.props}
+              alt={desktop.props.alt}
               className="size-full object-cover"
-              // style={{
-              //   objectPosition: "center",
-              // }}
             />
           </picture>
         )}

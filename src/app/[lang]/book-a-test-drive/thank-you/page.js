@@ -7,7 +7,11 @@ import CertifiedStatement from "@/components/sections/certified/CertifiedStateme
 export async function generateMetadata() {
   const { ui } = await getCurrentDictionary();
   return buildMetadata(
-    { title: ui.thankYou, description: ui.thankYouTitle },
+    {
+      title: ui.thankYou,
+      description: ui.thankYouTitle,
+      robots: { index: false, follow: false },
+    },
     "/book-a-test-drive/thank-you",
   );
 }

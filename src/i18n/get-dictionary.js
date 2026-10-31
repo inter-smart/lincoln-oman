@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { currentLocale } from "@/lib/api/locale";
 import { defaultLocale, hasLocale } from "./config";
 
@@ -13,6 +14,6 @@ export function getDictionary(locale) {
 }
 
 /** Dictionary of the current route's language, for Server Components and generateMetadata. */
-export async function getCurrentDictionary() {
-  return getDictionary(await currentLocale());
-}
+export const getCurrentDictionary = cache(async () =>
+  getDictionary(await currentLocale()),
+);

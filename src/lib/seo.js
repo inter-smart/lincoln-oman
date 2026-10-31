@@ -12,11 +12,12 @@ const urlFor = (path, locale) =>
 // Page metadata from the API banner block (meta_title, meta_description, meta_keywords, other_meta_tags). A null field passes through.
 // `otherMetaTags` is the CMS's raw HTML string; metadataFromTags maps what Next can render (name= metas, og:*, twitter:*, hreflang).
 // The CMS's og:* and twitter:* values replace the defaults below; a tag the CMS doesn't send keeps the default.
+// `robots` (optional) is a Next robots object for pages that must not be indexed (thank-you).
 // The tags Next can't write (property=, itemprop, http-equiv, media) are rendered by <MetaTags> in the page.
 // `path` is the page's own route without the language ("/", "/about"); it becomes the absolute, language-prefixed
 // canonical and og:url, plus an hreflang alternate for every language.
 export async function buildMetadata(
-  { title, description, keywords, otherMetaTags },
+  { title, description, keywords, otherMetaTags, robots },
   path,
 ) {
   const locale = await currentLocale();
@@ -47,6 +48,7 @@ export async function buildMetadata(
       ...openGraph,
     },
     twitter: { card: "summary_large_image", title, description, ...twitter },
+    ...(robots && { robots }),
     ...(other && { other }),
   };
 }

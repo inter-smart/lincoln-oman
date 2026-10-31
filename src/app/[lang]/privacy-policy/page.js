@@ -27,8 +27,11 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const privacy = getPrivacy(await getCurrentDictionary());
-  const { data, error } = await getPolicy();
+  const [dict, { data, error }] = await Promise.all([
+    getCurrentDictionary(),
+    getPolicy(),
+  ]);
+  const privacy = getPrivacy(dict);
   if (error || !data) notFound();
   const { policy } = data;
 

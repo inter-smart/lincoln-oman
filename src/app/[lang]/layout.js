@@ -18,6 +18,11 @@ import SmoothScroll from "@/components/layout/common/SmoothScroll";
 import RevealObserver from "@/components/layout/common/RevealObserver";
 import NavigationProgress from "@/components/layout/common/NavigationProgress";
 
+export const metadata = {
+  metadataBase: new URL(siteUrl),
+  robots: { index: true, follow: true },
+};
+
 export const viewport = { themeColor: "#231f20" };
 
 export function generateStaticParams() {

@@ -1,10 +1,8 @@
-import { allowIndexing, siteUrl } from "@/data/seo";
+import { siteUrl } from "@/data/seo";
 
 export default function robots() {
-  if (!allowIndexing) return { rules: { userAgent: "*", disallow: "/" } };
-
   return {
-    rules: { userAgent: "*", disallow: "/" },
+    rules: { userAgent: "*", allow: "/" },
     sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

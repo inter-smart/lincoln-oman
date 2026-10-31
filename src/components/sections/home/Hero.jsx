@@ -48,7 +48,6 @@ export default async function Hero({ slides }) {
               alt=""
               width={1024}
               height={99}
-              priority={index === 0}
               className="absolute inset-x-0 top-0 h-[184px] w-full object-cover"
             />
             <Image
@@ -56,7 +55,6 @@ export default async function Hero({ slides }) {
               alt=""
               width={1024}
               height={180}
-              priority={index === 0}
               className="absolute inset-x-0 bottom-0 h-[336px] w-full rotate-180 object-cover"
             />
             <div className="absolute inset-x-0 bottom-[61px] container flex flex-col items-center text-center">

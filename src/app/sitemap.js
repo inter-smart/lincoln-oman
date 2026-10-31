@@ -1,4 +1,4 @@
-import { allowIndexing, siteUrl } from "@/data/seo";
+import { siteUrl } from "@/data/seo";
 import { locales } from "@/i18n/config";
 import { apiGet } from "@/lib/api/get";
 
@@ -21,19 +21,12 @@ const staticRoutes = [
 
 const absolute = (path) => new URL(path, siteUrl).href;
 
-// One entry per language for a language-less path ("/about"), each pointing at the other language as its hreflang alternate.
+// One entry per language for a language-less path ("/about"). No `alternates`: the xhtml:link tags make Chrome show the file as flat text, and hreflang is already in each page's metadata.
 // ponytail: detail slugs are assumed to be the same in every language: confirm with the backend.
 const localized = (path, entry) => {
-  const urls = Object.fromEntries(
-    locales.map((locale) => [
-      locale,
-      absolute(`/${locale}${path === "/" ? "" : path}`),
-    ]),
-  );
   return locales.map((locale) => ({
-    url: urls[locale],
+    url: absolute(`/${locale}${path === "/" ? "" : path}`),
     ...entry,
-    alternates: { languages: urls },
   }));
 };
 
@@ -52,10 +45,7 @@ async function allPages(endpoint, key) {
   return [first, ...rest].flatMap(({ data }) => data?.[key] ?? []);
 }
 
-// Empty while indexing is blocked, so a staging build never advertises its URLs.
 export default async function sitemap() {
-  if (!allowIndexing) return [];
-
   const [models, news, offers] = await Promise.all([
     apiGet("/vehicle-models", { revalidate: REVALIDATE }),
     allPages("/news", "news"),

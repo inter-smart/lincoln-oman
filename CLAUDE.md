@@ -27,7 +27,7 @@ Lincoln Oman (Arabian Car Marketing) marketing site. Read this file before any w
 ## 2. Stack and commands
 
 - Next.js 16.4 App Router (Turbopack), React 19.3, plain JS/JSX, Tailwind v4 (no config file — tokens in `src/app/globals.css`), shadcn/ui on `radix-ui`, Embla 8, lucide-react.
-- `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` was removed with the team's test cleanup (`8f89856`); run the remaining tests with `node --test "src/**/*.test.*"` (`src/i18n/*`, `validation/translate`, `slugify`).
+- `npm run dev` · `npm run build` (Turbopack — **not** `--webpack`; Turbopack measured mobile Lighthouse 68 → ~82) · `npm start` · `npm run lint` · `npm test` was removed with the team's test cleanup (`8f89856`); run the remaining tests with `node --test "src/**/*.test.*"` (currently `src/i18n/*` and `src/lib/validation/translate.test.js`; there is no `slugify` test).
   - Tests only cover pure code (no `server-only`, no `@/` alias in the files under test): run one with `node --test src/i18n/config.test.js`. The older `src/lib` tests (meta-tags, format-date, validation, …) were deleted by the team.
   - Env vars (`.env`): `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_API_TOKEN` (bearer token; only `src/lib/api/http.js`, which is `server-only`, reads it: never reference it in client code), `NEXT_PUBLIC_MEDIA_URL` (adds the CMS image host to `next/image` `remotePatterns`). A missing URL/token fails the request with an `ApiError`, not at import. Forms also need `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` (reCAPTCHA v3; without the site key submit shows a "spam check" error).
 - Only **one** `next dev` per project is allowed. If it says "Another next dev server is already running", use the reported URL (the user often has one on **:3001**). Don't kill the user's server without asking. Port 3100 belongs to zelliny's server.
@@ -75,11 +75,11 @@ src/components/ui/*                   shadcn primitives (button cva, sheet, navi
 - Client: `FormShell` (`useForm`, `mode: "onChange"`, loads the reCAPTCHA script lazily, shows status) + field leaves in `FormFields.jsx`. `EnquiryForm` (pill variant, `data.formKey`) and `ContactIntro` (underline variant, `data.form.formKey`) stay server components.
 - Server: `src/app/actions/forms.js` `submitForm(formKey, values, token)` re-validates, verifies the token (`src/lib/recaptcha.js`, score ≥ 0.5, action = form key), maps UI names to the Laravel payload and `apiPost`s. Per-endpoint field names differ (`phone_number`, `vehicle_id`, consent flags): change them only in that file. 422 `errors` are mapped back onto fields.
 - Vehicle dropdowns come from `GET /vehicle-models` (`withVehicleOptions`). Owners (`owners`) and Special Offers list (`offers`) forms post to `/page-enquiries` (name, email, subject, message + `type` `owners`/`offer`); the offer detail form posts to `/special-offer-enquiries`.
-- `src/app/book-a-test-drive/thank-you` exists but is not linked from the form yet.
+- `src/app/[lang]/book-a-test-drive/thank-you` exists; `FormShell` and `src/data/test-drive.js` reference it.
 
 ### Adding an API page (checklist)
 
-1. `const getX = cache(() => apiGet("/x"))` in `src/app/<route>/page.js`; start `generateMetadata` and the page with `if (error || !data) notFound()`.
+1. `const getX = cache(() => apiGet("/x"))` in `src/app/[lang]/<route>/page.js`; start `generateMetadata` and the page with `if (error || !data) notFound()`.
 2. `generateMetadata` → `buildMetadata({ title, description, keywords, otherMetaTags }, "/route")` from the `banner` block (for detail pages the block is `news.meta_tags`).
 3. Render `<InnerBanner data={{ title: banner.banner_title, media: { url: banner.banner, alternativeText: banner.banner_alt_text } }} />`, `<Breadcrumb />`, then the section components.
 4. Hide a section when the CMS sends it empty (see `hasContent`/`textOf` in the Owners page) instead of rendering an empty shell.
