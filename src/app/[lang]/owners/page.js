@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import { ownersSections } from "@/lib/owners-sections";
 import { getOwners as ownersText } from "@/data/owners";
 import MetaTags from "@/components/layout/common/MetaTags";
@@ -14,8 +14,7 @@ import OwnersContent from "@/components/sections/owners/OwnersContent";
 const getOwners = cache(() => apiGet("/owners"));
 
 export async function generateMetadata() {
-  const { data, error } = await getOwners();
-  if (error || !data) notFound();
+  const data = ensureData(await getOwners());
   const { banner } = data;
   return buildMetadata(
     {
@@ -37,8 +36,7 @@ const hasContent = (service) =>
 
 export default async function page() {
   const owners = ownersText(await getCurrentDictionary());
-  const { data, error } = await getOwners();
-  if (error || !data) notFound();
+  const data = ensureData(await getOwners());
   const { banner, owners_cms, owners_services } = data;
 
   const services = Array.isArray(owners_services)

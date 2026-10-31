@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import { getOffers as offersText } from "@/data/offers";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
@@ -16,8 +16,7 @@ const getOffer = cache((slug) =>
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const { data, error } = await getOffer(slug);
-  if (error || !data) notFound();
+  const data = ensureData(await getOffer(slug));
   const { special_offer, meta_tags } = data;
   return buildMetadata(
     {
@@ -34,8 +33,7 @@ export default async function page({ params }) {
   const dict = await getCurrentDictionary();
   const offers = offersText(dict);
   const { slug } = await params;
-  const { data, error } = await getOffer(slug);
-  if (error || !data) notFound();
+  const data = ensureData(await getOffer(slug));
   const {
     special_offer,
     enquiry_title,

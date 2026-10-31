@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import { getContact as contactText } from "@/data/contact";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
@@ -14,8 +14,7 @@ import DepartmentContact from "@/components/sections/contact/DepartmentContact";
 const getContact = cache(() => apiGet("/contact-us"));
 
 export async function generateMetadata() {
-  const { data, error } = await getContact();
-  if (error || !data) notFound();
+  const data = ensureData(await getContact());
   const { banner } = data;
   return buildMetadata(
     {
@@ -30,8 +29,7 @@ export async function generateMetadata() {
 
 export default async function page() {
   const contact = contactText(await getCurrentDictionary());
-  const { data, error } = await getContact();
-  if (error || !data) notFound();
+  const data = ensureData(await getContact());
   const { contact_cms, contact_addresses, department_contacts, banner } = data;
 
   return (

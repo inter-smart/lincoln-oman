@@ -1,8 +1,8 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
 import { getPrivacy } from "@/data/legal";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
@@ -12,8 +12,7 @@ import LegalContent from "@/components/sections/legal/LegalContent";
 const getPolicy = cache(() => apiGet("/policies/privacy-policy"));
 
 export async function generateMetadata() {
-  const { data, error } = await getPolicy();
-  if (error || !data) notFound();
+  const data = ensureData(await getPolicy());
   const { policy } = data;
   return buildMetadata(
     {
@@ -27,12 +26,12 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const [dict, { data, error }] = await Promise.all([
+  const [dict, result] = await Promise.all([
     getCurrentDictionary(),
     getPolicy(),
   ]);
   const privacy = getPrivacy(dict);
-  if (error || !data) notFound();
+  const data = ensureData(result);
   const { policy } = data;
 
   return (

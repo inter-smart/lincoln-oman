@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
@@ -11,8 +11,7 @@ import InnerBanner from "@/components/layout/common/inner-banner";
 const getNews = cache(() => apiGet("/news"));
 
 export async function generateMetadata() {
-  const { data, error } = await getNews();
-  if (error || !data) notFound();
+  const data = ensureData(await getNews());
   const { banner } = data;
   return buildMetadata(
     {
@@ -31,8 +30,7 @@ export default async function page() {
     { id: "home", label: pages.home, href: "/" },
     { id: "newsroom", label: ui.newsroom },
   ];
-  const { data, error } = await getNews();
-  if (error || !data) notFound();
+  const data = ensureData(await getNews());
   const { news, banner } = data;
 
   return (

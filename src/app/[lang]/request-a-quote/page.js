@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import { getQuote as quoteText } from "@/data/quote";
 import { withVehicleOptions } from "@/lib/vehicle-options";
 import MetaTags from "@/components/layout/common/MetaTags";
@@ -13,8 +13,7 @@ import ContactIntro from "@/components/sections/contact/ContactIntro";
 const getQuote = cache(() => apiGet("/request-quote"));
 
 export async function generateMetadata() {
-  const { data, error } = await getQuote();
-  if (error || !data) notFound();
+  const data = ensureData(await getQuote());
   const { banner } = data;
   return buildMetadata(
     {
@@ -29,8 +28,7 @@ export async function generateMetadata() {
 
 export default async function page() {
   const quote = quoteText(await getCurrentDictionary());
-  const { data, error } = await getQuote();
-  if (error || !data) notFound();
+  const data = ensureData(await getQuote());
   const { cms, banner, vehicle_models } = data;
 
   const intro = {

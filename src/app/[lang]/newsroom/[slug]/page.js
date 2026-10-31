@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
@@ -14,8 +14,7 @@ const getNewsItem = cache((slug) =>
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const { data, error } = await getNewsItem(slug);
-  if (error || !data) notFound();
+  const data = ensureData(await getNewsItem(slug));
   const { news } = data;
   return buildMetadata(
     {
@@ -31,8 +30,7 @@ export async function generateMetadata({ params }) {
 export default async function page({ params }) {
   const { pages, ui } = await getCurrentDictionary();
   const { slug } = await params;
-  const { data, error } = await getNewsItem(slug);
-  if (error || !data) notFound();
+  const data = ensureData(await getNewsItem(slug));
   const { news, recent_news } = data;
 
   return (

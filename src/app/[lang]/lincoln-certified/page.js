@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
@@ -17,8 +17,7 @@ import CertifiedInspection from "@/components/sections/certified/CertifiedInspec
 const getCertified = cache(() => apiGet("/certified"));
 
 export async function generateMetadata() {
-  const { data, error } = await getCertified();
-  if (error || !data) notFound();
+  const data = ensureData(await getCertified());
   const { banner } = data;
   return buildMetadata(
     {
@@ -45,8 +44,7 @@ export default async function page() {
     { id: "home", label: pages.home, href: "/" },
     { id: "certified", label: ui.lincolnCertified },
   ];
-  const { data, error } = await getCertified();
-  if (error || !data) notFound();
+  const data = ensureData(await getCertified());
   const { banner, certified_cms } = data;
 
   const { section_one: intro, section_three: cta } = certified_cms;

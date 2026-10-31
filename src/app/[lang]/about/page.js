@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import Legacy from "@/components/sections/home/Legacy";
 import Newsroom from "@/components/sections/home/Newsroom";
 import MetaTags from "@/components/layout/common/MetaTags";
@@ -13,8 +13,7 @@ import AboutCommitment from "@/components/sections/about/about-commitment";
 const getAbout = cache(() => apiGet("/about-us"));
 
 export async function generateMetadata() {
-  const { data, error } = await getAbout();
-  if (error || !data) notFound();
+  const data = ensureData(await getAbout());
   const { banner } = data;
   return buildMetadata(
     {
@@ -28,8 +27,7 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const { data, error } = await getAbout();
-  if (error || !data) notFound();
+  const data = ensureData(await getAbout());
   const { about_cms, banner, featured_models, news } = data;
 
   return (

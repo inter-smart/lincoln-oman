@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { withVehicleOptions } from "@/lib/vehicle-options";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
@@ -13,8 +13,7 @@ import ContactIntro from "@/components/sections/contact/ContactIntro";
 const getTestDrive = cache(() => apiGet("/test-drive"));
 
 export async function generateMetadata() {
-  const { data, error } = await getTestDrive();
-  if (error || !data) notFound();
+  const data = ensureData(await getTestDrive());
   const { banner } = data;
   const testDrive = testDriveText(await getCurrentDictionary());
   return buildMetadata(
@@ -31,8 +30,7 @@ export async function generateMetadata() {
 
 export default async function page() {
   const testDrive = testDriveText(await getCurrentDictionary());
-  const { data, error } = await getTestDrive();
-  if (error || !data) notFound();
+  const data = ensureData(await getTestDrive());
   const { cms, banner, vehicle_models } = data;
 
   const intro = {

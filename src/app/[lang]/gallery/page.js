@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import Breadcrumb from "@/components/layout/common/Breadcrumb";
@@ -15,8 +15,7 @@ const getGalleries = cache((page = 1) =>
 );
 
 export async function generateMetadata() {
-  const { data, error } = await getGalleries();
-  if (error || !data) notFound();
+  const data = ensureData(await getGalleries());
   const { banner } = data;
   return buildMetadata(
     {
@@ -41,7 +40,7 @@ export default async function page({ searchParams }) {
   const requestedPage = Number(positiveInt(query.page)) || 1;
 
   const first = await getGalleries();
-  if (first.error || !first.data) notFound();
+  ensureData(first);
   const { banner } = first.data;
 
   // The API paginates like /special-offers; ?page=N shows pages 1..N. Without a `pagination` block there is one page.
@@ -52,7 +51,7 @@ export default async function page({ searchParams }) {
       getGalleries(index + 2),
     ),
   );
-  if (more.some(({ error, data }) => error || !data)) notFound();
+  more.forEach(ensureData);
 
   const galleries = [first, ...more].flatMap(({ data }) => data.galleries);
 

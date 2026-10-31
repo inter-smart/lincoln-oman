@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
+import { ensureData } from "@/lib/api/ensure";
 import { buildMetadata } from "@/lib/seo";
-import { notFound } from "next/navigation";
 import { getOffers as offersText } from "@/data/offers";
 import { locationBySlug, slugify } from "@/lib/slugify";
 import MetaTags from "@/components/layout/common/MetaTags";
@@ -23,8 +23,7 @@ const getOffers = cache((locationId = "", page = 1) =>
 );
 
 export async function generateMetadata() {
-  const { data, error } = await getOffers();
-  if (error || !data) notFound();
+  const data = ensureData(await getOffers());
   const { banner } = data;
   return buildMetadata(
     {
@@ -45,7 +44,7 @@ export default async function page({ searchParams }) {
   const requestedPage = Number(positiveInt(query.page)) || 1;
 
   const all = await getOffers();
-  if (all.error || !all.data) notFound();
+  ensureData(all);
   const { banner, locations, enquiry_title } = all.data;
 
   const legacyId = positiveInt(query.location_id);
@@ -56,7 +55,7 @@ export default async function page({ searchParams }) {
   const locationSlug = location ? slugify(location.name) : "";
 
   const first = locationId ? await getOffers(locationId) : all;
-  if (first.error || !first.data) notFound();
+  ensureData(first);
 
   const lastPage = first.data.pagination?.last_page ?? 1;
   const shownPages = Math.min(requestedPage, lastPage);
@@ -65,7 +64,7 @@ export default async function page({ searchParams }) {
       getOffers(locationId, index + 2),
     ),
   );
-  if (more.some(({ error, data }) => error || !data)) notFound();
+  more.forEach(ensureData);
 
   const items = [first, ...more].flatMap(({ data }) => data.special_offers);
   const nextQuery = new URLSearchParams({
