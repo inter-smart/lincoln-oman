@@ -24,8 +24,6 @@ export function getTestDrive(dict) {
     // The vehicle options are filled from vehicle_models by withVehicleOptions.
     form: {
       formKey: "testDrive",
-      // After a successful booking the visitor lands on the thank-you page.
-      successHref: "/book-a-test-drive/thank-you",
       fields: [
         { name: "name", label: form.name, type: "text", autoComplete: "name" },
         {

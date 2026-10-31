@@ -8,6 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { submitForm } from "@/app/actions/forms";
 import { useLabels } from "@/components/layout/common/I18nProvider";
 import { useLocale } from "@/components/ui/locale-link";
+import { thankYouHref } from "@/data/thank-you";
 import { localizedHref } from "@/i18n/config";
 import { schemas } from "@/lib/validation/forms";
 import { cn } from "@/lib/utils";
@@ -131,11 +132,7 @@ export default function FormShell({
 
     if (result.ok) {
       reset();
-      if (successHref) {
-        router.push(localizedHref(successHref, lang));
-        return;
-      }
-      setStatus({ ok: true, message: labels.formSuccess });
+      router.push(localizedHref(successHref ?? thankYouHref(formKey), lang));
       return;
     }
     for (const [field, message] of Object.entries(result.fieldErrors ?? {})) {
