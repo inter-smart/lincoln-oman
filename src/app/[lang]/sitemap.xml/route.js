@@ -1,5 +1,5 @@
 import { siteUrl } from "@/data/seo";
-import { currentLocale } from "@/lib/api/locale";
+import { hasLocale } from "@/i18n/config";
 import { apiGet } from "@/lib/api/get";
 
 const staticRoutes = [
@@ -45,8 +45,7 @@ async function allPages(endpoint, key) {
   return [first, ...rest].flatMap(({ data }) => data?.[key] ?? []);
 }
 
-export default async function sitemap() {
-  const locale = await currentLocale();
+async function entries(locale) {
   const [models, news, offers] = await Promise.all([
     apiGet("/vehicle-models"),
     allPages("/news", "news"),
@@ -86,4 +85,43 @@ export default async function sitemap() {
       }),
     ),
   ];
+}
+
+const escapeXml = (value) =>
+  String(value).replace(
+    /[<>&'"]/g,
+    (char) =>
+      ({
+        "<": "&lt;",
+        ">": "&gt;",
+        "&": "&amp;",
+        "'": "&apos;",
+        '"': "&quot;",
+      })[char],
+  );
+
+// A route handler (not the sitemap.js convention): metadata files inside a root-param segment are emitted at "/-/sitemap.xml" instead of "/{lang}/sitemap.xml".
+export async function GET(_request, { params }) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return new Response(null, { status: 404 });
+  const locale = lang;
+  const urls = (await entries(locale))
+    .map(({ url, lastModified, changeFrequency, priority }) =>
+      [
+        "<url>",
+        `<loc>${escapeXml(url)}</loc>`,
+        lastModified && `<lastmod>${lastModified.toISOString()}</lastmod>`,
+        changeFrequency && `<changefreq>${changeFrequency}</changefreq>`,
+        priority != null && `<priority>${priority}</priority>`,
+        "</url>",
+      ]
+        .filter(Boolean)
+        .join(""),
+    )
+    .join("");
+
+  return new Response(
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`,
+    { headers: { "Content-Type": "application/xml; charset=utf-8" } },
+  );
 }

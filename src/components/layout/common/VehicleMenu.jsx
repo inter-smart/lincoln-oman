@@ -50,7 +50,7 @@ export default function VehicleMenu({ menu, vehicles }) {
       >
         <p
           aria-hidden
-          className="absolute top-[calc(351*var(--rr))] text-[calc(200*var(--rr))] leading-[1.22] text-transparent uppercase opacity-50 [-webkit-text-stroke:1px_#fff]"
+          className="absolute top-[calc(351*var(--rr))] text-[calc(200*var(--rr))] leading-[1.22] whitespace-nowrap text-transparent uppercase opacity-50 [-webkit-text-stroke:1px_#fff]"
         >
           {active?.name}
         </p>

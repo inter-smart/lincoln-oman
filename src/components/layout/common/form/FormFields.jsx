@@ -247,14 +247,14 @@ export function TermsFields({ terms, variant = "underline" }) {
       <fieldset className="flex gap-6">
         <legend className="sr-only">{terms.text}</legend>
         {terms.choices?.map((choice) => (
-          <label key={choice} className="flex items-center gap-2">
+          <label key={choice.value} className="flex items-center gap-2">
             <input
               type="radio"
-              value={choice.toLowerCase()}
+              value={choice.value}
               className="size-4 shrink-0 accent-slate"
               {...register("marketing")}
             />
-            {choice}
+            {choice.label}
           </label>
         ))}
       </fieldset>

@@ -126,13 +126,20 @@ export default function Footer({ data, settings, socials, labels }) {
             {data?.legal?.map((link, index) => (
               <span key={link.id}>
                 {index > 0 && " | "}
-                <Link
-                  href={link.href}
-                  target={link?.isExternal ? "_blank" : "_self"}
-                  className={linkHover}
-                >
-                  {link.label}
-                </Link>
+                {link?.isExternal ? (
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkHover}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link href={link.href} className={linkHover}>
+                    {link.label}
+                  </Link>
+                )}
               </span>
             ))}{" "}
             {data?.copyright}

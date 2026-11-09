@@ -25,7 +25,10 @@ export function getQuote(dict) {
       message: { name: "message", label: form.message, optional: true },
       // Copy is as designed (it names Ford Motor Company): flagged for the client.
       terms: {
-        choices: [form.yes, form.no],
+        choices: [
+          { value: "yes", label: form.yes },
+          { value: "no", label: form.no },
+        ],
         text: form.termsText,
         agree: form.agree,
       },
