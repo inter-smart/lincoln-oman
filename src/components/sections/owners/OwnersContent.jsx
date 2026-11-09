@@ -13,9 +13,9 @@ export default function OwnersContent({ sections, navLabel }) {
   }));
 
   return (
-    <div className="container grid grid-cols-[minmax(0,1fr)] gap-6 pt-6 pb-(--section-space) sm:pt-10 lg:grid-cols-[minmax(0,383fr)_minmax(0,1168fr)] lg:gap-10 lg:pt-15 xl:gap-[calc(90*var(--rr))] xl:pt-[calc(70*var(--rr))]">
+    <div className="container pt-6 pb-(--section-space) sm:pt-10 lg:grid lg:grid-cols-[minmax(0,383fr)_minmax(0,1168fr)] lg:gap-10 lg:pt-15 xl:gap-[calc(90*var(--rr))] xl:pt-[calc(70*var(--rr))]">
       <SectionSideNav items={navItems} label={navLabel} />
-      <div className="min-w-0 text-ink">
+      <div className="min-w-0 text-ink mt-6 lg:mt-0">
         {sections?.map((section) => (
           <section
             key={section.id}

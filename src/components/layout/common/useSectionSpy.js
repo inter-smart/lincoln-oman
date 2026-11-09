@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const GAP = 24;
 
 // Shared behaviour for sticky in-page navs (SectionTabs, SectionSideNav):
-// - keeps `--header-h` on the nav and `--spy-offset` on <html> in step with the fixed header,
+// - keeps `--spy-offset` on <html> in step with the fixed header,
 //   so sections can use `scroll-mt-(--spy-offset)` and land clear of the header (and the nav when it sits above them);
 // - scroll-spy: the active item is the last section whose top has passed the offset line;
 // - measures the active link so one indicator can slide to it, and scrolls a sideways list to keep it in view;
@@ -19,6 +19,8 @@ export default function useSectionSpy(items, isStacked = () => true) {
   const stackedRef = useRef(isStacked);
   const lastScrollY = useRef(0);
   const scrollDir = useRef("down");
+  const isInteractingRef = useRef(false);
+  const touchTimeoutRef = useRef(null);
   const [active, setActive] = useState(0);
   const [indicator, setIndicator] = useState(null);
   const [stuck, setStuck] = useState(false);
@@ -27,47 +29,69 @@ export default function useSectionSpy(items, isStacked = () => true) {
     stackedRef.current = isStacked;
   }, [isStacked]);
 
-  // Sticky offsets follow the header, which shrinks once the page scrolls
+  // Keep track of user touches on the horizontal list so programmatic scroll doesn't fight the user's gesture
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const onPointerDown = () => {
+      isInteractingRef.current = true;
+      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    };
+
+    const onPointerUp = () => {
+      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = setTimeout(() => {
+        isInteractingRef.current = false;
+      }, 400);
+    };
+
+    list.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("pointerup", onPointerUp, { passive: true });
+    window.addEventListener("pointercancel", onPointerUp, { passive: true });
+
+    return () => {
+      list.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    };
+  }, []);
+
+  // Update --spy-offset on root for scroll-mt of section targets.
+  // Only runs on resize / container change or when jumping, avoiding style recalculation during scroll.
+  const updateSpyOffset = useCallback(() => {
+    const header = document.querySelector("header");
+    const nav = navRef.current;
+    if (!header || !nav) return;
+
+    const headerH = header.offsetHeight;
+    const offset = headerH + (stackedRef.current() ? nav.offsetHeight : GAP);
+    document.documentElement.style.setProperty("--spy-offset", `${offset}px`);
+  }, []);
+
   useEffect(() => {
     const header = document.querySelector("header");
     const nav = navRef.current;
     if (!header || !nav) return;
 
-    const updateOffset = () => {
-      const visibleHeaderH =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--header-visible-h",
-          ),
-        ) || header.offsetHeight;
-      const headerH = visibleHeaderH;
-      nav.style.setProperty("--header-h", `${headerH}px`);
-      document.documentElement.style.setProperty(
-        "--spy-offset",
-        `${headerH + (stackedRef.current() ? nav.offsetHeight : GAP)}px`,
-      );
-    };
+    updateSpyOffset();
 
-    const update = () => {
-      updateOffset();
-      // The header compacts mid-jump, so re-aim with the new offset or the jump stops short
-      const jump = jumping.current;
-      if (jump) jump.target.scrollIntoView({ behavior: jump.behavior });
-    };
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(() => {
+      updateSpyOffset();
+    });
     observer.observe(header);
     observer.observe(nav);
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", updateOffset, { passive: true });
-    update();
+    window.addEventListener("resize", updateSpyOffset);
+
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", updateOffset);
+      window.removeEventListener("resize", updateSpyOffset);
       document.documentElement.style.removeProperty("--spy-offset");
     };
-  }, []);
+  }, [updateSpyOffset]);
 
+  // Scrollspy & stuck state detection (throttled by requestAnimationFrame)
   useEffect(() => {
     const targets = items.map((item) =>
       document.getElementById(item.href.slice(1)),
@@ -77,6 +101,7 @@ export default function useSectionSpy(items, isStacked = () => true) {
     const update = () => {
       frame = 0;
       const nav = navRef.current;
+      const header = document.querySelector("header");
       if (!nav) return;
 
       const scrollY = window.scrollY;
@@ -87,16 +112,18 @@ export default function useSectionSpy(items, isStacked = () => true) {
       }
       lastScrollY.current = scrollY;
 
-      const line =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--spy-offset",
-          ),
-        ) + 1 || nav.getBoundingClientRect().bottom + 1;
+      const isStacked = stackedRef.current();
+      const headerBottom = header
+        ? Math.max(0, header.getBoundingClientRect().bottom)
+        : 0;
 
-      // On reverse (upward) scroll, add an offset buffer so a section stays active
-      // while its header and content are in the upper reading view, rather than
-      // prematurely jumping to the section above the moment its top passes the nav.
+      // The line below which a section is considered in reading view
+      const line = isStacked
+        ? nav.getBoundingClientRect().bottom + 1
+        : headerBottom + GAP + 1;
+
+      // On upward scroll, add an offset buffer so a section stays active
+      // while its header and content are in the upper reading view.
       const isUp = scrollDir.current === "up";
       const offsetBuffer = Math.min(
         220,
@@ -106,23 +133,36 @@ export default function useSectionSpy(items, isStacked = () => true) {
 
       let current = 0;
       targets.forEach((target, index) => {
-        if (target && target.getBoundingClientRect().top <= effectiveLine)
+        if (target && target.getBoundingClientRect().top <= effectiveLine) {
           current = index;
+        }
       });
+
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2
       ) {
         current = targets.length - 1;
       }
-      if (!jumping.current) setActive(current);
-      setStuck(
-        Math.abs(
-          nav.getBoundingClientRect().top -
-          parseFloat(getComputedStyle(nav).top),
-        ) < 1,
-      );
+
+      if (!jumping.current) {
+        setActive((prev) => (prev !== current ? current : prev));
+      }
+
+      // Sticky detection with hysteresis to prevent subpixel flickering:
+      // It sticks when the nav top touches or passes stickyTop, and un-sticks when scrolled back past stickyTop + 3.
+      const stickyTop = isStacked ? headerBottom : headerBottom + GAP;
+      const navRect = nav.getBoundingClientRect();
+      const isStuck =
+        navRect.top <= stickyTop + 1.5 && navRect.bottom > stickyTop;
+
+      setStuck((prev) => {
+        if (!prev && isStuck) return true;
+        if (prev && navRect.top > stickyTop + 3) return false;
+        return prev;
+      });
     };
+
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
@@ -131,31 +171,48 @@ export default function useSectionSpy(items, isStacked = () => true) {
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
-      cancelAnimationFrame(frame);
+      if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
   }, [items]);
 
+  // Indicator measurement and intelligent centering without horizontal snapping fighting
   const place = useCallback(() => {
     const link = linkRefs.current[active];
     const list = listRef.current;
     if (!link || !list) return;
-    // Measure against the list's scrolled content box (links sit in positioned <li>s, so offsetLeft is 0)
-    const linkBox = link.getBoundingClientRect();
-    const listBox = list.getBoundingClientRect();
-    const x = linkBox.left - listBox.left - list.clientLeft + list.scrollLeft;
-    setIndicator({
-      x,
-      y: linkBox.top - listBox.top - list.clientTop + list.scrollTop,
-      w: linkBox.width,
-      h: linkBox.height,
-    });
-    if (list.scrollWidth > list.clientWidth) {
-      list.scrollTo({
-        left: x - (list.clientWidth - linkBox.width) / 2,
-        behavior: "smooth",
-      });
+
+    // Calculate layout offset coordinates relative to list container (independent of scrollLeft)
+    let x = link.offsetLeft;
+    let y = link.offsetTop;
+    let el = link.offsetParent;
+    while (el && el !== list) {
+      x += el.offsetLeft;
+      y += el.offsetTop;
+      el = el.offsetParent;
+    }
+
+    const w = link.offsetWidth;
+    const h = link.offsetHeight;
+
+    setIndicator({ x, y, w, h });
+
+    // Smoothly scroll horizontal list only if item is partially hidden or offscreen,
+    // and only if user is not currently touching/swiping the strip.
+    if (list.scrollWidth > list.clientWidth && !isInteractingRef.current) {
+      const itemLeft = x;
+      const itemRight = x + w;
+      const viewLeft = list.scrollLeft;
+      const viewRight = viewLeft + list.clientWidth;
+      const margin = 20;
+
+      if (itemLeft < viewLeft + margin || itemRight > viewRight - margin) {
+        list.scrollTo({
+          left: Math.max(0, itemLeft - (list.clientWidth - w) / 2),
+          behavior: "smooth",
+        });
+      }
     }
   }, [active]);
 
@@ -173,23 +230,28 @@ export default function useSectionSpy(items, isStacked = () => true) {
     const target = document.getElementById(href.slice(1));
     if (!target) return;
     event.preventDefault();
+
+    // Ensure spy-offset is fresh before jump lands
+    updateSpyOffset();
+
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const behavior = reduce ? "auto" : "smooth";
+
     target.scrollIntoView({ behavior });
     history.replaceState(null, "", href);
     setActive(index);
     jumping.current = { target, behavior };
-    // Only the page scroll ending releases the lock, not the nav strip scrolling sideways
-    const release = (event) => {
-      if (event && event.target !== document) return;
+
+    const release = (e) => {
+      if (e && e.target !== document) return;
       jumping.current = false;
       clearTimeout(fallback);
       window.removeEventListener("scrollend", release);
     };
-    // scrollend isn't in every browser yet, so a timeout releases the lock too
-    const fallback = setTimeout(release, 1200);
+
+    const fallback = setTimeout(release, 1000);
     window.addEventListener("scrollend", release);
   };
 
