@@ -135,7 +135,7 @@ src/components/ui/*                   shadcn primitives (button cva, sheet, navi
 - **Default is NO indexing** (QA requirement): `robots.txt` Disallow, meta `noindex, nofollow, noarchive`, `X-Robots-Tag` header, empty sitemap.
 - The live deployment must set `NEXT_PUBLIC_ALLOW_INDEXING=true` and `NEXT_PUBLIC_SITE_URL=<domain>` (required, no fallback: `src/data/seo.js` throws when it is unset; canonical/OG/sitemap read it).
 - Lighthouse SEO 69 is expected while noindex — don't "fix" it by removing noindex.
-- Security headers are set in `next.config.mjs` (`poweredByHeader: false`). A CSP is still open (needs a nonce via proxy/middleware).
+- Security headers are set in `next.config.mjs` (`poweredByHeader: false`). A static CSP is set there too (`csp` in `next.config.mjs`): inline script/style allowed, Google hosts for reCAPTCHA, `https:` for CMS img/media. Add new third-party origins to it. A strict nonce CSP via `proxy.js` is the possible follow-up.
 
 ## 7. Client decisions and Figma deviations (already agreed — don't re-ask)
 

@@ -126,7 +126,7 @@ export async function submitForm(formKey, values, token, lang) {
       );
     }
 
-    console.log(`submitForm ${formKey} validation failed:`, errors);
+    // console.log(`submitForm ${formKey} validation failed:`, errors);
 
     return {
       ok: false,

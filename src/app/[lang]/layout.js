@@ -1,6 +1,6 @@
 import "../globals.css";
 import { Suspense } from "react";
-import { siteUrl } from "@/data/seo";
+import { allowIndexing, siteUrl } from "@/data/seo";
 import { getSite } from "@/data/site";
 import { apiGet } from "@/lib/api/get";
 import { lang } from "next/root-params";
@@ -20,7 +20,9 @@ import NavigationProgress from "@/components/layout/common/NavigationProgress";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
-  robots: { index: true, follow: true },
+  robots: allowIndexing
+    ? { index: true, follow: true }
+    : { index: false, follow: false, noarchive: true },
 };
 
 export const viewport = { themeColor: "#231f20" };
