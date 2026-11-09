@@ -5,6 +5,7 @@ export default function robots() {
   if (!allowIndexing) {
     return {
       rules: { userAgent: "*", disallow: "/" },
+      sitemap: locales.map((locale) => `${siteUrl}/${locale}/sitemap.xml`),
     };
   }
 

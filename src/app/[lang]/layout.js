@@ -57,8 +57,8 @@ export default async function RootLayout({ children }) {
   const site = getSite(dict, locale);
 
   const [{ data: settings }, { data: socials }] = await Promise.all([
-    apiGet("/site-settings"),
-    apiGet("/social-links"),
+    apiGet("/site-settings", { revalidate: 300 }),
+    apiGet("/social-links", { revalidate: 300 }),
   ]);
 
   return (

@@ -8,15 +8,18 @@ import { currentLocale } from "./locale";
  * timeout, bad config) `data` is null and `error` is the ApiError (see error.status / error.details).
  * Pages pass the result to `ensureData` (ensure.js): 404 -> notFound(), other errors -> error.js.
  * The locale (from the [lang] route, or the `lang` option) is sent as the `?lang=` query param, which the CMS uses to pick the language.
- * Not cached: every request goes to the CMS (cache: "no-store"), so routes render dynamically.
+ * Not cached by default: every request goes to the CMS (cache: "no-store"), so routes render dynamically.
+ * Pass `revalidate` (seconds) for rarely-changing data (e.g. layout settings) to cache it in the Data Cache.
  */
-export async function apiGet(endpoint, { params, lang } = {}) {
+export async function apiGet(endpoint, { params, lang, revalidate } = {}) {
   try {
     const data = await send(endpoint, {
       method: "GET",
       params,
       lang: lang ?? (await currentLocale()),
-      fetchOptions: { cache: "no-store" },
+      fetchOptions: revalidate
+        ? { next: { revalidate } }
+        : { cache: "no-store" },
     });
     return { data, error: null };
   } catch (error) {

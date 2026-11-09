@@ -50,6 +50,8 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
+    // Only 100 is allowed, so every next/image is coerced to quality 100.
+    qualities: [100],
     // CMS-hosted media, once the API serves absolute image URLs.
     remotePatterns: process.env.NEXT_PUBLIC_MEDIA_URL
       ? [{ protocol: "https", hostname: process.env.NEXT_PUBLIC_MEDIA_URL }]

@@ -11,7 +11,7 @@ import Ownership from "@/components/sections/home/Ownership";
 import ExploreModels from "@/components/sections/home/ExploreModels";
 import ModelShowcase from "@/components/sections/home/ModelShowcase";
 
-const getHome = cache(() => apiGet("/home"));
+const getHome = cache(() => apiGet("/home", { revalidate: 60 }));
 
 export async function generateMetadata() {
   const data = ensureData(await getHome());
