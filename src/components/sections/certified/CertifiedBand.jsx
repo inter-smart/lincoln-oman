@@ -27,7 +27,9 @@ export default function CertifiedBand({
         <div
           data-reveal
           className={
-            emblem ? "lg:pe-10 xl:ps-[calc(240*var(--rr))] 2xl:ps-[calc(272*var(--rr))]" : "lg:pe-10"
+            emblem
+              ? "lg:pe-10 xl:ps-[calc(240*var(--rr))] 2xl:ps-[calc(272*var(--rr))]"
+              : "lg:pe-10"
           }
         >
           <h2 className="title">{data.title}</h2>
@@ -58,7 +60,8 @@ export default function CertifiedBand({
           >
             <Image
               src={data.image}
-              alt={data.title}
+              alt={data.title || "Lincoln Certified"}
+              title={data.title || "Lincoln Certified"}
               fill
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"

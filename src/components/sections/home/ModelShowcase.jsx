@@ -15,7 +15,8 @@ export default function ModelShowcase({ data, videoFirst = false }) {
       {data.banner_image && (
         <Image
           src={data.banner_image}
-          alt=""
+          alt={data.title ?? ""}
+          title={data.title ?? ""}
           fill
           sizes="100vw"
           className="object-cover"
@@ -62,7 +63,8 @@ export default function ModelShowcase({ data, videoFirst = false }) {
                   {panel === "image" ? (
                     <Image
                       src={data.image}
-                      alt={data.alt_tag}
+                      alt={data.alt_tag || data.title}
+                      title={data.alt_tag || data.title}
                       fill
                       sizes="(min-width: 768px) 50vw, 100vw"
                       className="object-cover"

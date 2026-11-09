@@ -1,5 +1,5 @@
 import { siteUrl } from "@/data/seo";
-import { locales } from "@/i18n/config";
+import { currentLocale } from "@/lib/api/locale";
 import { apiGet } from "@/lib/api/get";
 
 const staticRoutes = [
@@ -17,16 +17,18 @@ const staticRoutes = [
   { path: "/terms-and-conditions", priority: 0.3 },
 ];
 
+// Rendered per request: the language comes from the URL and the CMS is queried live.
+export const dynamic = "force-dynamic";
+
 const absolute = (path) => new URL(path, siteUrl).href;
 
-// One entry per language for a language-less path ("/about"). No `alternates`: the xhtml:link tags make Chrome show the file as flat text, and hreflang is already in each page's metadata.
-// ponytail: detail slugs are assumed to be the same in every language: confirm with the backend.
-const localized = (path, entry) => {
-  return locales.map((locale) => ({
+// This file is served per language (/en/sitemap.xml, /ar/sitemap.xml): every URL carries the current language prefix. No `alternates`: the xhtml:link tags make Chrome show the file as flat text, and hreflang is already in each page's metadata.
+const localized = (locale, path, entry) => [
+  {
     url: absolute(`/${locale}${path === "/" ? "" : path}`),
     ...entry,
-  }));
-};
+  },
+];
 
 // Every item of a paginated list endpoint ({ [key]: [...], pagination: { last_page } }).
 // A failed request (already logged by apiGet) ends the list instead of failing the sitemap.
@@ -44,6 +46,7 @@ async function allPages(endpoint, key) {
 }
 
 export default async function sitemap() {
+  const locale = await currentLocale();
   const [models, news, offers] = await Promise.all([
     apiGet("/vehicle-models"),
     allPages("/news", "news"),
@@ -58,26 +61,26 @@ export default async function sitemap() {
 
   return [
     ...staticRoutes.flatMap(({ path, priority }) =>
-      localized(path, {
+      localized(locale, path, {
         changeFrequency: path === "/" ? "weekly" : "monthly",
         priority,
       }),
     ),
     ...(models.data ?? []).flatMap((model) =>
-      localized(pagePath("/vehicles", model), {
+      localized(locale, pagePath("/vehicles", model), {
         changeFrequency: "monthly",
         priority: 0.9,
       }),
     ),
     ...news.flatMap((item) =>
-      localized(pagePath("/newsroom", item), {
+      localized(locale, pagePath("/newsroom", item), {
         lastModified: published(item.published_on),
         changeFrequency: "yearly",
         priority: 0.5,
       }),
     ),
     ...offers.flatMap((item) =>
-      localized(pagePath("/special-offers", item), {
+      localized(locale, pagePath("/special-offers", item), {
         changeFrequency: "weekly",
         priority: 0.6,
       }),

@@ -56,6 +56,7 @@ export default async function OfferDetail({ offer, labels }) {
               <Image
                 src={offer.image.path}
                 alt={offer.image.alt ?? offer.title ?? ""}
+                title={offer.image.alt ?? offer.title ?? ""}
                 fill
                 sizes="(min-width: 1920px) 810px, (min-width: 992px) 50vw, 100vw"
                 className="object-cover"

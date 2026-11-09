@@ -69,7 +69,8 @@ export default async function GalleryGrid({ title, galleries, loadMore }) {
               >
                 <Image
                   src={item.image.path}
-                  alt=""
+                  alt={item.image.alt || item.title || ""}
+                  title={item.image.alt || item.title || ""}
                   fill
                   sizes={sizes[span]}
                   className="object-cover transition-transform duration-700 group-hocus:scale-105"

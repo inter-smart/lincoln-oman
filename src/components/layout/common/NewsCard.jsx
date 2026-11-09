@@ -19,7 +19,8 @@ export default async function NewsCard({ item }) {
         {item.media?.image && (
           <Image
             src={item.media.image}
-            alt=""
+            alt={item.title}
+            title={item.title}
             fill
             sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
             className="object-cover"
@@ -36,7 +37,9 @@ export default async function NewsCard({ item }) {
           {ui.readMore}
           <Image
             src="/icons/chevron-accent.svg"
-            alt=""
+            alt="Arrow icon"
+            title="Arrow icon"
+            aria-hidden="true"
             width={7}
             height={4}
             className="-rotate-90 rtl:rotate-90"

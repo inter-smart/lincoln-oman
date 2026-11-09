@@ -293,7 +293,9 @@ export function SubmitButton({ children, variant = "light", className }) {
       {busy ? labels.sending : children}
       <Image
         src="/icons/chevron-accent.svg"
-        alt=""
+        alt="Arrow icon"
+        title="Arrow icon"
+        aria-hidden="true"
         width={7}
         height={4}
         className="-rotate-90 rtl:rotate-90"

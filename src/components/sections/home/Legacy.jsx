@@ -13,6 +13,7 @@ export default async function Legacy({ data, variant = "default" }) {
           <Image
             src="/images/logo.png"
             alt={common.logoAlt}
+            title={common.logoAlt}
             width={600}
             height={208}
             className={`absolute start-0 top-0 h-full w-[calc(var(--logo-h)*2.884)] max-w-none ${variant === "about" && "invert"}`}

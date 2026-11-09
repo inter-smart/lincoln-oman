@@ -12,7 +12,8 @@ export default function CertifiedIntro({ data }) {
           >
             <Image
               src={data.image}
-              alt={data.title}
+              alt={data.title || "Lincoln Certified"}
+              title={data.title || "Lincoln Certified"}
               fill
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"

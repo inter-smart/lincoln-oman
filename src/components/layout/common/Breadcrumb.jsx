@@ -18,7 +18,9 @@ export default async function Breadcrumb({ items }) {
             {index > 0 && (
               <Image
                 src="/icons/breadcrumb-emblem.svg"
-                alt=""
+                alt="Lincoln emblem"
+                title="Lincoln emblem"
+                aria-hidden="true"
                 width={4}
                 height={11}
               />

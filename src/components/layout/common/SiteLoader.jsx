@@ -8,7 +8,9 @@ export default function SiteLoader() {
       <div className="site-loader-mark">
         <Image
           src="/images/lincoln-logo.svg"
-          alt=""
+          alt="Lincoln logo"
+          title="Lincoln logo"
+          aria-hidden="true"
           width={135}
           height={120}
           priority

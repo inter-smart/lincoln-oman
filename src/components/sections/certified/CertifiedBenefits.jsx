@@ -25,7 +25,8 @@ export default function CertifiedBenefits({ data }) {
                   <span className="relative block aspect-square w-[calc(48*var(--rr))] shrink-0">
                     <Image
                       src={item.icon}
-                      alt=""
+                      alt={item.benefit}
+                      title={item.benefit}
                       width={48}
                       height={48}
                       className="size-full object-contain"

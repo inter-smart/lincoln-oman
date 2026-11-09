@@ -39,7 +39,8 @@ export default async function VehicleGallery({ items }) {
               >
                 <Image
                   src={item.image}
-                  alt={item.image_alt_tag}
+                  alt={item.image_alt_tag || ""}
+                  title={item.image_alt_tag || ""}
                   fill
                   sizes={
                     span === "half" ? "(min-width: 576px) 50vw, 100vw" : "33vw"

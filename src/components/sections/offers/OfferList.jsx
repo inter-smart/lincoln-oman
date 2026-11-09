@@ -46,6 +46,7 @@ export default async function OfferList({ data, labels }) {
                           <Image
                             src={item.image.path}
                             alt={item.image.alt ?? item.title}
+                            title={item.image.alt ?? item.title}
                             fill
                             sizes="(min-width: 1920px) 433px, (min-width: 992px) 27vw, (min-width: 576px) 50vw, 100vw"
                             className="object-cover"

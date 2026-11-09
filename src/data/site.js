@@ -1,7 +1,7 @@
 // Shared header / footer / floating-rail content. Structure, links and icons live here; the
 // words come from the dictionary (src/dictionaries/{en,ar}.json) so they follow the active language.
 // Footer address, phone and email are not here: they come from GET /site-settings in layout.js.
-export function getSite(dict) {
+export function getSite(dict, locale) {
   const { nav, vehicles, rail, footer, language, common } = dict;
   return {
     labels: common,
@@ -116,7 +116,7 @@ export function getSite(dict) {
               label: footer.certified,
               href: "/lincoln-certified",
             },
-            { id: "parts", label: footer.parts, href: "#" },
+            // { id: "parts", label: footer.parts, href: "#" },
             { id: "news", label: footer.news, href: "/newsroom" },
           ],
         },
@@ -144,7 +144,7 @@ export function getSite(dict) {
         {
           id: "sitemap",
           label: footer.sitemap,
-          href: "/sitemap.xml",
+          href: `/${locale}/sitemap.xml`,
           isExternal: true,
         },
         {
@@ -156,7 +156,7 @@ export function getSite(dict) {
       ],
       copyright: footer.copyright,
       followLabel: footer.followUs,
-      credit: { label: footer.craftedBy, name: "Intersmart", href: "#" },
+      credit: { label: footer.craftedBy, name: "Intersmart", href: "https://www.intersmartsolution.com" },
     },
   };
 }

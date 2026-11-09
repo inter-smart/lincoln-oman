@@ -3,7 +3,13 @@ import Image from "next/image";
 // Renders a Figma icon that exports as several positioned SVG parts.
 // parts: [src, x, y, width, height, maskSrc?] in px inside a width × height box.
 // HTML width/height attributes must be integers, so exact sub-pixel sizes go in the style.
-export default function Composite({ parts, width, height, className = "" }) {
+export default function Composite({
+  parts,
+  width,
+  height,
+  className = "",
+  alt = "Decorative graphic",
+}) {
   return (
     <span
       aria-hidden
@@ -14,7 +20,9 @@ export default function Composite({ parts, width, height, className = "" }) {
         <Image
           key={src}
           src={src}
-          alt=""
+          alt={alt}
+          title={alt}
+          aria-hidden="true"
           width={Math.ceil(w)}
           height={Math.ceil(h)}
           className="absolute max-w-none"
@@ -37,6 +45,7 @@ export default function Composite({ parts, width, height, className = "" }) {
 
 // Steering-wheel rail icon (Figma "Group 51" row 4), positions from the design.
 export const wheelIcon = {
+  alt: "Steering wheel",
   width: 21.8,
   height: 20.1,
   parts: [
@@ -55,6 +64,7 @@ export const wheelIcon = {
 // "Crafted by" agency logo (Figma footer 251:457); the clip-path rectangle is the box's overflow-hidden.
 const c = (n) => `/icons/credit/${n}.svg`;
 export const creditLogo = {
+  alt: "Crafted by logo",
   width: 96.5,
   height: 14.98,
   parts: [

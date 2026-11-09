@@ -8,7 +8,8 @@ export default function AboutCommitment({ data }) {
         {data.image && (
           <Image
             src={data.image}
-            alt={data.title}
+            alt={data.title || "About Lincoln"}
+            title={data.title || "About Lincoln"}
             width={1920}
             height={1120}
             className="size-full object-cover"

@@ -93,7 +93,8 @@ export function ShowcaseVideoCard({ poster, video, label }) {
       {poster && (
         <Image
           src={poster}
-          alt=""
+          alt={label ?? ""}
+          title={label ?? ""}
           fill
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover"

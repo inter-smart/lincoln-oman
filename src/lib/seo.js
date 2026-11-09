@@ -23,6 +23,7 @@ export async function buildMetadata(
   const locale = await currentLocale();
   const { common } = await getDictionary(locale);
   const url = urlFor(path, locale);
+  const defaultImage = new URL("/images/logo.png", siteUrl).href;
   const { other, openGraph, twitter, languages } =
     metadataFromTags(otherMetaTags);
 
@@ -45,9 +46,16 @@ export async function buildMetadata(
       url,
       title,
       description,
+      images: [{ url: defaultImage, width: 1200, height: 630, alt: title }],
       ...openGraph,
     },
-    twitter: { card: "summary_large_image", title, description, ...twitter },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [defaultImage],
+      ...twitter,
+    },
     ...(robots && { robots }),
     ...(other && { other }),
   };

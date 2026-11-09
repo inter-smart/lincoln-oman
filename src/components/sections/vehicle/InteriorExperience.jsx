@@ -30,7 +30,8 @@ export default async function InteriorExperience({ items }) {
             >
               <Image
                 src={item.image}
-                alt=""
+                alt={item.title ?? ""}
+                title={item.title ?? ""}
                 fill
                 sizes="(min-width: 992px) 50vw, 85vw"
                 className="object-cover"

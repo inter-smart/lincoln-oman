@@ -42,7 +42,9 @@ export default function VehicleIntro({ data }) {
                 >
                   <Image
                     src="/icons/breadcrumb-emblem.svg"
-                    alt=""
+                    alt="Lincoln emblem"
+                    title="Lincoln emblem"
+                    aria-hidden="true"
                     width={7}
                     height={19}
                     className="h-[0.8em] w-auto shrink-0"

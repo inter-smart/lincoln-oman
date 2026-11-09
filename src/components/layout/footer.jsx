@@ -17,20 +17,19 @@ const linkHover =
 // `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email, vehicles), null if the request failed.
 // `socials` is the API's /social-links list (name, url, sort_order), null if the request failed.
 export default function Footer({ data, settings, socials, labels }) {
-
   const vehicles = settings?.vehicles;
   // The Vehicles column is filled from the API models and left out when there are none.
   const columns = data?.columns
     ?.map((column) =>
       column.id === "vehicles"
         ? {
-          ...column,
-          links: vehicles?.map((vehicle) => ({
-            id: vehicle.slug,
-            label: vehicle.name,
-            href: `/vehicles/${vehicle.slug}`,
-          })),
-        }
+            ...column,
+            links: vehicles?.map((vehicle) => ({
+              id: vehicle.slug,
+              label: vehicle.name,
+              href: `/vehicles/${vehicle.slug}`,
+            })),
+          }
         : column,
     )
     .filter((column) => column.links?.length);
@@ -46,7 +45,9 @@ export default function Footer({ data, settings, socials, labels }) {
         <span className="relative block h-[16.87px] w-[15px]">
           <Image
             src="/icons/to-top-a.svg"
-            alt=""
+            alt="Back to top arrow"
+            title="Back to top arrow"
+            aria-hidden="true"
             width={17}
             height={9}
             style={{ width: 16.8748, height: 8.34965 }}
@@ -54,7 +55,9 @@ export default function Footer({ data, settings, socials, labels }) {
           />
           <Image
             src="/icons/to-top-b.svg"
-            alt=""
+            alt="Back to top arrow"
+            title="Back to top arrow"
+            aria-hidden="true"
             width={9}
             height={9}
             style={{ width: 8.3598, height: 8.36035 }}
@@ -99,6 +102,7 @@ export default function Footer({ data, settings, socials, labels }) {
               <Image
                 src="/images/logo.png"
                 alt={labels.lincolnHome}
+                title={labels.lincolnHome}
                 width={600}
                 height={208}
                 className="mb-[47px] h-auto w-[165px]"
@@ -146,12 +150,13 @@ export default function Footer({ data, settings, socials, labels }) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.name}
-                        className="grid h-auto w-[15px] lg:w-[20px] aspect-20/20 place-items-center rounded-[3px] transition-transform duration-300 hover:scale-110 flex items-center justify-center"
+                        className="flex grid aspect-20/20 h-auto w-[15px] place-items-center items-center justify-center rounded-[3px] transition-transform duration-300 hover:scale-110 lg:w-[20px]"
                       >
                         {item.icon && (
                           <Image
                             src={item.icon}
-                            alt=""
+                            alt={item.name}
+                            title={item.name}
                             width={20}
                             height={20}
                             className="size-full object-contain"
@@ -165,6 +170,7 @@ export default function Footer({ data, settings, socials, labels }) {
             )}
             <a
               href={data?.credit?.href}
+              target="_blank"
               aria-label={`${data?.credit?.label} ${data?.credit?.name}`}
               className={`flex items-center gap-[12px] ${linkHover}`}
             >

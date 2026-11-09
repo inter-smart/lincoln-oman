@@ -24,6 +24,7 @@ export default function NewsDetail({ news, recent, recent_news_title }) {
               <Image
                 src={news.media.image}
                 alt={news.media.alt ?? news.title}
+                title={news.media.alt ?? news.title}
                 fill
                 priority
                 sizes="(min-width: 1200px) 75vw, 100vw"

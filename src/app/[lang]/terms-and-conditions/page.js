@@ -39,7 +39,7 @@ export default async function page() {
       <MetaTags html={policy.other_meta_tags} />
       <InnerBanner data={policy.banner} />
       <Breadcrumb items={terms.breadcrumb} />
-      <LegalContent data={{ body: policy.content }} />
+      <LegalContent data={{ body: policy.content, lastUpdated: policy?.last_updated_date }} />
     </>
   );
 }

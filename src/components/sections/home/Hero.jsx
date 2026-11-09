@@ -21,7 +21,8 @@ export default async function Hero({ slides }) {
             {slide.media_type === "image" && slide.image && (
               <Image
                 src={slide.image}
-                alt={slide.image_alt_text || ""}
+                alt={slide.image_alt_text || slide.title || ""}
+                title={slide.image_alt_text || slide.title || ""}
                 fill
                 priority={index === 0}
                 sizes="100vw"
@@ -33,7 +34,8 @@ export default async function Hero({ slides }) {
                 {slide.video_thumbnail_image && (
                   <Image
                     src={slide.video_thumbnail_image}
-                    alt=""
+                    alt={slide.title ?? ""}
+                    title={slide.title ?? ""}
                     fill
                     priority={index === 0}
                     sizes="100vw"
@@ -45,14 +47,18 @@ export default async function Hero({ slides }) {
             )}
             <Image
               src="/images/home/hero-top-shade.png"
-              alt=""
+              alt="Gradient overlay"
+              title="Gradient overlay"
+              aria-hidden="true"
               width={1024}
               height={99}
               className="absolute inset-x-0 top-0 h-[184px] w-full object-cover"
             />
             <Image
               src="/images/home/hero-bottom-shade.png"
-              alt=""
+              alt="Gradient overlay"
+              title="Gradient overlay"
+              aria-hidden="true"
               width={1024}
               height={180}
               className="absolute inset-x-0 bottom-0 h-[336px] w-full rotate-180 object-cover"

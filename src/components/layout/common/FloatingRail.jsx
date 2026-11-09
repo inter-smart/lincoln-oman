@@ -40,7 +40,9 @@ export default async function FloatingRail({ items, phone, email }) {
                 ) : (
                   <Image
                     src={item.icon.src}
-                    alt=""
+                    alt={item.label}
+                    title={item.label}
+                    aria-hidden="true"
                     width={Math.ceil(item.icon.width)}
                     height={Math.ceil(item.icon.height)}
                     style={{ width: item.icon.width, height: item.icon.height }}

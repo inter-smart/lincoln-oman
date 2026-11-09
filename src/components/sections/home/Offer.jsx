@@ -36,7 +36,8 @@ export default function Offer({ data }) {
           >
             <Image
               src={data.image}
-              alt={data.alt_tag ?? ""}
+              alt={data.alt_tag || data.title || ""}
+              title={data.alt_tag || data.title || ""}
               fill
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"

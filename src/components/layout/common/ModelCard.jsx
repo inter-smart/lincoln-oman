@@ -15,7 +15,8 @@ export default function ModelCard({ model }) {
       {model.image && (
         <Image
           src={model.image}
-          alt=""
+          alt={model.name}
+          title={model.name}
           fill
           sizes="(min-width: 1200px) 25vw, (min-width: 768px) 40vw, 80vw"
           className="object-cover"
@@ -35,7 +36,8 @@ export default function ModelCard({ model }) {
             {feature.icon && (
               <Image
                 src={feature.icon}
-                alt=""
+                alt={feature.title}
+                title={feature.title}
                 width={28}
                 height={28}
                 className="h-[24px] w-auto invert"
@@ -51,7 +53,9 @@ export default function ModelCard({ model }) {
       <div className="absolute end-5 bottom-6.25 flex aspect-35/15 h-auto w-7.5 -translate-x-3 items-center justify-center overflow-hidden opacity-0 transition-[opacity,translate] duration-500 2xl:end-6.25 2xl:w-8.75 rtl:translate-x-3 group-hocus:translate-x-0 group-hocus:opacity-100 rtl:group-hocus:translate-x-0">
         <Image
           src="/icons/card-plus-hover.svg"
-          alt=""
+          alt="Plus icon"
+          title="Plus icon"
+          aria-hidden="true"
           width={33}
           height={14}
           className="size-full object-contain"

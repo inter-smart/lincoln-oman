@@ -1,10 +1,18 @@
-export default function LegalContent({ data }) {
+import { currentLocale } from "@/lib/api/locale";
+import { formatLongDate } from "@/lib/format-date";
+
+export default async function LegalContent({ data }) {
+  const updated = data?.lastUpdated
+    ? formatLongDate(data.lastUpdated, await currentLocale())
+    : null;
+
   return (
     <section className="py-(--section-space)">
       <div className="container">
-        {data?.updated && (
+        {updated && (
           <p data-reveal className="mb-5 text-sm text-ash sm:mb-7 xl:text-base">
-            {data.updated}
+            Last updated:{" "}
+            <time dateTime={updated.dateTime}>{updated.label}</time>
           </p>
         )}
         {/* CMS rich text: the `typography` utility styles every tag, so the editor needs no classes */}

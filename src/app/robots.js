@@ -1,4 +1,5 @@
 import { allowIndexing, siteUrl } from "@/data/seo";
+import { locales } from "@/i18n/config";
 
 export default function robots() {
   if (!allowIndexing) {
@@ -9,6 +10,6 @@ export default function robots() {
 
   return {
     rules: { userAgent: "*", allow: "/" },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: locales.map((locale) => `${siteUrl}/${locale}/sitemap.xml`),
   };
 }

@@ -3,7 +3,10 @@ import EmblemMark from "@/components/layout/common/EmblemMark";
 import { cn } from "@/lib/utils";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-export default async function DepartmentContact({ data, department_contacts = [] }) {
+export default async function DepartmentContact({
+  data,
+  department_contacts = [],
+}) {
   const { common } = await getCurrentDictionary();
   const total = department_contacts?.length || 0;
   const totalRows = Math.ceil(total / 3);
@@ -32,8 +35,8 @@ export default async function DepartmentContact({ data, department_contacts = []
                     isNotLastRow && "lg:border-b",
                     isNotLastItem && "max-sm:border-b",
                     isNotLastRow &&
-                    isNotFirstCol &&
-                    "lg:relative lg:after:absolute lg:after:-start-[6px] lg:after:-bottom-[6px] lg:after:z-10 lg:after:size-3 lg:after:scale-[400%] lg:after:rounded-full lg:after:bg-white lg:after:content-[''] 2xl:after:scale-[700%]",
+                      isNotFirstCol &&
+                      "lg:relative lg:after:absolute lg:after:-start-[6px] lg:after:-bottom-[6px] lg:after:z-10 lg:after:size-3 lg:after:scale-[400%] lg:after:rounded-full lg:after:bg-white lg:after:content-[''] 2xl:after:scale-[700%]",
                   )}
                 >
                   <div className="mb-2.5 font-display text-base 2xl:mb-3.75 2xl:text-lg 3xl:text-xl">
@@ -72,7 +75,8 @@ export default async function DepartmentContact({ data, department_contacts = []
           >
             <Image
               src={data?.bottom_section_image}
-              alt={data?.bottom_section_title}
+              alt={data?.bottom_section_title || "Contact"}
+              title={data?.bottom_section_title || "Contact"}
               fill
               sizes="(min-width: 1200px) 25vw, 100vw"
               className="object-cover"

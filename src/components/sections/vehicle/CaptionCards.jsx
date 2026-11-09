@@ -49,7 +49,8 @@ export default function CaptionCards({
               >
                 <Image
                   src={item.image}
-                  alt=""
+                  alt={item.title ?? ""}
+                  title={item.title ?? ""}
                   fill
                   sizes="(min-width: 1200px) 25vw, (min-width: 992px) 33vw, 70vw"
                   className="object-cover"

@@ -19,6 +19,7 @@ export function RoundedImage({ image, sizes }) {
       <Image
         src={image.src}
         alt={image.alt ?? ""}
+        title={image.alt ?? ""}
         fill
         sizes={sizes}
         className="object-cover"

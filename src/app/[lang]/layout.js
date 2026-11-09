@@ -54,7 +54,7 @@ export default async function RootLayout({ children }) {
   const locale = await lang();
   if (!hasLocale(locale)) notFound();
   const dict = await getDictionary(locale);
-  const site = getSite(dict);
+  const site = getSite(dict, locale);
 
   const [{ data: settings }, { data: socials }] = await Promise.all([
     apiGet("/site-settings"),

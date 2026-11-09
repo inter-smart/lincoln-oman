@@ -23,7 +23,9 @@ function Pending() {
       ) : (
         <Image
           src="/icons/chevron-accent.svg"
-          alt=""
+          alt="Arrow icon"
+          title="Arrow icon"
+          aria-hidden="true"
           width={7}
           height={4}
           className="-rotate-90"

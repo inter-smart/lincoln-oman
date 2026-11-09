@@ -13,7 +13,8 @@ export default function Ownership({ data }) {
         <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:end-0 lg:aspect-auto lg:w-[66.2%]">
           <Image
             src={data.image}
-            alt={data.alt_tag ?? ""}
+            alt={data.alt_tag || data.title || ""}
+            title={data.alt_tag || data.title || ""}
             fill
             sizes="(min-width: 992px) 66vw, 100vw"
             className="object-cover"
@@ -23,7 +24,9 @@ export default function Ownership({ data }) {
       {/* Lincoln emblem drawn in the band colour over the photo's left edge */}
       <Image
         src="/icons/emblem-cutout.svg"
-        alt=""
+        alt="Lincoln emblem"
+        title="Lincoln emblem"
+        aria-hidden="true"
         width={275}
         height={796}
         className="absolute start-[26.41%] top-[10.2%] hidden h-auto w-[14.34%] rotate-180 lg:block"
@@ -38,7 +41,14 @@ export default function Ownership({ data }) {
                 key={item}
                 className="flex items-center gap-[21px] text-sm leading-[normal] sm:text-base xl:text-fluid-25 2xl:text-[19px]"
               >
-                <Image src="/icons/bullet.svg" alt="" width={10} height={10} />
+                <Image
+                  src="/icons/bullet.svg"
+                  alt="Bullet"
+                  title="Bullet"
+                  aria-hidden="true"
+                  width={10}
+                  height={10}
+                />
                 <span dangerouslySetInnerHTML={{ __html: item }} />
               </li>
             ))}

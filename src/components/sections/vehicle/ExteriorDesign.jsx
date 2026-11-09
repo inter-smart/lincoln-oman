@@ -27,7 +27,8 @@ export default async function ExteriorDesign({ items }) {
           >
             <Image
               src={item.image.path}
-              alt={item.image.alt}
+              alt={item.image.alt || item.title || ""}
+              title={item.image.alt || item.title || ""}
               fill
               sizes="(min-width: 1200px) 82vw, 88vw"
               className="object-cover"

@@ -38,7 +38,9 @@ export default function SectionTabs({ items, label }) {
           >
             <Image
               src="/icons/tab-pointer.svg"
-              alt=""
+              alt="Tab pointer"
+              title="Tab pointer"
+              aria-hidden="true"
               width={28}
               height={9}
               className={pointer}
@@ -64,7 +66,9 @@ export default function SectionTabs({ items, label }) {
                 {isActive && !ready && (
                   <Image
                     src="/icons/tab-pointer.svg"
-                    alt=""
+                    alt="Tab pointer"
+                    title="Tab pointer"
+                    aria-hidden="true"
                     width={28}
                     height={9}
                     className={pointer}

@@ -55,6 +55,14 @@ const nextConfig = {
       ? [{ protocol: "https", hostname: process.env.NEXT_PUBLIC_MEDIA_URL }]
       : [],
   },
+  // Crawlers also probe the language-prefixed URLs (/en/robots.txt); the real files live at the root.
+  async redirects() {
+    return ["robots.txt"].map((file) => ({
+      source: `/:lang(en|ar)/${file}`,
+      destination: `/${file}`,
+      permanent: true,
+    }));
+  },
   async headers() {
     return [
       {

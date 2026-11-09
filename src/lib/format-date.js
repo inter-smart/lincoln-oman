@@ -56,3 +56,28 @@ export function formatExpiry(value, locale = "en") {
     dateTime: `${match[1]}-${match[2]}-${match[3]}`,
   };
 }
+
+/**
+ * Turns the API's ISO date ("2026-11-06") into a long date: "6 November 2026" (English) or the same date in the visitor's language, Latin digits either way.
+ * Returns { label, dateTime }; if the value isn't an ISO date, label is the raw text and dateTime is undefined.
+ */
+export function formatLongDate(value, locale = "en") {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec((value ?? "").trim());
+  const month = match ? Number(match[2]) : 0;
+  const day = match ? Number(match[3]) : 0;
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return { label: value, dateTime: undefined };
+  }
+
+  const label = new Intl.DateTimeFormat(
+    `${locale === "en" ? "en-GB" : locale}-u-nu-latn`,
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    },
+  ).format(Date.UTC(Number(match[1]), month - 1, day));
+
+  return { label, dateTime: `${match[1]}-${match[2]}-${match[3]}` };
+}

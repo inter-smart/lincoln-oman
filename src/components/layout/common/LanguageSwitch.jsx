@@ -56,7 +56,14 @@ export default function LanguageSwitch({ labels, className }) {
           className,
         )}
       >
-        <Image src="/icons/globe.svg" alt="" width={15} height={15} />
+        <Image
+          src="/icons/globe.svg"
+          alt="Language icon"
+          title="Language icon"
+          aria-hidden="true"
+          width={15}
+          height={15}
+        />
         <span aria-hidden="true">{targetName}</span>
       </button>
       {busy &&

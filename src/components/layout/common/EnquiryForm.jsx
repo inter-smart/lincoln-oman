@@ -38,6 +38,7 @@ export default function EnquiryForm({ data }) {
               <Image
                 src={image.src}
                 alt={image.alt ?? ""}
+                title={image.alt ?? ""}
                 fill
                 sizes="(min-width: 992px) 30vw, 100vw"
                 className="object-cover"

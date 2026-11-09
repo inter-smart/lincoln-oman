@@ -35,6 +35,7 @@ export default async function ModelVariants({ items, word }) {
                 <Image
                   src={item.image}
                   alt={item.name}
+                  title={item.name}
                   fill
                   sizes="(min-width: 992px) 46vw, 70vw"
                   className="object-contain"

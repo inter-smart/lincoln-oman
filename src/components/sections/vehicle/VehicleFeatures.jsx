@@ -26,7 +26,8 @@ export default async function VehicleFeatures({ items }) {
             <div className="flex aspect-62/57 h-auto w-11 shrink-0 items-center justify-center sm:w-12.5 xl:w-[calc(62*var(--rr))]">
               <Image
                 src={item.icon}
-                alt=""
+                alt={item.title ?? ""}
+                title={item.title ?? ""}
                 width={62}
                 height={57}
                 className="size-full object-contain"

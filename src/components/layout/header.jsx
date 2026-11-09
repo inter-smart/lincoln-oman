@@ -65,7 +65,7 @@ export default function Header({ data, vehicles }) {
           aria-label={data.labels.lincolnHome}
           className="pointer-events-auto col-start-2 origin-top scale-[0.7] lg:scale-100"
         >
-          <Logo />
+          <Logo alt={data.labels.lincolnHome} />
         </Link>
 
         <div className="pointer-events-auto col-start-3 mt-[8px] flex items-center justify-end gap-[20px] xl:gap-[27px]">
@@ -78,7 +78,14 @@ export default function Header({ data, vehicles }) {
           <Sheet>
             <SheetTrigger className="flex h-[24px] items-center gap-[13px] text-[14px] tracking-[0.7px] uppercase transition-opacity hover:opacity-70">
               <span className="max-sm:sr-only">{data.labels.menu}</span>
-              <Image src="/icons/menu.svg" alt="" width={31} height={7} />
+              <Image
+                src="/icons/menu.svg"
+                alt="Menu icon"
+                title="Menu icon"
+                aria-hidden="true"
+                width={31}
+                height={7}
+              />
             </SheetTrigger>
             <SheetContent
               side="top-lg-right"
@@ -96,7 +103,7 @@ export default function Header({ data, vehicles }) {
                     aria-label={data.labels.lincolnHome}
                     className="col-start-2 origin-top scale-[0.7]"
                   >
-                    <Logo />
+                    <Logo alt={data.labels.lincolnHome} />
                   </Link>
                   <div className="col-start-3 mt-[8px] flex items-center justify-end gap-[20px]">
                     <LanguageSwitch labels={data.language} />
@@ -123,7 +130,9 @@ export default function Header({ data, vehicles }) {
                               {item.label}
                               <Image
                                 src="/icons/chevron-accent.svg"
-                                alt=""
+                                alt="Arrow icon"
+                                title="Arrow icon"
+                                aria-hidden="true"
                                 width={7}
                                 height={4}
                                 className="transition-transform duration-300 group-open/vehicles:rotate-180"
