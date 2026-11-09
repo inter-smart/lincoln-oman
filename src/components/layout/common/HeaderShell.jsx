@@ -43,6 +43,8 @@ export default function HeaderShell({ children }) {
 
       if (currentScrollY <= 10) {
         targetHide = 0;
+      } else if (document.documentElement.dataset.jumping === "true") {
+        targetHide = headerHeight;
       } else {
         const difference = currentScrollY - lastScrollY;
         targetHide = Math.max(
