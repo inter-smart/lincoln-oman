@@ -13,7 +13,7 @@ export default function SiteLoader() {
           aria-hidden="true"
           width={135}
           height={120}
-          priority
+          loading="lazy"
           className="h-auto w-27 sm:w-33.75"
         />
         <span className="site-loader-sheen" />

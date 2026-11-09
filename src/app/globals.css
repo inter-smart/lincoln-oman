@@ -414,7 +414,7 @@ html::-webkit-scrollbar-thumb {
   display: grid;
   place-items: center;
   pointer-events: none;
-  animation: site-loader-gone 0s linear 2.3s forwards;
+  animation: site-loader-gone 0s linear 0.85s forwards;
 }
 .site-loader-panel {
   position: absolute;
@@ -424,18 +424,18 @@ html::-webkit-scrollbar-thumb {
 }
 .site-loader-panel-top {
   top: 0;
-  animation: site-loader-up 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+  animation: site-loader-up 0.45s cubic-bezier(0.76, 0, 0.24, 1) 0.4s forwards;
 }
 .site-loader-panel-bottom {
   bottom: 0;
-  animation: site-loader-down 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+  animation: site-loader-down 0.45s cubic-bezier(0.76, 0, 0.24, 1) 0.4s forwards;
 }
 .site-loader-mark {
   position: relative;
   grid-area: 1 / 1;
   animation:
-    site-loader-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both,
-    site-loader-fade-out 0.4s ease 1.3s forwards;
+    site-loader-reveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both,
+    site-loader-fade-out 0.2s ease 0.3s forwards;
 }
 /* A soft light band crossing the logo, clipped to the logo's own shape */
 .site-loader-sheen {
@@ -451,7 +451,7 @@ html::-webkit-scrollbar-thumb {
   background-position: 120% 0;
   mix-blend-mode: overlay;
   mask: url(/images/lincoln-logo.svg) center / contain no-repeat;
-  animation: site-loader-sheen 1.1s ease-in-out 0.5s both;
+  animation: site-loader-sheen 0.5s ease-in-out 0.1s both;
 }
 .site-loader-line {
   position: absolute;
@@ -465,8 +465,14 @@ html::-webkit-scrollbar-thumb {
     transparent
   );
   animation:
-    site-loader-line 1s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both,
-    site-loader-fade-out 0.3s ease 1.2s forwards;
+    site-loader-line 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both,
+    site-loader-fade-out 0.15s ease 0.3s forwards;
+}
+/* Phones skip the intro: a covered first screen delays Speed Index and LCP */
+@media (max-width: 767.98px) {
+  .site-loader {
+    display: none;
+  }
 }
 @keyframes site-loader-reveal {
   from {

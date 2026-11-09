@@ -25,6 +25,7 @@ export default async function Hero({ slides }) {
                 title={slide.image_alt_text || slide.title || ""}
                 fill
                 priority={index === 0}
+                fetchPriority={index === 0 ? "high" : undefined}
                 sizes="100vw"
                 className="object-cover"
               />
@@ -38,6 +39,7 @@ export default async function Hero({ slides }) {
                     title={slide.title ?? ""}
                     fill
                     priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : undefined}
                     sizes="100vw"
                     className="object-cover"
                   />
@@ -45,26 +47,18 @@ export default async function Hero({ slides }) {
                 <HeroVideo sources={slide.video} />
               </>
             )}
-            <Image
-              src="/images/home/hero-top-shade.png"
-              alt="Gradient overlay"
-              title="Gradient overlay"
+            <div
               aria-hidden="true"
-              width={1024}
-              height={99}
-              className="absolute inset-x-0 top-0 h-[184px] w-full object-cover"
+              className="absolute inset-x-0 top-0 h-[184px] bg-linear-to-b from-black/60 to-transparent"
             />
-            <Image
-              src="/images/home/hero-bottom-shade.png"
-              alt="Gradient overlay"
-              title="Gradient overlay"
+            <div
               aria-hidden="true"
-              width={1024}
-              height={180}
-              className="absolute inset-x-0 bottom-0 h-[336px] w-full rotate-180 object-cover"
+              className="absolute inset-x-0 bottom-0 h-[336px] bg-linear-to-t from-black/70 to-transparent"
             />
             <div className="absolute inset-x-0 bottom-[61px] container flex flex-col items-center text-center">
-              <h1 className="animate-in font-display text-[28px] leading-[1.2] tracking-[2px] duration-1000 fade-in slide-in-from-bottom-6 md:text-[30px] xl:text-fluid-40">
+              <h1
+                className={`font-display text-[28px] leading-[1.2] tracking-[2px] md:text-[30px] xl:text-fluid-40 ${index === 0 ? "" : "animate-in duration-1000 fade-in slide-in-from-bottom-6"}`}
+              >
                 {slide.title}
               </h1>
               <div className="mt-[26px] animate-in delay-200 duration-1000 fill-mode-backwards fade-in slide-in-from-bottom-6">
