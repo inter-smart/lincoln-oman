@@ -17,20 +17,20 @@ const linkHover =
 // `data` is the local footer content (links, labels); `settings` is the API's /site-settings (address HTML, phone_number, email, vehicles), null if the request failed.
 // `socials` is the API's /social-links list (name, url, sort_order), null if the request failed.
 export default function Footer({ data, settings, socials, labels }) {
-  
+
   const vehicles = settings?.vehicles;
   // The Vehicles column is filled from the API models and left out when there are none.
   const columns = data?.columns
     ?.map((column) =>
       column.id === "vehicles"
         ? {
-            ...column,
-            links: vehicles?.map((vehicle) => ({
-              id: vehicle.slug,
-              label: vehicle.name,
-              href: `/vehicles/${vehicle.slug}`,
-            })),
-          }
+          ...column,
+          links: vehicles?.map((vehicle) => ({
+            id: vehicle.slug,
+            label: vehicle.name,
+            href: `/vehicles/${vehicle.slug}`,
+          })),
+        }
         : column,
     )
     .filter((column) => column.links?.length);
@@ -138,7 +138,7 @@ export default function Footer({ data, settings, socials, labels }) {
             {socials?.length > 0 && (
               <div className="flex flex-wrap items-center gap-x-[30px] gap-y-[12px]">
                 <span className="uppercase">{data?.followLabel}</span>
-                <ul className="flex items-center gap-x-[6px]">
+                <ul className="flex items-center gap-x-[10px] lg:gap-x-[20px] 3xl:gap-x-[30px]">
                   {socials.map((item) => (
                     <li key={item.id}>
                       <a
@@ -146,18 +146,15 @@ export default function Footer({ data, settings, socials, labels }) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.name}
-                        className="grid h-[25px] min-w-[24px] place-items-center rounded-[3px] transition-transform duration-300 hover:scale-110"
+                        className="grid h-auto w-[15px] lg:w-[20px] aspect-20/20 place-items-center rounded-[3px] transition-transform duration-300 hover:scale-110 flex items-center justify-center"
                       >
                         {item.icon && (
                           <Image
                             src={item.icon}
                             alt=""
-                            width={25}
-                            height={25}
-                            style={{
-                              width: 25,
-                              height: 25,
-                            }}
+                            width={20}
+                            height={20}
+                            className="size-full object-contain"
                           />
                         )}
                       </a>
@@ -177,6 +174,6 @@ export default function Footer({ data, settings, socials, labels }) {
           </div>
         </div>
       </div>
-  </footer>
+    </footer>
   );
 }

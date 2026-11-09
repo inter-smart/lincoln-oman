@@ -3,9 +3,11 @@ import EmblemMark from "@/components/layout/common/EmblemMark";
 import { cn } from "@/lib/utils";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
-// `data` is the /contact-us `contact_cms` block (bottom_section_title, bottom_section_image); `department_contacts` is the raw list.
-export default async function DepartmentContact({ data, department_contacts }) {
+export default async function DepartmentContact({ data, department_contacts = [] }) {
   const { common } = await getCurrentDictionary();
+  const total = department_contacts?.length || 0;
+  const totalRows = Math.ceil(total / 3);
+
   return (
     <section className="block h-auto w-full py-10 sm:py-15 lg:py-17.5 2xl:py-22.5 3xl:py-30">
       <div className="container grid items-center gap-8 xl:grid-cols-[calc(120*var(--rr))_minmax(0,1fr)_calc(483*var(--rr))] xl:gap-x-[calc(50*var(--rr))]">
@@ -15,43 +17,51 @@ export default async function DepartmentContact({ data, department_contacts }) {
             {data.bottom_section_title}
           </div>
           <ul className="grid max-lg:mx-[-25px] max-sm:mx-0 sm:grid-cols-2 lg:grid-cols-3">
-            {department_contacts.map((item, index) => (
-              <li
-                key={item.id}
-                className={cn(
-                  "border-silver/60 py-3.75 sm:px-6 lg:border-s xl:px-6.25 2xl:py-[calc(30*var(--rr))] lg:[&:nth-child(3n+1)]:border-s-0 lg:[&:nth-child(3n+1)]:ps-0",
-                  index < 3 && "lg:border-b",
-                  index < department_contacts.length - 1 && "max-sm:border-b",
-                  index > 0 &&
-                    index < 3 &&
+            {department_contacts.map((item, index) => {
+              const rowIndex = Math.floor(index / 3);
+              const colIndex = index % 3;
+              const isNotLastRow = rowIndex < totalRows - 1;
+              const isNotFirstCol = colIndex !== 0;
+              const isNotLastItem = index < total - 1;
+
+              return (
+                <li
+                  key={item.id}
+                  className={cn(
+                    "border-silver/60 py-3.75 sm:px-6 lg:border-s xl:px-6.25 2xl:py-[calc(30*var(--rr))] lg:[&:nth-child(3n+1)]:border-s-0 lg:[&:nth-child(3n+1)]:ps-0",
+                    isNotLastRow && "lg:border-b",
+                    isNotLastItem && "max-sm:border-b",
+                    isNotLastRow &&
+                    isNotFirstCol &&
                     "lg:relative lg:after:absolute lg:after:-start-[6px] lg:after:-bottom-[6px] lg:after:z-10 lg:after:size-3 lg:after:scale-[400%] lg:after:rounded-full lg:after:bg-white lg:after:content-[''] 2xl:after:scale-[700%]",
-                )}
-              >
-                <div className="mb-2.5 font-display text-base 2xl:mb-3.75 2xl:text-lg 3xl:text-xl">
-                  {item?.title}
-                </div>
-                <p className="text-xs leading-[1.7] 3xl:text-base">
-                  <span className="block">
-                    {common.email}:{" "}
-                    <a
-                      href={`mailto:${item?.email}`}
-                      className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
-                    >
-                      <bdi>{item.email}</bdi>
-                    </a>
-                  </span>
-                  <span className="block">
-                    {common.telephone}:{" "}
-                    <a
-                      href={`tel:${item?.phone}`}
-                      className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
-                    >
-                      <bdi>{item?.phone}</bdi>
-                    </a>
-                  </span>
-                </p>
-              </li>
-            ))}
+                  )}
+                >
+                  <div className="mb-2.5 font-display text-base 2xl:mb-3.75 2xl:text-lg 3xl:text-xl">
+                    {item?.title}
+                  </div>
+                  <p className="text-xs leading-[1.7] 3xl:text-base">
+                    <span className="block">
+                      {common.email}:{" "}
+                      <a
+                        href={`mailto:${item?.email}`}
+                        className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
+                      >
+                        <bdi>{item.email}</bdi>
+                      </a>
+                    </span>
+                    <span className="block">
+                      {common.telephone}:{" "}
+                      <a
+                        href={`tel:${item?.phone}`}
+                        className="underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink focus-visible:outline-solid"
+                      >
+                        <bdi>{item?.phone}</bdi>
+                      </a>
+                    </span>
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         </div>
         {data?.bottom_section_image && (

@@ -2,8 +2,6 @@ import { siteUrl } from "@/data/seo";
 import { locales } from "@/i18n/config";
 import { apiGet } from "@/lib/api/get";
 
-const REVALIDATE = 3600;
-
 const staticRoutes = [
   { path: "/", priority: 1 },
   { path: "/about", priority: 0.8 },
@@ -33,13 +31,13 @@ const localized = (path, entry) => {
 // Every item of a paginated list endpoint ({ [key]: [...], pagination: { last_page } }).
 // A failed request (already logged by apiGet) ends the list instead of failing the sitemap.
 async function allPages(endpoint, key) {
-  const first = await apiGet(endpoint, { revalidate: REVALIDATE });
+  const first = await apiGet(endpoint);
   if (first.error || !first.data) return [];
 
   const lastPage = first.data.pagination?.last_page ?? 1;
   const rest = await Promise.all(
     Array.from({ length: lastPage - 1 }, (_, index) =>
-      apiGet(endpoint, { params: { page: index + 2 }, revalidate: REVALIDATE }),
+      apiGet(endpoint, { params: { page: index + 2 } }),
     ),
   );
   return [first, ...rest].flatMap(({ data }) => data?.[key] ?? []);
@@ -47,7 +45,7 @@ async function allPages(endpoint, key) {
 
 export default async function sitemap() {
   const [models, news, offers] = await Promise.all([
-    apiGet("/vehicle-models", { revalidate: REVALIDATE }),
+    apiGet("/vehicle-models"),
     allPages("/news", "news"),
     allPages("/special-offers", "special_offers"),
   ]);
