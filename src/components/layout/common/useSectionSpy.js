@@ -16,6 +16,7 @@ export default function useSectionSpy(items, isStacked = () => true) {
   const listRef = useRef(null);
   const linkRefs = useRef([]);
   const jumping = useRef(false);
+  const fallbackRef = useRef(null);
   const stackedRef = useRef(isStacked);
   const lastScrollY = useRef(0);
   const scrollDir = useRef("down");
@@ -58,15 +59,43 @@ export default function useSectionSpy(items, isStacked = () => true) {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (fallbackRef.current) clearTimeout(fallbackRef.current);
+      delete document.documentElement.dataset.jumping;
+    };
+  }, []);
+
+  // Sync active index with URL hash on mount and when hash changes
+  useEffect(() => {
+    const syncHash = () => {
+      const hash = window.location.hash;
+      if (!hash) return;
+      const targetId = hash.slice(1);
+      const idx = items.findIndex(
+        (item) => item.href === hash || item.id === targetId,
+      );
+      if (idx >= 0) {
+        setActive(idx);
+      }
+    };
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, [items]);
+
   // Update --spy-offset on root for scroll-mt of section targets.
   // Only runs on resize / container change or when jumping, avoiding style recalculation during scroll.
   const updateSpyOffset = useCallback(() => {
-    const header = document.querySelector("header");
     const nav = navRef.current;
-    if (!header || !nav) return;
+    if (!nav) return;
 
-    const headerH = header.offsetHeight;
-    const offset = headerH + (stackedRef.current() ? nav.offsetHeight : GAP);
+    const isStacked = stackedRef.current();
+    const header = document.querySelector("header");
+    const headerH = header?.offsetHeight ?? 0;
+    const navH = nav.offsetHeight || 60;
+    const offset = isStacked ? navH : headerH + GAP;
     document.documentElement.style.setProperty("--spy-offset", `${offset}px`);
   }, []);
 
@@ -119,17 +148,21 @@ export default function useSectionSpy(items, isStacked = () => true) {
 
       // The line below which a section is considered in reading view
       const line = isStacked
-        ? nav.getBoundingClientRect().bottom + 1
-        : headerBottom + GAP + 1;
+        ? nav.getBoundingClientRect().bottom
+        : headerBottom + GAP;
 
-      // On upward scroll, add an offset buffer so a section stays active
-      // while its header and content are in the upper reading view.
+      // Offset buffer so a section becomes active when entering the upper reading view.
+      // Small hysteresis between scrolling down and up to prevent flicker at boundaries.
       const isUp = scrollDir.current === "up";
-      const offsetBuffer = Math.min(
+      const baseBuffer = Math.min(
         220,
-        Math.max(100, (window.innerHeight - line) * 0.3),
+        Math.max(80, (window.innerHeight - line) * 0.25),
       );
-      const effectiveLine = isUp ? line + offsetBuffer : line;
+      const effectiveLine = line + baseBuffer + (isUp ? 30 : 0);
+
+      const targets = items.map((item) =>
+        document.getElementById(item.href.slice(1)),
+      );
 
       let current = 0;
       targets.forEach((target, index) => {
@@ -239,20 +272,36 @@ export default function useSectionSpy(items, isStacked = () => true) {
     ).matches;
     const behavior = reduce ? "auto" : "smooth";
 
-    target.scrollIntoView({ behavior });
-    history.replaceState(null, "", href);
+    document.documentElement.dataset.jumping = "true";
     setActive(index);
     jumping.current = { target, behavior };
 
     const release = (e) => {
-      if (e && e.target !== document) return;
+      if (e && e.target !== document && e.target !== window) return;
+      delete document.documentElement.dataset.jumping;
       jumping.current = false;
-      clearTimeout(fallback);
+      if (fallbackRef.current) {
+        clearTimeout(fallbackRef.current);
+        fallbackRef.current = null;
+      }
       window.removeEventListener("scrollend", release);
+      document.removeEventListener("scrollend", release);
     };
 
-    const fallback = setTimeout(release, 1000);
+    if (fallbackRef.current) clearTimeout(fallbackRef.current);
+    fallbackRef.current = setTimeout(release, 1000);
     window.addEventListener("scrollend", release);
+    document.addEventListener("scrollend", release);
+
+    if (window.lenis?.scrollTo) {
+      window.lenis.scrollTo(target, {
+        immediate: reduce,
+        onComplete: () => release(),
+      });
+    } else {
+      target.scrollIntoView({ behavior });
+    }
+    history.replaceState(null, "", href);
   };
 
   const setLinkRef = (index) => (node) => {

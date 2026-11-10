@@ -35,6 +35,7 @@ export default function SmoothScroll() {
         anchors: true,
       });
       lenisRef.current = lenis;
+      window.lenis = lenis;
       if (overlayOpen) lenis.stop();
     };
     window.addEventListener("lincoln:overlay-open", stopForOverlay);
@@ -49,6 +50,7 @@ export default function SmoothScroll() {
       window.removeEventListener("lincoln:overlay-close", startAfterOverlay);
       lenis?.destroy();
       lenisRef.current = null;
+      if (window.lenis === lenis) delete window.lenis;
     };
   }, []);
 
