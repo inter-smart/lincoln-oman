@@ -32,6 +32,8 @@ export function getSite(dict, locale) {
           testDrive: { label: nav.bookTestDrive, href: "/book-a-test-drive" },
         },
       },
+      { id: "about", label: nav.about, href: "/about" },
+      { id: "offers", label: nav.offers, href: "/special-offers" },
       { id: "owners", label: nav.owners, href: "/owners" },
       { id: "contact", label: nav.contact, href: "/contact-us" },
     ],

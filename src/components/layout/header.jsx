@@ -26,6 +26,9 @@ const navLink = "relative transition-opacity hover:opacity-70";
 // `vehicles` is the API's /site-settings list ([{ id, name, slug, image }]); without it the Vehicles item is left out.
 export default function Header({ data, vehicles }) {
   const nav = data?.nav?.filter((item) => !item.menu || vehicles?.length);
+  // Desktop: Contact sits on the right of the logo; the Menu sheet keeps the full list.
+  const leftNav = nav?.filter((item) => item.id !== "contact");
+  const contact = nav?.find((item) => item.id === "contact");
 
   return (
     <HeaderShell>
@@ -36,7 +39,7 @@ export default function Header({ data, vehicles }) {
           aria-label={data.labels.mainNav}
         >
           <NavigationMenuList className="mt-[20px] gap-[36px] text-[14px] tracking-[0.8px] xl:gap-[calc(52*var(--rr))] xl:text-fluid-16">
-            {nav?.map((item) =>
+            {leftNav?.map((item) =>
               item.menu ? (
                 <NavigationMenuItem key={item.id} className="static">
                   <NavigationMenuTrigger
@@ -69,6 +72,14 @@ export default function Header({ data, vehicles }) {
         </Link>
 
         <div className="pointer-events-auto col-start-3 mt-[8px] flex items-center justify-end gap-[20px] xl:gap-[27px]">
+          {contact && (
+            <Link
+              href={contact.href}
+              className={`${navLink} hidden text-[14px] tracking-[0.8px] lg:block xl:text-fluid-16`}
+            >
+              {contact.label}
+            </Link>
+          )}
           <ButtonLink
             data={data?.testDrive}
             className="me-[13px] hidden lg:inline-flex"
