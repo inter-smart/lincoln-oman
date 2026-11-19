@@ -53,9 +53,12 @@ const nextConfig = {
     // Only 100 is allowed, so every next/image is coerced to quality 100.
     qualities: [100],
     // CMS-hosted media, once the API serves absolute image URLs.
-    remotePatterns: process.env.NEXT_PUBLIC_MEDIA_URL
-      ? [{ protocol: "https", hostname: process.env.NEXT_PUBLIC_MEDIA_URL }]
-      : [],
+    remotePatterns: [
+      { protocol: "https", hostname: "admin.lincolnoman.com" },
+      ...(process.env.NEXT_PUBLIC_MEDIA_URL
+        ? [{ protocol: "https", hostname: process.env.NEXT_PUBLIC_MEDIA_URL }]
+        : []),
+    ],
   },
   // Crawlers also probe the language-prefixed URLs (/en/robots.txt); the real files live at the root.
   async redirects() {
