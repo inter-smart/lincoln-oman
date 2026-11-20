@@ -1,5 +1,5 @@
 import { siteUrl } from "@/data/seo";
-import { hasLocale } from "@/i18n/config";
+import { locales } from "@/i18n/config";
 import { apiGet } from "@/lib/api/get";
 
 const staticRoutes = [
@@ -17,12 +17,15 @@ const staticRoutes = [
   { path: "/terms-and-conditions", priority: 0.3 },
 ];
 
-// Rendered per request: the language comes from the URL and the CMS is queried live.
+// Rendered per request: the CMS is queried live for every supported locale.
 export const dynamic = "force-dynamic";
 
 const absolute = (path) => new URL(path, siteUrl).href;
 
-// This file is served per language (/en/sitemap.xml, /ar/sitemap.xml): every URL carries the current language prefix. No `alternates`: the xhtml:link tags make Chrome show the file as flat text, and hreflang is already in each page's metadata.
+// This single file covers every locale: each entry still carries its own
+// language prefix (/en/..., /ar/...). No `alternates`: the xhtml:link tags
+// make Chrome show the file as flat text, and hreflang is already in each
+// page's metadata.
 const localized = (locale, path, entry) => [
   {
     url: absolute(`/${locale}${path === "/" ? "" : path}`),
@@ -32,14 +35,14 @@ const localized = (locale, path, entry) => [
 
 // Every item of a paginated list endpoint ({ [key]: [...], pagination: { last_page } }).
 // A failed request (already logged by apiGet) ends the list instead of failing the sitemap.
-async function allPages(endpoint, key) {
-  const first = await apiGet(endpoint);
+async function allPages(endpoint, key, lang) {
+  const first = await apiGet(endpoint, { lang });
   if (first.error || !first.data) return [];
 
   const lastPage = first.data.pagination?.last_page ?? 1;
   const rest = await Promise.all(
     Array.from({ length: lastPage - 1 }, (_, index) =>
-      apiGet(endpoint, { params: { page: index + 2 } }),
+      apiGet(endpoint, { lang, params: { page: index + 2 } }),
     ),
   );
   return [first, ...rest].flatMap(({ data }) => data?.[key] ?? []);
@@ -47,9 +50,9 @@ async function allPages(endpoint, key) {
 
 async function entries(locale) {
   const [models, news, offers] = await Promise.all([
-    apiGet("/vehicle-models"),
-    allPages("/news", "news"),
-    allPages("/special-offers", "special_offers"),
+    apiGet("/vehicle-models", { lang: locale }),
+    allPages("/news", "news", locale),
+    allPages("/special-offers", "special_offers", locale),
   ]);
 
   const pagePath = (base, item) => `${base}/${encodeURIComponent(item.slug)}`;
@@ -100,12 +103,9 @@ const escapeXml = (value) =>
       })[char],
   );
 
-// A route handler (not the sitemap.js convention): metadata files inside a root-param segment are emitted at "/-/sitemap.xml" instead of "/{lang}/sitemap.xml".
-export async function GET(_request, { params }) {
-  const { lang } = await params;
-  if (!hasLocale(lang)) return new Response(null, { status: 404 });
-  const locale = lang;
-  const urls = (await entries(locale))
+export async function GET() {
+  const urls = (await Promise.all(locales.map((locale) => entries(locale))))
+    .flat()
     .map(({ url, lastModified, changeFrequency, priority }) =>
       [
         "<url>",
