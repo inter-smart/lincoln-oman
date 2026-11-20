@@ -146,7 +146,7 @@ export function getSite(dict, locale) {
         {
           id: "sitemap",
           label: footer.sitemap,
-          href: `/${locale}/sitemap.xml`,
+          href: `/sitemap.xml`,
           isExternal: true,
         },
         {
