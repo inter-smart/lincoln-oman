@@ -6,12 +6,12 @@ export default function ExploreModels({ title, models, variant = "default" }) {
   return (
     <section className="py-(--section-space)">
       <div className="container">
-        <h1
+        <h2
           data-reveal
           className={`title text-ink ${variant === "about" ? "text-start" : "text-center"}`}
         >
           {title}
-        </h1>
+        </h2>
         <CardCarousel
           label={title}
           className="mt-[30px] [--slide-gap:16px] xl:mt-[calc(45*var(--rr))] xl:[--slide-gap:calc(22*var(--rr))]"
