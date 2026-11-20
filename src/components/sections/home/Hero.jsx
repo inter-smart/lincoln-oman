@@ -56,11 +56,11 @@ export default async function Hero({ slides }) {
               className="absolute inset-x-0 bottom-0 h-[336px] bg-linear-to-t from-black/70 to-transparent"
             />
             <div className="absolute inset-x-0 bottom-[61px] container flex flex-col items-center text-center">
-              <h1
+              <h2
                 className={`font-display text-[28px] leading-[1.2] tracking-[2px] md:text-[30px] xl:text-fluid-40 ${index === 0 ? "" : "animate-in duration-1000 fade-in slide-in-from-bottom-6"}`}
               >
                 {slide.title}
-              </h1>
+              </h2>
               <div className="mt-[26px] animate-in delay-200 duration-1000 fill-mode-backwards fade-in slide-in-from-bottom-6">
                 <ButtonLink
                   data={{ label: slide.action_title, href: slide.action_url }}
