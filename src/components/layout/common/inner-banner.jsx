@@ -2,12 +2,28 @@ import Image, { getImageProps } from "next/image";
 import Link from "@/components/ui/locale-link";
 import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import DownloadLink from "@/components/layout/common/DownloadLink";
 import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // Black fades over the photo. Without a photo the logo placeholder shows (a video still plays over it);
 // the fades are only drawn when there is media.
 const shade =
   "before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-['']";
+
+const textLink =
+  "mt-2 inline-flex items-center gap-1.5 text-[13px] tracking-[0.05em] underline-offset-4 hover:underline focus-visible:underline sm:text-sm xl:mt-[calc(10*var(--rr))]";
+
+const textLinkIcon = (
+  <Image
+    src="/icons/chevron-hero.svg"
+    alt="Arrow icon"
+    title="Arrow icon"
+    aria-hidden="true"
+    width={7}
+    height={4}
+    className="-rotate-90 rtl:rotate-90"
+  />
+);
 
 export default function InnerBanner({ data, as: Title = "h1" }) {
   const title = data.banner_title ?? data.title;
@@ -65,24 +81,25 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
               {text}
             </p>
           )}
-          {data?.link?.label && (
-            <Link
-              href={data.link.href ?? "#"}
-              target="_blank"
-              className="mt-2 inline-flex items-center gap-1.5 text-[13px] tracking-[0.05em] underline-offset-4 hover:underline focus-visible:underline sm:text-sm xl:mt-[calc(10*var(--rr))]"
-            >
-              {data.link.label}
-              <Image
-                src="/icons/chevron-hero.svg"
-                alt="Arrow icon"
-                title="Arrow icon"
-                aria-hidden="true"
-                width={7}
-                height={4}
-                className="-rotate-90 rtl:rotate-90"
-              />
-            </Link>
-          )}
+          {data?.link?.label &&
+            (data.link.download ? (
+              <DownloadLink
+                href={data.link.href}
+                label={data.link.label}
+                className={textLink}
+              >
+                {textLinkIcon}
+              </DownloadLink>
+            ) : (
+              <Link
+                href={data.link.href ?? "#"}
+                target="_blank"
+                className={textLink}
+              >
+                {data.link.label}
+                {textLinkIcon}
+              </Link>
+            ))}
           {data?.actions?.length > 0 && (
             <div className="mt-4 flex flex-wrap justify-center gap-3 xl:mt-[calc(30*var(--rr))]">
               {data.actions.map((action) => (

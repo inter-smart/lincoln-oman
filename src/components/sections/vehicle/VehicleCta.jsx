@@ -2,7 +2,7 @@ import ButtonLink from "@/components/layout/common/ButtonLink";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 
 // "Experience Lincoln" card: title and line on the left, the pill buttons on the right.
-// `data` is the vehicle's section_ten (title, description); `brochure` is the vehicle's brochure URL.
+// `data` is the vehicle's section_ten (title, description); `brochure` is the brochure download URL.
 export default async function VehicleCta({ data, brochure }) {
   const { ui } = await getCurrentDictionary();
   const actions = [
@@ -14,7 +14,7 @@ export default async function VehicleCta({ data, brochure }) {
             id: "brochure",
             label: ui.downloadBrochure,
             href: brochure,
-            isExternal: true,
+            download: true,
           },
         ]
       : []),

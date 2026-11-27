@@ -137,6 +137,8 @@
     "testDrive": "تجربة قيادة",
     "enquireNow": "استفسر الآن",
     "downloadBrochure": "تحميل الكتيب",
+    "downloading": "جارٍ التحميل…",
+    "downloadFailed": "فشل التحميل. حاول مرة أخرى",
     "close": "إغلاق",
     "newsroom": "المركز الإعلامي",
     "gallery": "معرض الصور",

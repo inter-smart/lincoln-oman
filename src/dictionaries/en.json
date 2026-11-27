@@ -137,6 +137,8 @@
     "testDrive": "Test Drive",
     "enquireNow": "Enquire Now",
     "downloadBrochure": "Download Brochure",
+    "downloading": "Downloading…",
+    "downloadFailed": "Download failed. Try again",
     "close": "Close",
     "newsroom": "Newsroom",
     "gallery": "Gallery",

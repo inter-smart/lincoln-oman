@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "@/components/ui/locale-link";
+import DownloadLink from "@/components/layout/common/DownloadLink";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,27 +16,41 @@ export default function ButtonLink({
 }) {
   if (!data?.label) return null;
 
+  const classes = cn(buttonVariants({ variant, size }), className);
+  const icon = (
+    <Image
+      src={
+        arrow === "white"
+          ? "/icons/chevron-hero.svg"
+          : "/icons/chevron-accent.svg"
+      }
+      alt="Icon"
+      title="Icon"
+      aria-hidden="true"
+      width={7}
+      height={4}
+      className="-rotate-90 rtl:rotate-90"
+    />
+  );
+
+  // Not the locale Link: it would prefix the file URL with /en.
+  if (data.download) {
+    return (
+      <DownloadLink href={data.href} label={data.label} className={classes}>
+        {icon}
+      </DownloadLink>
+    );
+  }
+
   return (
     <Link
       href={data?.href ?? "#"}
       scroll={scroll}
       target={data.isExternal || isExternal ? "_blank" : "_self"}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={classes}
     >
       {data.label}
-      <Image
-        src={
-          arrow === "white"
-            ? "/icons/chevron-hero.svg"
-            : "/icons/chevron-accent.svg"
-        }
-        alt="Icon"
-        title="Icon"
-        aria-hidden="true"
-        width={7}
-        height={4}
-        className="-rotate-90 rtl:rotate-90"
-      />
+      {icon}
     </Link>
   );
 }

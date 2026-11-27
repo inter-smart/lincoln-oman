@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api/get";
 import { ensureData } from "@/lib/api/ensure";
+import { currentLocale } from "@/lib/api/locale";
 import { buildMetadata } from "@/lib/seo";
 import MetaTags from "@/components/layout/common/MetaTags";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
@@ -64,6 +65,10 @@ export default async function page({ params }) {
     section_nine,
     section_ten,
   } = vehicle;
+  // Served from our own origin so the browser saves the file instead of opening it.
+  const brochureHref =
+    brochure &&
+    `/api/brochure/${encodeURIComponent(slug)}?lang=${await currentLocale()}`;
   const tabs = [
     { id: "variants", label: ui.modelVariants, show: model_variants },
     {
@@ -96,7 +101,11 @@ export default async function page({ params }) {
           banner: banner.image ?? banner.mobile_image,
           banner_mobile: banner?.mobile_image,
           video: banner.type === "video" ? banner.video : undefined,
-          link: brochure && { label: ui.downloadBrochure, href: brochure },
+          link: brochureHref && {
+            label: ui.downloadBrochure,
+            href: brochureHref,
+            download: true,
+          },
           actions: [
             {
               id: "test-drive",
@@ -158,7 +167,7 @@ export default async function page({ params }) {
         </div>
       )}
       {section_ten?.title && (
-        <VehicleCta data={section_ten} brochure={brochure} />
+        <VehicleCta data={section_ten} brochure={brochureHref} />
       )}
       {explore_more_models?.length > 0 && (
         <ExploreModels
