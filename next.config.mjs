@@ -36,6 +36,9 @@ const securityHeaders = [
   },
 ];
 
+// A path with a whole "." or ".." segment, also percent-encoded (not .well-known, "..." or a.b).
+const dotSegment = ".*(?<=/)(?:\\.|%2[eE]){1,2}(?=/|$).*";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
@@ -60,13 +63,26 @@ const nextConfig = {
         : []),
     ],
   },
-  // Crawlers also probe the language-prefixed URLs (/en/robots.txt); the real files live at the root.
   async redirects() {
-    return ["robots.txt"].map((file) => ({
-      source: `/:lang(en|ar)/${file}`,
-      destination: `/${file}`,
-      permanent: true,
-    }));
+    return [
+      // Crawlers also probe the language-prefixed URLs (/en/robots.txt); the real files live at the root.
+      {
+        source: "/:lang(en|ar)/robots.txt",
+        destination: "/robots.txt",
+        permanent: true,
+      },
+      // Non-canonical paths go to the home page. This must be here: the proxy only sees resolved paths.
+      {
+        source: `/:lang(en|ar)/:path(${dotSegment})`,
+        destination: "/:lang",
+        permanent: true,
+      },
+      {
+        source: `/:path(${dotSegment})`,
+        destination: "/",
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

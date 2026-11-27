@@ -128,7 +128,7 @@ export function getSite(dict, locale) {
           links: [
             { id: "terms", label: footer.terms, href: "/terms-and-conditions" },
             { id: "privacy", label: footer.privacy, href: "/privacy-policy" },
-            { id: "news", label: footer.news, href: "/newsroom" },
+            // { id: "news", label: footer.news, href: "/newsroom" },
             { id: "gallery", label: footer.gallery, href: "/gallery" },
           ],
         },
