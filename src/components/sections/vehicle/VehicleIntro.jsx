@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { listItems, textBeforeList } from "@/lib/list-items";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
-// `data` is the vehicle's section_one: description is CMS HTML ("paragraph + <ul>"); the component draws the list bullets itself.
+// `data` is the vehicle's section_one: description is CMS HTML ("paragraph + <ul>"); the component draws the list bullets itself. Without a video the box shows the logo.
 
 export default function VehicleIntro({ data }) {
   const list = listItems(data?.description);
@@ -12,7 +13,7 @@ export default function VehicleIntro({ data }) {
           data-reveal
           className="relative aspect-895/506 overflow-hidden rounded-[10px] bg-black sm:rounded-[15px] 2xl:rounded-[20px]"
         >
-          {data?.video && (
+          {data?.video ? (
             <video
               src={data.video}
               aria-label={data?.title}
@@ -23,6 +24,8 @@ export default function VehicleIntro({ data }) {
               preload="auto"
               className="size-full object-cover"
             />
+          ) : (
+            <MediaPlaceholder />
           )}
         </div>
         <div data-reveal style={{ "--reveal-delay": "0.1s" }}>

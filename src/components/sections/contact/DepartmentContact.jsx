@@ -2,6 +2,7 @@ import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
 import { cn } from "@/lib/utils";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 export default async function DepartmentContact({
   data,
@@ -67,12 +68,12 @@ export default async function DepartmentContact({
             })}
           </ul>
         </div>
-        {data?.bottom_section_image && (
-          <div
-            data-reveal
-            style={{ "--reveal-delay": "0.1s" }}
-            className="relative aspect-483/323 overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[15px] 3xl:rounded-[20px]"
-          >
+        <div
+          data-reveal
+          style={{ "--reveal-delay": "0.1s" }}
+          className="relative aspect-483/323 overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[15px] 3xl:rounded-[20px]"
+        >
+          {data?.bottom_section_image ? (
             <Image
               src={data?.bottom_section_image}
               alt={data?.bottom_section_title || "Contact"}
@@ -81,8 +82,10 @@ export default async function DepartmentContact({
               sizes="(min-width: 1200px) 25vw, 100vw"
               className="object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <MediaPlaceholder />
+          )}
+        </div>
       </div>
     </section>
   );

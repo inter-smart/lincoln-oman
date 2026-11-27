@@ -22,7 +22,7 @@ export function getOwners(dict) {
         },
         { name: "subject", label: form.subject, type: "text" },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       submit: form.submit,
     },
   };

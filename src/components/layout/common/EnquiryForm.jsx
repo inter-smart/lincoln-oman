@@ -83,7 +83,6 @@ export default function EnquiryForm({ data }) {
             <TextareaField
               name={data?.message?.name}
               label={data?.message?.label}
-              optional={data?.message?.optional}
               className="mt-4"
             />
             <div className="mt-5 flex justify-end">

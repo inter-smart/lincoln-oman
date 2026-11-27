@@ -1,11 +1,12 @@
 import Image from "next/image";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `data` is about_cms.section_four (title, description HTML, image).
 export default function AboutCommitment({ data }) {
   return (
     <section className="block h-auto w-full">
-      <div className="block aspect-1920/1120 h-auto w-full overflow-hidden bg-night">
-        {data.image && (
+      <div className="relative block aspect-1920/1120 h-auto w-full overflow-hidden bg-night">
+        {data.image ? (
           <Image
             src={data.image}
             alt={data.title || "About Lincoln"}
@@ -14,6 +15,8 @@ export default function AboutCommitment({ data }) {
             height={1120}
             className="size-full object-cover"
           />
+        ) : (
+          <MediaPlaceholder faint />
         )}
       </div>
       <div className="container">

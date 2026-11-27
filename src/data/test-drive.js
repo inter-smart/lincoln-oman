@@ -42,7 +42,7 @@ export function getTestDrive(dict) {
         },
         { name: "date", label: form.datePlaceholder, date: true },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       // Copy is as designed (it names Ford Motor Company): flagged for the client.
       terms: {
         choices: [

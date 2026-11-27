@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CenterCarousel from "@/components/layout/common/CenterCarousel";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 export default async function ExteriorDesign({ items }) {
   const { ui } = await getCurrentDictionary();
@@ -25,14 +26,18 @@ export default async function ExteriorDesign({ items }) {
             key={item.id}
             className="relative aspect-1568/700 overflow-hidden rounded-[10px] opacity-50 transition-[opacity,clip-path] duration-700 [clip-path:inset(5.7%_0_round_10px)] group-data-active/slide:opacity-100 group-data-active/slide:[clip-path:inset(0_0_round_10px)] sm:rounded-[15px] 2xl:rounded-[20px]"
           >
-            <Image
-              src={item.image.path}
-              alt={item.image.alt || item.title || ""}
-              title={item.image.alt || item.title || ""}
-              fill
-              sizes="(min-width: 1200px) 82vw, 88vw"
-              className="object-cover"
-            />
+            {item.image?.path ? (
+              <Image
+                src={item.image.path}
+                alt={item.image.alt || item.title || ""}
+                title={item.image.alt || item.title || ""}
+                fill
+                sizes="(min-width: 1200px) 82vw, 88vw"
+                className="object-cover"
+              />
+            ) : (
+              <MediaPlaceholder />
+            )}
           </div>
         ))}
       </CenterCarousel>

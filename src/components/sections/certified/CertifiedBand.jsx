@@ -1,6 +1,7 @@
 import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
 import { listItems } from "@/lib/list-items";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // Full-bleed night band: copy on the left, rounded photo on the right.
 // `data` is a certified_cms tab (title, description HTML, image). A description that is a <ul> renders as the
@@ -52,12 +53,12 @@ export default function CertifiedBand({
             />
           )}
         </div>
-        {data.image && (
-          <div
-            data-reveal
-            style={{ "--reveal-delay": "0.15s" }}
-            className={`relative overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] ${imageRatio}`}
-          >
+        <div
+          data-reveal
+          style={{ "--reveal-delay": "0.15s" }}
+          className={`relative overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] ${imageRatio}`}
+        >
+          {data.image ? (
             <Image
               src={data.image}
               alt={data.title || "Lincoln Certified"}
@@ -66,8 +67,10 @@ export default function CertifiedBand({
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <MediaPlaceholder className="bg-coal" />
+          )}
+        </div>
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export function getQuote(dict) {
         { name: "phone", label: form.phone, type: "tel", autoComplete: "tel" },
         { name: "vehicle", label: form.vehicleModel, options: [] },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       // Copy is as designed (it names Ford Motor Company): flagged for the client.
       terms: {
         choices: [

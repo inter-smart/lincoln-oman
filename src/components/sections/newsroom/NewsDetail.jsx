@@ -1,6 +1,7 @@
 import Image from "next/image";
 import NewsCard from "@/components/layout/common/NewsCard";
 import { formatDate } from "@/lib/format-date";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `news` is the API article; `recent` is the API recent_news list.
 export default function NewsDetail({ news, recent, recent_news_title }) {
@@ -16,11 +17,11 @@ export default function NewsDetail({ news, recent, recent_news_title }) {
           >
             {news.title}
           </div>
-          {news.media?.image && (
-            <div
-              data-reveal
-              className="relative aspect-4/3 overflow-hidden rounded-[10px] bg-night sm:aspect-1256/596 xl:mt-[calc(36*var(--rr))]"
-            >
+          <div
+            data-reveal
+            className="relative aspect-4/3 overflow-hidden rounded-[10px] bg-night sm:aspect-1256/596 xl:mt-[calc(36*var(--rr))]"
+          >
+            {news.media?.image ? (
               <Image
                 src={news.media.image}
                 alt={news.media.alt ?? news.title}
@@ -30,8 +31,10 @@ export default function NewsDetail({ news, recent, recent_news_title }) {
                 sizes="(min-width: 1200px) 75vw, 100vw"
                 className="object-cover"
               />
-            </div>
-          )}
+            ) : (
+              <MediaPlaceholder />
+            )}
+          </div>
           <div
             data-reveal
             className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:mt-7 xl:mt-[calc(40*var(--rr))]"

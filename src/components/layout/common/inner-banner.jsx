@@ -2,8 +2,10 @@ import Image, { getImageProps } from "next/image";
 import Link from "@/components/ui/locale-link";
 import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
-// Black fades over the photo; without media the banner stays the plain header colour (bg-night).
+// Black fades over the photo. Without a photo the logo placeholder shows (a video still plays over it);
+// the fades are only drawn when there is media.
 const shade =
   "before:absolute before:inset-[auto_0_0_0] before:z-2 before:h-[40%] before:w-full before:bg-linear-to-t before:from-black before:to-transparent before:content-[''] after:absolute after:inset-[0_0_auto_0] after:z-2 after:h-[25%] after:w-full after:bg-linear-to-b after:from-black after:to-transparent after:content-['']";
 
@@ -31,6 +33,7 @@ export default function InnerBanner({ data, as: Title = "h1" }) {
       className={`relative z-0 block w-full max-sm:h-95 sm:h-auto ${hasMedia ? shade : ""}`}
     >
       <div className="relative block aspect-1920/760 h-full w-full overflow-hidden bg-night sm:h-auto">
+        {!desktopSrc && <MediaPlaceholder faint />}
         {(data?.banner || data?.banner_mobile) && (
           <picture className="block size-full">
             {mobile && (

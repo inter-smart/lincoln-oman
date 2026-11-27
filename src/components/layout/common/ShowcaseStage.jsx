@@ -10,6 +10,7 @@ import {
   playMuted,
   videoAllowed,
 } from "@/components/layout/common/video";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 const StageContext = createContext(null);
 
@@ -90,7 +91,7 @@ export function ShowcaseVideoCard({ poster, video, label }) {
       onClick={() => stage?.toggle()}
       className="group absolute inset-0 size-full cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
     >
-      {poster && (
+      {poster ? (
         <Image
           src={poster}
           alt={label ?? ""}
@@ -99,6 +100,8 @@ export function ShowcaseVideoCard({ poster, video, label }) {
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover"
         />
+      ) : (
+        <MediaPlaceholder />
       )}
       <video
         ref={ref}

@@ -59,19 +59,6 @@ export const phone = required("Please enter your phone number").pipe(
 
 const URL_LIKE = /(?:https?:\/\/|www\.)\S+/gi;
 
-// Length-independent checks shared by the required and optional message fields.
-const messageChecks = (schema) =>
-  schema
-    .refine(isPlainText, PLAIN_TEXT_MESSAGE)
-    .refine(
-      (v) => (v.match(URL_LIKE) ?? []).length <= 2,
-      "Please include no more than 2 links",
-    )
-    .refine(
-      (v) => !/(.)\1{9,}/su.test(v),
-      "Please avoid long runs of repeated characters",
-    );
-
 export const subject = required("Please enter a subject").pipe(
   z
     .string()
@@ -86,31 +73,25 @@ export const subject = required("Please enter a subject").pipe(
 );
 
 export const message = required("Please enter your message").pipe(
-  messageChecks(
-    z
-      .string()
-      .min(1, "Please enter your message")
-      .min(10, "Message must be at least 10 characters")
-      .max(1000, "Message must be 1000 characters or fewer"),
-  ),
-);
-
-// Contact form: the message may be left empty, but anything typed is held to the same rules.
-export const optionalMessage = z
-  .string()
-  .optional()
-  .transform((v) => clean(v ?? ""))
-  .pipe(
-    messageChecks(
-      z
-        .string()
-        .max(1000, "Message must be 1000 characters or fewer")
-        .refine(
-          (v) => v === "" || v.length >= 10,
-          "Message must be at least 10 characters",
-        ),
+  z
+    .string()
+    .min(1, "Please enter your message")
+    .min(2, "Message must be at least 2 characters")
+    .max(1000, "Message must be 1000 characters or fewer")
+    .refine(
+      (v) => /[\p{L}\p{N}]/u.test(v),
+      "Message must include letters or numbers",
+    )
+    .refine(isPlainText, PLAIN_TEXT_MESSAGE)
+    .refine(
+      (v) => (v.match(URL_LIKE) ?? []).length <= 2,
+      "Please include no more than 2 links",
+    )
+    .refine(
+      (v) => !/(.)\1{9,}/su.test(v),
+      "Please avoid long runs of repeated characters",
     ),
-  );
+);
 
 // Dropdown labels (model, interested, time): short safe labels, never free text.
 export function label(requiredMessage) {

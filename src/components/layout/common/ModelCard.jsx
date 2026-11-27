@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "@/components/ui/locale-link";
 import HoverVideo from "@/components/layout/common/HoverVideo";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // "Explore Lincoln Line" card (Figma 01–04, Default → Variant2 on hover/focus):
 // a video plays, a dark gradient rises, and the three specs and the "—+" mark fade up over it.
@@ -12,7 +13,7 @@ export default function ModelCard({ model }) {
       href={`/vehicles/${model.slug}`}
       className="group relative block aspect-[394/638] overflow-hidden rounded-[10px] bg-night text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate sm:rounded-[15px] 2xl:rounded-[20px]"
     >
-      {model.image && (
+      {model.image ? (
         <Image
           src={model.image}
           alt={model.name}
@@ -22,6 +23,8 @@ export default function ModelCard({ model }) {
           className="object-cover"
           style={{ objectPosition: model.position }}
         />
+      ) : (
+        <MediaPlaceholder />
       )}
       {/* Figma's hover variant is a video fill: it plays while hovered and rewinds on hover-out */}
       {model.video && <HoverVideo src={model.video} />}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `data` is home_cms.section_five. Its `description` HTML already carries the paragraph classes.
 export default function Offer({ data }) {
@@ -28,12 +29,12 @@ export default function Offer({ data }) {
             />
           </div>
         </div>
-        {data.image && (
-          <div
-            data-reveal
-            style={{ "--reveal-delay": "0.15s" }}
-            className="relative aspect-[904/517]"
-          >
+        <div
+          data-reveal
+          style={{ "--reveal-delay": "0.15s" }}
+          className="relative aspect-[904/517]"
+        >
+          {data.image ? (
             <Image
               src={data.image}
               alt={data.alt_tag || data.title || ""}
@@ -42,8 +43,10 @@ export default function Offer({ data }) {
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <MediaPlaceholder />
+          )}
+        </div>
       </div>
     </section>
   );

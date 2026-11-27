@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import { listItems } from "@/lib/list-items";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `data` is home_cms.section_six. `description` is a CMS <ul>; each <li> becomes one row.
 // Any bullet <img> the CMS put inside an <li> is stripped: the component draws every bullet itself.
@@ -9,8 +10,8 @@ export default function Ownership({ data }) {
 
   return (
     <section className="relative overflow-hidden bg-night text-white">
-      {data.image && (
-        <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:end-0 lg:aspect-auto lg:w-[66.2%]">
+      <div className="relative aspect-[1271/999] lg:absolute lg:inset-y-0 lg:end-0 lg:aspect-auto lg:w-[66.2%]">
+        {data.image ? (
           <Image
             src={data.image}
             alt={data.alt_tag || data.title || ""}
@@ -19,8 +20,10 @@ export default function Ownership({ data }) {
             sizes="(min-width: 992px) 66vw, 100vw"
             className="object-cover"
           />
-        </div>
-      )}
+        ) : (
+          <MediaPlaceholder className="bg-coal" />
+        )}
+      </div>
       {/* Lincoln emblem drawn in the band colour over the photo's left edge */}
       <Image
         src="/icons/emblem-cutout.svg"

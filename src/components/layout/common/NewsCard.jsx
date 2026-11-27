@@ -3,6 +3,7 @@ import Link from "@/components/ui/locale-link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `item` is one API news entry: { slug, title, published_on, media: { image } }; `position` (optional) sets the photo crop.
 // Newsroom card. On hover/focus the "Read More" text gives way to the pill over the photo (Figma card 2).
@@ -16,7 +17,7 @@ export default async function NewsCard({ item }) {
       className="group block outline-offset-4 focus-visible:outline-2 focus-visible:outline-slate"
     >
       <span className="relative block aspect-[384/572] overflow-hidden rounded-[10px] bg-night">
-        {item.media?.image && (
+        {item.media?.image ? (
           <Image
             src={item.media.image}
             alt={item.title}
@@ -26,6 +27,8 @@ export default async function NewsCard({ item }) {
             className="object-cover"
             style={{ objectPosition: item.position }}
           />
+        ) : (
+          <MediaPlaceholder />
         )}
         <span
           aria-hidden

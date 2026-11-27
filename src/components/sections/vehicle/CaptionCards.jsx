@@ -1,5 +1,6 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 export default function CaptionCards({
   id,
@@ -47,14 +48,18 @@ export default function CaptionCards({
               <div
                 className={`relative ${ratio} overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]`}
               >
-                <Image
-                  src={item.image}
-                  alt={item.title ?? ""}
-                  title={item.title ?? ""}
-                  fill
-                  sizes="(min-width: 1200px) 25vw, (min-width: 992px) 33vw, 70vw"
-                  className="object-cover"
-                />
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.title ?? ""}
+                    title={item.title ?? ""}
+                    fill
+                    sizes="(min-width: 1200px) 25vw, (min-width: 992px) 33vw, 70vw"
+                    className="object-cover"
+                  />
+                ) : (
+                  <MediaPlaceholder className="bg-coal" />
+                )}
               </div>
               <figcaption className="mt-4 font-display text-lg leading-[1.2] sm:text-xl xl:mt-[calc(30*var(--rr))] xl:text-fluid-24">
                 {item.title}

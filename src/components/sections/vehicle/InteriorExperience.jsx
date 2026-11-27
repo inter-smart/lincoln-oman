@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CardCarousel from "@/components/layout/common/CardCarousel";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 export default async function InteriorExperience({ items }) {
   const { ui } = await getCurrentDictionary();
@@ -28,14 +29,18 @@ export default async function InteriorExperience({ items }) {
               style={{ "--reveal-delay": `${index * 0.1}s` }}
               className="relative h-90 overflow-hidden rounded-[10px] sm:h-105 sm:rounded-[15px] 2xl:h-[calc(571*var(--rr))] 2xl:rounded-[20px]"
             >
-              <Image
-                src={item.image}
-                alt={item.title ?? ""}
-                title={item.title ?? ""}
-                fill
-                sizes="(min-width: 992px) 50vw, 85vw"
-                className="object-cover"
-              />
+              {item.image ? (
+                <Image
+                  src={item.image}
+                  alt={item.title ?? ""}
+                  title={item.title ?? ""}
+                  fill
+                  sizes="(min-width: 992px) 50vw, 85vw"
+                  className="object-cover"
+                />
+              ) : (
+                <MediaPlaceholder className="bg-coal" />
+              )}
               <span
                 aria-hidden
                 className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent"

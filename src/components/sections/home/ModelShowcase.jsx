@@ -2,6 +2,7 @@ import Image from "next/image";
 import ShowcaseStage, {
   ShowcaseVideoCard,
 } from "@/components/layout/common/ShowcaseStage";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // Full-bleed model band (Continental / Navigator): photo, headline, outlined model name, two media panels.
 // Hovering or clicking the video panel swaps the section background from the photo to the video.
@@ -12,7 +13,7 @@ export default function ModelShowcase({ data, videoFirst = false }) {
 
   return (
     <section className="relative flex min-h-[clamp(720px,72vw,1385px)] flex-col justify-end overflow-hidden bg-black pt-[160px] pb-[clamp(40px,3.7vw,71px)] text-white">
-      {data.banner_image && (
+      {data.banner_image ? (
         <Image
           src={data.banner_image}
           alt={data.title ?? ""}
@@ -21,6 +22,8 @@ export default function ModelShowcase({ data, videoFirst = false }) {
           sizes="100vw"
           className="object-cover"
         />
+      ) : (
+        <MediaPlaceholder faint />
       )}
       <ShowcaseStage video={data.video}>
         <span className="absolute inset-x-0 bottom-0 h-full bg-linear-to-b from-transparent to-black opacity-80 md:h-[64%]" />
@@ -51,33 +54,33 @@ export default function ModelShowcase({ data, videoFirst = false }) {
             {data.banner_title}
           </p>
           <ul className="relative mt-[24px] grid w-full max-w-[1365px] gap-[20px] md:-mt-[min(4.48vw,86px)] md:grid-cols-2 xl:max-w-[calc(1365*var(--rr))] xl:gap-5 2xl:gap-11.25">
-            {panels
-              .filter((panel) => panel !== "image" || data.image)
-              .map((panel, index) => (
-                <li
-                  key={panel}
-                  data-reveal
-                  style={{ "--reveal-delay": `${index * 0.12}s` }}
-                  className="relative aspect-[661/334] overflow-hidden rounded-[10px] bg-black sm:rounded-[15px] 3xl:rounded-[20px]"
-                >
-                  {panel === "image" ? (
-                    <Image
-                      src={data.image}
-                      alt={data.alt_tag || data.title}
-                      title={data.alt_tag || data.title}
-                      fill
-                      sizes="(min-width: 768px) 50vw, 100vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <ShowcaseVideoCard
-                      poster={data.image}
-                      video={data.video}
-                      label={data.title}
-                    />
-                  )}
-                </li>
-              ))}
+            {panels.map((panel, index) => (
+              <li
+                key={panel}
+                data-reveal
+                style={{ "--reveal-delay": `${index * 0.12}s` }}
+                className="relative aspect-[661/334] overflow-hidden rounded-[10px] bg-black sm:rounded-[15px] 3xl:rounded-[20px]"
+              >
+                {panel === "image" && data.image ? (
+                  <Image
+                    src={data.image}
+                    alt={data.alt_tag || data.title}
+                    title={data.alt_tag || data.title}
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                ) : panel === "video" && data.video ? (
+                  <ShowcaseVideoCard
+                    poster={data.image}
+                    video={data.video}
+                    label={data.title}
+                  />
+                ) : (
+                  <MediaPlaceholder />
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       </ShowcaseStage>

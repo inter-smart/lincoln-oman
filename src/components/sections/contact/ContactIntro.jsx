@@ -117,7 +117,6 @@ export default function ContactIntro({ data, form }) {
               <TextareaField
                 name={formData?.message?.name}
                 label={formData?.message?.label}
-                optional={formData?.message?.optional}
                 variant="underline"
                 className="flex-1"
               />

@@ -4,7 +4,7 @@ import ModelCard from "@/components/layout/common/ModelCard";
 // `models` is the API list (explore_lincoln_line / featured_models); `title` comes from the page's cms block.
 export default function ExploreModels({ title, models, variant = "default" }) {
   return (
-    <section className="py-(--section-space)">
+    <section className="py-(--section-space)" id="models">
       <div className="container">
         <h2
           data-reveal

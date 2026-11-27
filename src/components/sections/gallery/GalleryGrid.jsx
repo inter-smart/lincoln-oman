@@ -3,6 +3,7 @@ import LoadMoreLink from "@/components/layout/common/LoadMoreLink";
 import GalleryLightbox from "@/components/layout/common/GalleryLightbox";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
 import { format } from "@/i18n/format";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 const spans = {
   half: "col-span-6 aspect-794/697 sm:col-span-3",
@@ -30,9 +31,7 @@ export default async function GalleryGrid({ title, galleries, loadMore }) {
   const film = galleries.find(
     (item) => item.media_type === "video" && item.video?.path,
   );
-  const photos = galleries.filter(
-    (item) => item.media_type === "image" && item.image?.path,
-  );
+  const photos = galleries.filter((item) => item.media_type === "image");
 
   return (
     <section className="py-(--section-space)">
@@ -40,7 +39,7 @@ export default async function GalleryGrid({ title, galleries, loadMore }) {
         <h1 data-reveal className="title">
           {title}
         </h1>
-        {film && (
+        {film ? (
           <video
             data-reveal
             controls
@@ -52,30 +51,46 @@ export default async function GalleryGrid({ title, galleries, loadMore }) {
           >
             <source src={film.video.path} type="video/mp4" />
           </video>
+        ) : (
+          <div
+            data-reveal
+            className={`relative mt-6 aspect-1624/705 w-full xl:mt-[calc(30*var(--rr))] ${radius}`}
+          >
+            <MediaPlaceholder />
+          </div>
         )}
         <GalleryLightbox className="mt-2.5 grid grid-cols-6 gap-2.5 sm:mt-5 md:gap-5 2xl:mt-[calc(45*var(--rr))] 2xl:gap-x-[calc(50*var(--rr))] 2xl:gap-y-[calc(45*var(--rr))]">
           {photos.map((item, index) => {
             const span = pattern[index % pattern.length];
+            // A tile without a photo is not a link, so the lightbox skips it
+            const src = item.image?.path;
+            const Tile = src ? "a" : "div";
             return (
-              <a
+              <Tile
                 key={item.id}
-                href={item.image.path}
-                data-fancybox="gallery"
-                data-thumb-src={item.image.path}
-                aria-label={format(ui.viewImage, { alt: item.image.alt })}
+                {...(src && {
+                  href: src,
+                  "data-fancybox": "gallery",
+                  "data-thumb-src": src,
+                  "aria-label": format(ui.viewImage, { alt: item.image.alt }),
+                })}
                 data-reveal
                 style={{ "--reveal-delay": `${(index % 3) * 0.1}s` }}
                 className={`group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink focus-visible:outline-solid ${radius} ${spans[span]}`}
               >
-                <Image
-                  src={item.image.path}
-                  alt={item.image.alt || item.title || ""}
-                  title={item.image.alt || item.title || ""}
-                  fill
-                  sizes={sizes[span]}
-                  className="object-cover transition-transform duration-700 group-hocus:scale-105"
-                />
-              </a>
+                {item.image?.path ? (
+                  <Image
+                    src={item.image.path}
+                    alt={item.image.alt || item.title || ""}
+                    title={item.image.alt || item.title || ""}
+                    fill
+                    sizes={sizes[span]}
+                    className="object-cover transition-transform duration-700 group-hocus:scale-105"
+                  />
+                ) : (
+                  <MediaPlaceholder />
+                )}
+              </Tile>
             );
           })}
         </GalleryLightbox>

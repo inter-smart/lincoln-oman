@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { formatExpiry } from "@/lib/format-date";
 import { currentLocale } from "@/lib/api/locale";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // Single offer: title, expiry, copy and eligibility list beside the offer photo.
 // `offer` is the API special_offer; `labels` is the static copy from src/data/offers.js.
@@ -14,9 +15,7 @@ export default async function OfferDetail({ offer, labels }) {
   return (
     <section className="pb-(--section-space)">
       <div className="container">
-        <div
-          className={`grid items-center gap-6 sm:gap-8 xl:gap-[calc(80*var(--rr))] ${offer?.image?.path ? "lg:grid-cols-2" : ""}`}
-        >
+        <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-2 xl:gap-[calc(80*var(--rr))]">
           <div data-reveal>
             <h2 className="title">{offer?.title}</h2>
             {expiry && (
@@ -47,12 +46,12 @@ export default async function OfferDetail({ offer, labels }) {
               </ul>
             )}
           </div>
-          {offer?.image?.path && (
-            <div
-              data-reveal
-              style={{ "--reveal-delay": "0.1s" }}
-              className="relative aspect-810/415 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
-            >
+          <div
+            data-reveal
+            style={{ "--reveal-delay": "0.1s" }}
+            className="relative aspect-810/415 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
+          >
+            {offer?.image?.path ? (
               <Image
                 src={offer.image.path}
                 alt={offer.image.alt ?? offer.title ?? ""}
@@ -61,8 +60,10 @@ export default async function OfferDetail({ offer, labels }) {
                 sizes="(min-width: 1920px) 810px, (min-width: 992px) 50vw, 100vw"
                 className="object-cover"
               />
-            </div>
-          )}
+            ) : (
+              <MediaPlaceholder />
+            )}
+          </div>
         </div>
       </div>
     </section>

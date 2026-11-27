@@ -26,7 +26,7 @@ export function getContact(dict) {
           wide: true,
         },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       submit: form.submit,
     },
   };

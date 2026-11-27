@@ -113,7 +113,6 @@ export function TextField({
 export function TextareaField({
   name = "message",
   label,
-  optional,
   variant = "pill",
   className,
 }) {
@@ -125,13 +124,12 @@ export function TextareaField({
     <div className={cn("relative", className)}>
       <label className="block">
         <span className="sr-only">
-          {label}
-          {!optional && ` (${labels.required})`}
+          {label} ({labels.required})
         </span>
         <textarea
           rows={v.rows}
           maxLength={MAX.message}
-          placeholder={`${label}${optional ? "" : "*"}`}
+          placeholder={`${label}*`}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
           className={`${v.field} ${v.textarea}`}

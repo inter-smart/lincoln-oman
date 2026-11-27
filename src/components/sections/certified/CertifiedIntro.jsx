@@ -1,15 +1,16 @@
 import Image from "next/image";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `data` is certified_cms.section_one (title, description HTML, image).
 export default function CertifiedIntro({ data }) {
   return (
     <section className="pt-10 sm:pt-[50px] lg:pt-[60px] xl:pt-[calc(80*var(--rr))]">
       <div className="container grid items-center gap-7.5 lg:grid-cols-2 lg:gap-[28px]">
-        {data.image && (
-          <div
-            data-reveal
-            className="relative aspect-810/477 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
-          >
+        <div
+          data-reveal
+          className="relative aspect-810/477 overflow-hidden rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]"
+        >
+          {data.image ? (
             <Image
               src={data.image}
               alt={data.title || "Lincoln Certified"}
@@ -18,8 +19,10 @@ export default function CertifiedIntro({ data }) {
               sizes="(min-width: 992px) 50vw, 100vw"
               className="object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <MediaPlaceholder />
+          )}
+        </div>
         <div
           data-reveal
           style={{ "--reveal-delay": "0.1s" }}

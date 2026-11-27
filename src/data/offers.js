@@ -29,7 +29,7 @@ export function getOffers(dict) {
         },
         { name: "subject", label: form.subject, type: "text" },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       submit: form.submit,
     },
     // Enquiry form on a single offer (/special-offers/[slug]): POST /special-offer-enquiries (formKey "offer").
@@ -52,7 +52,7 @@ export function getOffers(dict) {
         { name: "model", label: form.model, options: [] },
         { name: "interested", label: form.interested, options: [] },
       ],
-      message: { name: "message", label: form.message, optional: true },
+      message: { name: "message", label: form.message },
       submit: form.submit,
     },
   };

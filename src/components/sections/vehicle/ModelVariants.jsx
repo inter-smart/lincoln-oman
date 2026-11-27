@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CenterCarousel from "@/components/layout/common/CenterCarousel";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 export default async function ModelVariants({ items, word }) {
   const { ui } = await getCurrentDictionary();
@@ -32,14 +33,18 @@ export default async function ModelVariants({ items, word }) {
                 {word}
               </span>
               <div className="relative z-1 aspect-887/563 w-full scale-[0.6] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-active/slide:scale-100">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  title={item.name}
-                  fill
-                  sizes="(min-width: 992px) 46vw, 70vw"
-                  className="object-contain"
-                />
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    title={item.name}
+                    fill
+                    sizes="(min-width: 992px) 46vw, 70vw"
+                    className="object-contain"
+                  />
+                ) : (
+                  <MediaPlaceholder className="rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px]" />
+                )}
               </div>
             </div>
           </div>

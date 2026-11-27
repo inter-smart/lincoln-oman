@@ -3,6 +3,7 @@ import HeroVideo from "@/components/layout/common/HeroVideo";
 import ButtonLink from "@/components/layout/common/ButtonLink";
 import HeroCarousel from "@/components/layout/common/HeroCarousel";
 import { getCurrentDictionary } from "@/i18n/get-dictionary";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // `slides` is the API's `sliders` list.
 export default async function Hero({ slides }) {
@@ -18,6 +19,9 @@ export default async function Hero({ slides }) {
             key={slide.id}
             className="relative size-full overflow-hidden"
           >
+            {!(slide.media_type === "video"
+              ? slide.video_thumbnail_image
+              : slide.image) && <MediaPlaceholder faint />}
             {slide.media_type === "image" && slide.image && (
               <Image
                 src={slide.image}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import EmblemMark from "@/components/layout/common/EmblemMark";
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
 
 // Elongated hexagon paint chip from the design (42 × 75)
 const CHIP =
@@ -18,16 +19,24 @@ export default function ColorPicker({ items }) {
   return (
     <div className="grid items-center gap-8 lg:grid-cols-[57%_1fr] lg:gap-10 xl:gap-[calc(165*var(--rr))]">
       <div className="relative aspect-880/530">
-        {items.map((item, index) => (
-          <Image
-            key={item.id}
-            src={item.image}
-            alt={index === active ? `${label} ${item.color_name}` : ""}
-            fill
-            sizes="(min-width: 992px) 57vw, 100vw"
-            className={`object-contain transition-opacity duration-500 ${index === active ? "opacity-100" : "opacity-0"}`}
-          />
-        ))}
+        {items.map((item, index) => {
+          const fade = `transition-opacity duration-500 ${index === active ? "opacity-100" : "opacity-0"}`;
+          return item.image ? (
+            <Image
+              key={item.id}
+              src={item.image}
+              alt={index === active ? `${label} ${item.color_name}` : ""}
+              fill
+              sizes="(min-width: 992px) 57vw, 100vw"
+              className={`object-contain ${fade}`}
+            />
+          ) : (
+            <MediaPlaceholder
+              key={item.id}
+              className={`rounded-[10px] sm:rounded-[15px] 2xl:rounded-[20px] ${fade}`}
+            />
+          );
+        })}
       </div>
       <div className="flex flex-col gap-6 lg:flex-row-reverse lg:justify-end lg:gap-[calc(45*var(--rr))]">
         <p aria-live="polite" className="lg:pt-[calc(18*var(--rr))]">

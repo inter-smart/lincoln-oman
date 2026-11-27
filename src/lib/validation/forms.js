@@ -6,7 +6,6 @@ import {
   marketing,
   message,
   name,
-  optionalMessage,
   optionalLabel,
   phone,
   subject,
@@ -19,7 +18,7 @@ export const contactSchema = z.object({
   name,
   email,
   phone,
-  message: optionalMessage,
+  message,
 });
 
 // Owners and Special Offers list: POST /page-enquiries (no phone; `type` is added in the action).
@@ -27,7 +26,7 @@ export const pageEnquirySchema = z.object({
   name,
   email,
   subject,
-  message: optionalMessage,
+  message,
 });
 
 export const offerSchema = z.object({
@@ -36,7 +35,7 @@ export const offerSchema = z.object({
   phone,
   model: label("Please choose a model"),
   interested: label("Please choose what you are interested in"),
-  message: optionalMessage,
+  message,
 });
 
 export const quoteSchema = z.object({
@@ -44,7 +43,7 @@ export const quoteSchema = z.object({
   email,
   phone,
   vehicle,
-  message: optionalMessage,
+  message,
   marketing,
   agree: termsAccepted,
 });
@@ -56,7 +55,7 @@ export const testDriveSchema = z.object({
   vehicle,
   date: bookingDate(),
   time: optionalLabel,
-  message: optionalMessage,
+  message,
   marketing,
   agree: termsAccepted,
 });

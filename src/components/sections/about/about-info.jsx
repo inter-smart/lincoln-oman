@@ -1,3 +1,5 @@
+import MediaPlaceholder from "@/components/layout/common/MediaPlaceholder";
+
 // `data` is about_cms.section_two (title, description HTML, video).
 export default function AboutInfo({ data }) {
   return (
@@ -14,15 +16,19 @@ export default function AboutInfo({ data }) {
             />
           </div>
           <div className="block h-auto w-full">
-            <div className="block aspect-810/450 h-auto w-full overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[20px]">
-              <video
-                src={data.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="size-full object-cover"
-              />
+            <div className="relative block aspect-810/450 h-auto w-full overflow-hidden rounded-[10px] lg:rounded-xl 2xl:rounded-[20px]">
+              {data.video ? (
+                <video
+                  src={data.video}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="size-full object-cover"
+                />
+              ) : (
+                <MediaPlaceholder className="bg-coal" />
+              )}
             </div>
           </div>
         </div>
