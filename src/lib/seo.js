@@ -23,7 +23,13 @@ export async function buildMetadata(
   const locale = await currentLocale();
   const { common } = await getDictionary(locale);
   const url = urlFor(path, locale);
-  const defaultImage = new URL("/images/logo.png", siteUrl).href;
+  // 1200x630 share photo; width and height must match the file.
+  const defaultImage = {
+    url: new URL("/images/og-image.jpg", siteUrl).href,
+    width: 1200,
+    height: 630,
+    alt: title,
+  };
   const { other, openGraph, twitter, languages } =
     metadataFromTags(otherMetaTags);
 
@@ -46,7 +52,7 @@ export async function buildMetadata(
       url,
       title,
       description,
-      images: [{ url: defaultImage, width: 1200, height: 630, alt: title }],
+      images: [defaultImage],
       ...openGraph,
     },
     twitter: {

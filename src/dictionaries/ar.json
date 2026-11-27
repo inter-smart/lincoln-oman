@@ -184,7 +184,7 @@
     "Please enter your name": "يُرجى إدخال اسمك",
     "Name must be at least 2 characters": "يجب ألا يقل الاسم عن حرفين",
     "Name must be 60 characters or fewer": "يجب ألا يتجاوز الاسم 60 حرفًا",
-    "Use letters only (spaces, apostrophes, hyphens and dots are fine)": "يُرجى استخدام الحروف فقط، مع السماح بالمسافات والفواصل العليا والشرطات والنقاط",
+    "Please enter your name using letters only": "يُرجى إدخال اسمك باستخدام الحروف فقط",
     "Please enter your email": "يُرجى إدخال بريدك الإلكتروني",
     "Email is too long": "عنوان البريد الإلكتروني طويل جدًا",
     "Enter a valid email address": "يُرجى إدخال عنوان بريد إلكتروني صالح",

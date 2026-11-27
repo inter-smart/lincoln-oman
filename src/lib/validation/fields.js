@@ -26,13 +26,13 @@ export const name = required("Please enter your name").pipe(
   z
     .string()
     .min(1, "Please enter your name")
-    .min(2, "Name must be at least 2 characters")
-    .max(60, "Name must be 60 characters or fewer")
     .regex(
       /^[\p{L}\p{M}]+(?:(?:\.? |['’-])[\p{L}\p{M}]+)*\.?$/u,
-      "Use letters only (spaces, apostrophes, hyphens and dots are fine)",
+      "Please enter your name using letters only",
     )
-    .refine(isPlainText, PLAIN_TEXT_MESSAGE),
+    .refine(isPlainText, PLAIN_TEXT_MESSAGE)
+    .min(2, "Name must be at least 2 characters")
+    .max(60, "Name must be 60 characters or fewer"),
 );
 
 export const email = required("Please enter your email").pipe(
@@ -65,16 +65,11 @@ export const phone = required("Please enter your phone number").pipe(
 
 const URL_LIKE = /(?:https?:\/\/|www\.)\S+/gi;
 
-// Checks for visitor-written text (subject, message). The first failure is shown, so each says what to fix;
-// the last three are isPlainText split up.
-function plainWords(schema) {
+// Checks for visitor-written text (subject, message). Only the first failure is shown, so the order matters:
+// invalid input comes before the length rules. The first three checks are isPlainText split up.
+function plainWords(schema, { min, max }) {
   return (
     schema
-      // At least two, so a quoted single letter fails
-      .refine(
-        (v) => /[\p{L}\p{N}].*?[\p{L}\p{N}]/su.test(v),
-        "Please write at least 2 letters or numbers",
-      )
       .refine(
         (v) => !containsEscape(v),
         "Invalid characters found. Please remove them and use plain words",
@@ -87,29 +82,36 @@ function plainWords(schema) {
         (v) => !containsCode(v),
         "Please remove code or commands and write in plain words",
       )
+      // Symbols only ("@", "!!"). Empty text is left to the required / length rules.
+      .refine(
+        (v) => v === "" || /[\p{L}\p{N}]/u.test(v),
+        "Invalid characters found. Please remove them and use plain words",
+      )
+      .min(2, min)
+      // At least two, so a quoted single letter fails
+      .refine(
+        (v) => /[\p{L}\p{N}].*?[\p{L}\p{N}]/su.test(v),
+        "Please write at least 2 letters or numbers",
+      )
+      .max(max.limit, max.message)
   );
 }
 
 export const subject = required("Please enter a subject").pipe(
-  plainWords(
-    z
-      .string()
-      .min(1, "Please enter a subject")
-      .min(2, "Subject must be at least 2 characters")
-      .max(100, "Subject must be 100 characters or fewer"),
-  ).refine(
+  plainWords(z.string().min(1, "Please enter a subject"), {
+    min: "Subject must be at least 2 characters",
+    max: { limit: 100, message: "Subject must be 100 characters or fewer" },
+  }).refine(
     (v) => (v.match(URL_LIKE) ?? []).length === 0,
     "Subject cannot contain links",
   ),
 );
 
 // Rules for a message the visitor chose to write
-const messageText = plainWords(
-  z
-    .string()
-    .min(2, "Message must be at least 2 characters")
-    .max(1000, "Message must be 1000 characters or fewer"),
-)
+const messageText = plainWords(z.string(), {
+  min: "Message must be at least 2 characters",
+  max: { limit: 1000, message: "Message must be 1000 characters or fewer" },
+})
   .refine(
     (v) => (v.match(URL_LIKE) ?? []).length <= 2,
     "Please include no more than 2 links",
