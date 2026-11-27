@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { isPlainText, normalizeText } from "./patterns.js";
+import {
+  containsCode,
+  containsEscape,
+  containsMarkup,
+  isPlainText,
+  normalizeText,
+} from "./patterns.js";
 
 export const PLAIN_TEXT_MESSAGE =
   "Only plain text is allowed — remove HTML tags, code or special syntax.";
@@ -59,39 +65,70 @@ export const phone = required("Please enter your phone number").pipe(
 
 const URL_LIKE = /(?:https?:\/\/|www\.)\S+/gi;
 
+// Checks for visitor-written text (subject, message). The first failure is shown, so each says what to fix;
+// the last three are isPlainText split up.
+function plainWords(schema) {
+  return (
+    schema
+      // At least two, so a quoted single letter fails
+      .refine(
+        (v) => /[\p{L}\p{N}].*?[\p{L}\p{N}]/su.test(v),
+        "Please write at least 2 letters or numbers",
+      )
+      .refine(
+        (v) => !containsEscape(v),
+        "Invalid characters found. Please remove them and use plain words",
+      )
+      .refine(
+        (v) => !containsMarkup(v),
+        "HTML tags and scripts are not allowed. Please use plain words",
+      )
+      .refine(
+        (v) => !containsCode(v),
+        "Please remove code or commands and write in plain words",
+      )
+  );
+}
+
 export const subject = required("Please enter a subject").pipe(
-  z
-    .string()
-    .min(1, "Please enter a subject")
-    .min(3, "Subject must be at least 3 characters")
-    .max(100, "Subject must be 100 characters or fewer")
-    .refine(isPlainText, PLAIN_TEXT_MESSAGE)
-    .refine(
-      (v) => (v.match(URL_LIKE) ?? []).length === 0,
-      "Subject cannot contain links",
-    ),
+  plainWords(
+    z
+      .string()
+      .min(1, "Please enter a subject")
+      .min(2, "Subject must be at least 2 characters")
+      .max(100, "Subject must be 100 characters or fewer"),
+  ).refine(
+    (v) => (v.match(URL_LIKE) ?? []).length === 0,
+    "Subject cannot contain links",
+  ),
 );
 
-export const message = required("Please enter your message").pipe(
+// Rules for a message the visitor chose to write
+const messageText = plainWords(
   z
     .string()
-    .min(1, "Please enter your message")
     .min(2, "Message must be at least 2 characters")
-    .max(1000, "Message must be 1000 characters or fewer")
-    .refine(
-      (v) => /[\p{L}\p{N}]/u.test(v),
-      "Message must include letters or numbers",
-    )
-    .refine(isPlainText, PLAIN_TEXT_MESSAGE)
-    .refine(
-      (v) => (v.match(URL_LIKE) ?? []).length <= 2,
-      "Please include no more than 2 links",
-    )
-    .refine(
-      (v) => !/(.)\1{9,}/su.test(v),
-      "Please avoid long runs of repeated characters",
-    ),
-);
+    .max(1000, "Message must be 1000 characters or fewer"),
+)
+  .refine(
+    (v) => (v.match(URL_LIKE) ?? []).length <= 2,
+    "Please include no more than 2 links",
+  )
+  .refine(
+    (v) => !/(.)\1{9,}/su.test(v),
+    "Please don't repeat the same character 10 or more times in a row",
+  );
+
+// Optional: blank (or only spaces, tabs, newlines) becomes ""; anything else must pass messageText.
+export const message = z
+  .string()
+  .optional()
+  .transform((v) => clean(v ?? ""))
+  .superRefine((value, ctx) => {
+    const error = value && messageText.safeParse(value).error;
+    if (error)
+      ctx.addIssue({ code: "custom", message: error.issues[0].message });
+  });
 
 // Dropdown labels (model, interested, time): short safe labels, never free text.
 export function label(requiredMessage) {

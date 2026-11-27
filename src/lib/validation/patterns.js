@@ -36,6 +36,9 @@ export function normalizeText(value) {
     .replace(ZERO_WIDTH, "");
 }
 
+// Typed by hand, not real tabs or line breaks
+const ESCAPE = /\\[tnr]|\\x[0-9a-f]{2}|\\u[0-9a-f]{4}/i;
+
 const MARKUP = [
   /<\s*\/?\s*[a-z!?]/i, // <tag, </tag, <!-- , <?php
   /\bjavascript\s*:/i,
@@ -51,6 +54,7 @@ const CODE = [
   /`/, // template literals / shell substitution
   /\b(?:eval|settimeout|setinterval|alert|prompt|confirm|atob)\s*\(/i,
   /\bfunction\s*\w*\s*\(/i,
+  /["'`]\s*\.\s*repeat\s*\(\s*\d+/i, // "A".repeat(5000)
   /=>/,
   /\b(?:const|let|var)\s+[\w$]+\s*=/i,
   /\b(?:import|require)\s*\(|\bimport\s+[\w{*].*\bfrom\b/i,
@@ -59,7 +63,7 @@ const CODE = [
   /\b(?:system|exec|passthru|shell_exec|popen)\s*\(/i,
   /\$_(?:GET|POST|REQUEST|SERVER|COOKIE)\b/i,
   /\.\.[\\/]/, // path traversal
-  /\\x[0-9a-f]{2}|\\u[0-9a-f]{4}/i, // escape-sequence smuggling
+  ESCAPE,
   // SQL
   /['"]\s*(?:or|and)\s+['"\w(]+\s*(?:=|like|>|<)/i, // ' OR 1=1
   /\bunion\s+(?:all\s+)?select\b/i,
@@ -75,6 +79,11 @@ const CODE = [
 export function containsMarkup(value) {
   const text = decode(normalizeText(value));
   return MARKUP.some((re) => re.test(text));
+}
+
+/** True when the text holds typed escape sequences such as "\t", "\n" or "\x41" (also when entity/percent encoded). */
+export function containsEscape(value) {
+  return ESCAPE.test(decode(normalizeText(value)));
 }
 
 /** True when the text looks like source code, template syntax, SQL, shell or path-traversal input, or holds control characters. */

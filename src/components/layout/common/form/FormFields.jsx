@@ -116,20 +116,17 @@ export function TextareaField({
   variant = "pill",
   className,
 }) {
-  const labels = useLabels();
   const { register, error, errorId, describedBy, watch } = useField(name);
   const v = VARIANT[variant];
   const length = (watch(name) ?? "").length;
   return (
     <div className={cn("relative", className)}>
       <label className="block">
-        <span className="sr-only">
-          {label} ({labels.required})
-        </span>
+        <span className="sr-only">{label}</span>
         <textarea
           rows={v.rows}
           maxLength={MAX.message}
-          placeholder={`${label}*`}
+          placeholder={label}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
           className={`${v.field} ${v.textarea}`}

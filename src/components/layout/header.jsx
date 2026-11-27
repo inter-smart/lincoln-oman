@@ -87,7 +87,7 @@ export default function Header({ data, vehicles }) {
           <LanguageSwitch labels={data.language} />
 
           <Sheet>
-            <SheetTrigger className="flex h-[24px] items-center gap-[13px] text-[14px] tracking-[0.7px] uppercase transition-opacity hover:opacity-70">
+            <SheetTrigger className="flex h-[24px] items-center gap-[13px] text-[14px] tracking-[0.7px] uppercase transition-opacity hover:opacity-70 lg:hidden">
               <span className="max-sm:sr-only">{data.labels.menu}</span>
               <Image
                 src="/icons/menu.svg"
